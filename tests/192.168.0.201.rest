@@ -1,0 +1,41 @@
+### LOGIN
+PUT http://192.168.0.201/run HTTP/1.1
+content-type: text/plain
+
+LOGIN esplight
+
+### STATS
+GET http://192.168.0.201/stats HTTP/1.1
+
+
+### BOOT
+GET http://192.168.0.201/boot HTTP/1.1
+### 
+PUT http://192.168.0.201/boot HTTP/1.1
+content-type: text/plain
+
+< ./192.168.0.201/boot.txt
+
+
+### ANIM01_L
+GET http://192.168.0.201/anim01_l HTTP/1.1
+###
+PUT http://192.168.0.201/anim01_l HTTP/1.1
+content-type: text/plain
+
+< ./192.168.0.201/anim01_l.txt
+
+
+### ANIM01_H
+GET http://192.168.0.201/anim01_h HTTP/1.1
+### 
+PUT http://192.168.0.201/anim01_h HTTP/1.1
+content-type: text/plain
+
+< ./192.168.0.201/anim01_h.txt
+
+
+### Tests
+PUT http://192.168.0.201/run
+
+TURN D3 1

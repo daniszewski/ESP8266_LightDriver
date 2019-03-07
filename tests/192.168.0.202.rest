@@ -1,0 +1,40 @@
+GET http://192.168.0.202/stats HTTP/1.1
+
+###
+GET http://192.168.0.202/boot HTTP/1.1
+
+###
+PUT http://192.168.0.202/run HTTP/1.1
+content-type: text/plain
+
+LOGIN esplight
+
+### 
+PUT http://192.168.0.202/boot HTTP/1.1
+content-type: text/plain
+
+NAME Test lights 2
+SWITCH D3 1 anim01_H anim01_L
+LIGHT D5 PWM
+#
+SEQ D5
+VALUE 0
+DELAY 0
+SLIDE 30 1023
+# SLIDE 60 0
+END
+
+###
+GET http://192.168.0.202/anim01_l HTTP/1.1
+###
+GET http://192.168.0.202/anim01_h HTTP/1.1
+### 
+PUT http://192.168.0.202/anim01_l HTTP/1.1
+content-type: text/plain
+
+URL http://192.168.0.201/run?file=anim01_l
+### 
+PUT http://192.168.0.202/anim01_h HTTP/1.1
+content-type: text/plain
+
+URL http://192.168.0.201/run?file=anim01_h
