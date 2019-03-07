@@ -26,6 +26,6 @@ There are two ways to build it and deploy to the hardware:
 2. VS Code
 - Requirements
     - PlatformIO extension
--To build call the "Build" task
+- To build call the "Build" task
 
-To maintain compatibility with Arduino environment all the source code files must be placed in one folder (src) along with empty src.ino file.
+To maintain compatibility with Arduino environment all the source code files must be placed in one folder (src) along with empty src.ino (sketch file).
