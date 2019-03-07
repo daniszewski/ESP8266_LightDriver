@@ -27,5 +27,3 @@ void loop() {
   BootTries.handle();
   delay(2);
 }
-
-

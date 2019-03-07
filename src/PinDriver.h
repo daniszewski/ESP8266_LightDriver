@@ -4,6 +4,10 @@
 #include "Global.h"
 #include "LedAnimation.h"
 
+#ifndef D9
+    #define D9 3
+#endif
+
 #define BOOT_DELAY 500
 #define ZERO_DELAY_THRESHOLD 100
 #define PINCOUNTALL 20
