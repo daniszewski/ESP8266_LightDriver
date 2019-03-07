@@ -1,6 +1,6 @@
-#include "LedAnimation.h"
+#include "LightAnimation.h"
 
-void LedAnimation::animate() {
+void LightAnimation::animate() {
   if(!_enabled || _stepIndex>=_steps.GetSize()) return;
 
   AnimStep *s = &_steps[_stepIndex];
@@ -24,30 +24,30 @@ void LedAnimation::animate() {
   }
 }
 
-short LedAnimation::getValue() {
+short LightAnimation::getValue() {
   return (short)_value;
 }
 
-int LedAnimation::getId() {
+int LightAnimation::getId() {
   return _id;
 }
 
-void LedAnimation::setId(int id) {
+void LightAnimation::setId(int id) {
   _id = id;
 }
 
-void LedAnimation::clear() {
+void LightAnimation::clear() {
   _enabled = false;
   _stepIndex = 0;
   _steps.Clear();
 }
 
-void LedAnimation::enable() {
+void LightAnimation::enable() {
   _stepIndex = 0;
   _enabled = true;
 }
 
-void LedAnimation::addStep(unsigned short stepTime, short targetValue, short nextStepRel, short repeat) {
+void LightAnimation::addStep(unsigned short stepTime, short targetValue, short nextStepRel, short repeat) {
   _enabled = false;
   AnimStep s;
   s.stepTime = stepTime;

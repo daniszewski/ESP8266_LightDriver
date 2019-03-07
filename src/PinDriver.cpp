@@ -5,7 +5,7 @@ struct PhasePlanStep { int wait; byte pin; byte state; };
 
 const uint8_t pins[PINCOUNTALL] = { D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 };
 char pinType[32] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
-LedAnimation *pinAnim[32];
+LightAnimation *pinAnim[32];
 SwitchDef switchDef[32];
 
 unsigned short pulseLength = 2;
@@ -60,11 +60,11 @@ char PinDriverClass::getPinType(uint8_t pin) {
     return pinType[pin];
 }
 
-void PinDriverClass::setPinAnim(uint8_t pin, LedAnimation* anim) {
+void PinDriverClass::setPinAnim(uint8_t pin, LightAnimation* anim) {
     pinAnim[pin] = anim;
 }
 
-LedAnimation* PinDriverClass::getPinAnim(uint8_t pin) {
+LightAnimation* PinDriverClass::getPinAnim(uint8_t pin) {
     return pinAnim[pin];
 }
 
@@ -73,7 +73,7 @@ int sortPlanComp(const void *cmp1, const void *cmp2)
     return (*((PhasePlanStep *)cmp1)).wait - (*((PhasePlanStep *)cmp2)).wait;
 }
 
-int getLedNonLinear(int value) {
+int getLightNonLinear(int value) {
     value = (value * (value+1024L)) >> 11;
     if (value<0) value = 0;
     if (value>1023) value = 1023;
@@ -88,7 +88,7 @@ void phaseStart() {
         if (pinType[p]=='Z') { //ZERO only
             pinAnim[p]->animate();
             int value = pinAnim[p]->getValue();
-            int wait = phaseEndTime - ((getLedNonLinear(value) * (phaseEndTime - phaseStartTime)) >> 10);
+            int wait = phaseEndTime - ((getLightNonLinear(value) * (phaseEndTime - phaseStartTime)) >> 10);
             _planSteps[_phasePlanLength++] = { wait, p, (byte)(value > 0 ? HIGH : LOW) };
             _planSteps[_phasePlanLength++] = { wait + pulseLength, p, (byte)(value == 1023 ? HIGH : LOW) };
         }
@@ -134,7 +134,7 @@ void PinDriverClass::updatePinsPwm() {
     for (int i=0;i<PINCOUNT;i++) {
         uint8_t p = pins[i];
         if (pinType[p]=='P') { //PWM only, no D0 - && pins[p]!=20
-            analogWrite(p, getLedNonLinear(pinAnim[p]->getValue()));
+            analogWrite(p, getLightNonLinear(pinAnim[p]->getValue()));
         }
     }
 }

@@ -2,7 +2,7 @@
 #include "LocalStorage.h"
 #include <ArduinoOTA.h>
 #include "WebPages.h"
-#include "LedAnimator.h"
+#include "LightAnimator.h"
 #include "PinDriver.h"
 #include "BootTries.h"
 #include "WebCallsQueue.h"
@@ -10,7 +10,7 @@
 void setup() {
   Serial.begin(74880); //115200
   LocalStorage.begin();
-  LedAnimator.begin([](){ PinDriver.updatePinsPwm(); });
+  LightAnimator.begin([](){ PinDriver.updatePinsPwm(); });
   BootTries.begin();
   PinDriver.begin();
   WebPages.begin();
@@ -23,7 +23,7 @@ void loop() {
   if (isAdmin()) ArduinoOTA.handle();
   WebPages.handle();
   WebCallsQueue.handle();
-  LedAnimator.handle();
+  LightAnimator.handle();
   PinDriver.handle();
   BootTries.handle();
   delay(2);

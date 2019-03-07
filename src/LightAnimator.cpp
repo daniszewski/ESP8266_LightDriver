@@ -1,15 +1,15 @@
-#include "LedAnimator.h"
+#include "LightAnimator.h"
 
-LedAnimation *currentConfigAnimation;
+LightAnimation *currentConfigAnimation;
 
 std::function<void(void)> _callback;
 
-void LedAnimatorClass::begin(std::function<void(void)> callback) {
+void LightAnimatorClass::begin(std::function<void(void)> callback) {
   lastTime = millis();
   _callback = callback;
 }
 
-void LedAnimatorClass::handle() {
+void LightAnimatorClass::handle() {
   unsigned long currTime = millis();
   if (currTime - lastTime >= 10) {
     animate();
@@ -19,51 +19,51 @@ void LedAnimatorClass::handle() {
   }
 }
 
-int LedAnimatorClass::animationCount() {
+int LightAnimatorClass::animationCount() {
   return animations.GetSize();
 }
 
-int LedAnimatorClass::getValue(int id) {
+int LightAnimatorClass::getValue(int id) {
   for(unsigned int i=0;i<animations.GetSize();i++) {
     if (animations[i].getId() == id) return animations[i].getValue();
   }
   return 0;
 }
 
-LedAnimation* LedAnimatorClass::ensureAnimation(int id) {
+LightAnimation* LightAnimatorClass::ensureAnimation(int id) {
   for(unsigned int i=0;i<animations.GetSize();i++) {
     if (animations[i].getId() == id) return &animations[i];
   }
-  LedAnimation result;
+  LightAnimation result;
   result.setId(id);
   animations.Add(result);
   return &animations[animations.GetSize()-1];
 }
 
-void LedAnimatorClass::animate() {
+void LightAnimatorClass::animate() {
   for(unsigned int i=0;i<animations.GetSize();i++) {
     if (!animations[i]._isTriggeredExternaly) animations[i].animate();
   }
 }
 
-LedAnimation* LedAnimatorClass::configStart(int id, bool isTriggeredExternaly) {
+LightAnimation* LightAnimatorClass::configStart(int id, bool isTriggeredExternaly) {
 	currentConfigAnimation = ensureAnimation(id);
   currentConfigAnimation->_isTriggeredExternaly = isTriggeredExternaly;
   currentConfigAnimation->clear();
   return currentConfigAnimation;
 }
 
-void LedAnimatorClass::configAddStep(short target, unsigned short delay) {
+void LightAnimatorClass::configAddStep(short target, unsigned short delay) {
 	currentConfigAnimation->addStep(delay, target, 0, 0); // do not repeat that
 }
 
-void LedAnimatorClass::configAddRepeat(short commands, short count) {
+void LightAnimatorClass::configAddRepeat(short commands, short count) {
   currentConfigAnimation->addStep(0, -1, -commands, count);
 }
 
-void LedAnimatorClass::configEnd() {
+void LightAnimatorClass::configEnd() {
   currentConfigAnimation->addStep(6000, -1, 0, -1); // every minute jump to itself
   currentConfigAnimation->enable();
 }
 
-LedAnimatorClass LedAnimator;
+LightAnimatorClass LightAnimator;

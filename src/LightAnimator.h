@@ -1,17 +1,17 @@
-#ifndef LEDANIMATOR_H
-#define LEDANIMATOR_H
+#ifndef LIGHTANIMATOR_H
+#define LIGHTANIMATOR_H
 
 #include "Global.h"
-#include "LedAnimation.h"
+#include "LightAnimation.h"
 
-class LedAnimatorClass {
+class LightAnimatorClass {
   public:
     void begin(std::function<void(void)> callback);
     void handle();
 
     void animate();
 
-  	LedAnimation* configStart(int id, bool isTriggeredExternaly);
+  	LightAnimation* configStart(int id, bool isTriggeredExternaly);
   	void configAddStep(short value, unsigned short delay);
     void configAddRepeat(short commands, short count);
   	void configEnd();
@@ -21,10 +21,10 @@ class LedAnimatorClass {
   
   protected:
     unsigned long lastTime;
-    DynArray<LedAnimation> animations;
-    LedAnimation* ensureAnimation(int id);
+    DynArray<LightAnimation> animations;
+    LightAnimation* ensureAnimation(int id);
 };
 
-extern LedAnimatorClass LedAnimator;
+extern LightAnimatorClass LightAnimator;
 
 #endif
