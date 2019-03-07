@@ -158,7 +158,6 @@ void WebPagesClass::handleFileUpload() {
   } else if(upload.status == UPLOAD_FILE_END){
     if(fsUploadFile) {
       fsUploadFile.close();
-      sendRedirect("/upload");
     } else {
       sendERR("couldn't create file");
     }

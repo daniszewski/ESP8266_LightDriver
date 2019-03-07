@@ -1,4 +1,6 @@
-Admin commands:
+# Commands
+
+1. Admin commands
     NAME <name of the node> - Sets name of the node
     ZERO <pin name> - Initialize zero cross detector on specified pin
     PHASESTART <phase start: 0-10000> - sets the time offset of half-phase starting point
@@ -11,7 +13,7 @@ Admin commands:
     BOOTADMIN - no need for admin to login
     WIFI <ssid> <password> - connect to WIFI (not needed on boot time)
 
-Non-admin commands (always available):    
+2. Non-admin commands (always available)
     LOGIN <password> - admin login
     LOGOFF - logoff admin
     URL <url to call> - call web url, http://<ip>/run?file=<script> to run remote script
@@ -19,24 +21,12 @@ Non-admin commands (always available):
     SCRIPT <script file> - run script (from local storage)
     SEQ <pin name> - start a light sequence definition under specified pin
 
-Sequence commands (available after starting a sequence):
+3. Sequence commands (available after starting a sequence)
     VALUE <target value> - instantly assign a value to the light
     DELAY <time of delay> - wait specified number of 1/100 of a second
     SLIDE <time of activity> <target value> - transpose the current light level to the target value within provided time
     REPEAT <no of commands> <no of repeats> - repeat last x commands provided number of times (-1 - inifite)
     END - end current sequence definition
 
+# REMARKS
 <pin name> can be D0, D1, ..., D9 and in case of switches additionaly V0, V1, ..., V9 for virtual switches available by WIFI
-
-
-Features
-- PWM or AC zero crossing light dimming
-- 1-state, 2-states and stair switches, closing circuits or by A/C phase detector
-- light animations with sequence definitions based on events from switches
-- admin mode for setup, OTA updates, etc...
-- web server with access to all functions
-- communication between different modules via http
-- internal scripting language
-- live stats
-- safe switch for boot loop errors
-- virtual switches managed remotely
