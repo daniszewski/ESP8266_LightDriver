@@ -1,4 +1,5 @@
 #include "Global.h"
+#include "LocalStorage.h"
 #include <ArduinoOTA.h>
 #include "WebPages.h"
 #include "LedAnimator.h"
@@ -8,7 +9,7 @@
 
 void setup() {
   Serial.begin(74880); //115200
-  SPIFFS.begin();
+  LocalStorage.begin();
   LedAnimator.begin([](){ PinDriver.updatePinsPwm(); });
   BootTries.begin();
   PinDriver.begin();
