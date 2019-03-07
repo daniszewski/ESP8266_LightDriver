@@ -13,6 +13,7 @@ void LocalStorageClass::begin() {
             if (f) {
                 f.println(WiFi.macAddress());
                 f.close();
+                Serial.println("SPIFFS: formatting done");
             }
             else Serial.println("SPIFFS: formatting error (creating indicator file)");
         } else Serial.println("SPIFFS: formatting error");
