@@ -1,5 +1,5 @@
 # ESP8266_LightDriver
-ESP8266 controller for handling the brightness of multimple light sources. The user can define different animations played in response to any state change of wall switches.
+ESP8266-based controller for handling the brightness of multiple light sources. The user can define different animations played in response to any state change of wall switches.
 
 # Handled platforms
 All ESP8266-based hardware with at least 2048kB of flash memory and USB controller on board.
