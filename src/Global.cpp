@@ -1,14 +1,12 @@
 #include "Global.h"
 #include "Commands.h"
+#include "_Config.h"
 
 extern "C" {
   #include "user_interface.h"
 }
 
 String lastError;
-String version = "0.8.5";
-
-String adminpwd = "esplight";
 String driverName;
 bool _admin = false;
 bool _boot = true;
@@ -53,6 +51,29 @@ void connectWifi(String ssid, String password)
   ssid.toCharArray(_ssid, 64); 
   password.toCharArray(_password, 128);  
   WiFi.begin(_ssid, _password); 
+}
+
+void startAP(bool resetWifi)
+{ 
+  if (resetWifi) {
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    delay(100);
+  }
+  
+  IPAddress localIp(192,168,4,1);
+  IPAddress gateway(192,168,4,1);
+  IPAddress subnet(255,255,255,0);
+  
+  WiFi.softAPConfig(localIp, gateway, subnet);
+  char mac[32];
+  (AP_prefix + WiFi.macAddress()).toCharArray(mac, 32, 0);
+  WiFi.softAP(mac, wifiappwd, 10, 0, 4);
+}
+
+void stopAP() {
+  WiFi.softAPdisconnect(false); 
+  WiFi.enableAP(false);
 }
 
 void setAdminPassword(String pwd) {
@@ -103,7 +124,6 @@ bool executeFile(String filename) {
       if(!execute(f.readStringUntil('\n'))) {
         ERR(filename+": unknown command in line "+String(line));
         f.close();
-        return false;
       }
       line++;
     }

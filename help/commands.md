@@ -21,12 +21,14 @@
 - PHASESTART {phase start: 0-10000} - sets the time offset of half-phase starting point in microseconds
 - PHASEEND {phase end: 0-10000} - sets the time offset of half-phase ending point in microseconds
 - PULSE {pulse length} - zero cross phase triac steering pulse length in microseconds
-- LED {pin name} {mode: PWM, ZERO} - setup a light of type "mode" on specified pin
+- LIGHT {pin name} {mode: PWM, ZERO} - setup a light of type "mode" on specified pin
 - SWITCH {pin name} {switch type: 1 2 X} {on close} {on open} - setup an action button (1-single state, 2-states, X-stair switch)
 - DISABLE {pin name} - disable previously setup pin
 - PWD {password} - set admin password at a boot time
-- BOOTADMIN - no need for admin to login
+- BOOTADMIN - admin commands are available without login
 - WIFI {ssid} {password} - connect to WIFI (not needed on boot time)
+- WIFIAP {state: 0, 1} - enable or disable the Access Point mode
+- RESTART - reset the module
 
 # Remarks
 

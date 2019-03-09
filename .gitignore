@@ -6,4 +6,6 @@
 .vscode/arduino.json
 .vscode/launch.json
 .vscode/settings.json
-storage/192.*
+.vscode/extensions.json
+.vscode/ipch
+

@@ -37,9 +37,7 @@ void WebPagesClass::begin() {
 }
 
 void WebPagesClass::handle() {
-  if (WiFi.isConnected()) {
-    server.handleClient();
-  }
+  server.handleClient();
 }
 
 String WebPagesClass::getContentType(String filename) {
@@ -54,10 +52,11 @@ String WebPagesClass::getContentType(String filename) {
 
 void WebPagesClass::handleStaticPage() {
   String url = server.uri(); url.toLowerCase();
+  if (url == "/") url = "/index.html";
 
   if (server.method() == HTTP_GET) {
     File f = SPIFFS.open(prefix+url, "r");
-    if(f) {
+    if (f) {
       String h = getContentType(url);
       server.sendHeader("Content-Type", h);
       server.streamFile(f, h);
@@ -104,12 +103,12 @@ void WebPagesClass::handleDir() {
 
 void WebPagesClass::handleBoot() {
   if (isAdmin()) {
-    if (server.method()==HTTP_GET) {
+    if (server.method() == HTTP_GET) {
       File f = SPIFFS.open("/boot", "r");
       server.setContentLength(f.size());
       server.streamFile(f, "text/plain");
       f.close();
-    } else if (server.method()==HTTP_PUT) {
+    } else if (server.method() == HTTP_PUT) {
       File f = SPIFFS.open("/boot", "w");
       if (f) { 
         f.print(server.arg("plain"));
@@ -121,24 +120,26 @@ void WebPagesClass::handleBoot() {
         f.print("0");
         f.flush(); f.close();
       } else server.send(500, "text/plain", "Could not write file /boot");
+    } else if (server.method() == HTTP_DELETE) {
+      SPIFFS.remove("/boot");
     }
   } sendNoAdmin();
 }
 
 void WebPagesClass::handleRun() {
-  if (server.method()==HTTP_GET) {
+  if (server.method() == HTTP_GET) {
     String file = prefix+"/"+server.arg("file");
     file.toLowerCase();
     if (executeFile(file)) sendOK();
     else sendERR(getLastError());
-  } else if (server.method()==HTTP_PUT) {
+  } else if (server.method() == HTTP_PUT) {
     String body = server.arg("plain");
     int lineStart = 0, lineEnd = 0, lineCounter = 1;
     do {
       lineEnd = body.indexOf('\n',lineStart);
       if (lineEnd<0) lineEnd = body.length();
       String line = body.substring(lineStart, lineEnd); line.trim();
-      if(!execute(line)) {
+      if (!execute(line)) {
         ERR("Unknown command in line "+String(lineCounter));
         sendERR(getLastError());
         return;
@@ -154,14 +155,14 @@ void WebPagesClass::handleFileUpload() {
   if (!isAdmin()) return;
 
   HTTPUpload& upload = server.upload();
-  if(upload.status == UPLOAD_FILE_START){
+  if (upload.status == UPLOAD_FILE_START){
     fsUploadFile = SPIFFS.open(TEMPORARY_FILE, "w");
-  } else if(upload.status == UPLOAD_FILE_WRITE){
-    if(fsUploadFile) {
+  } else if (upload.status == UPLOAD_FILE_WRITE){
+    if (fsUploadFile) {
       fsUploadFile.write(upload.buf, upload.currentSize);
     }
-  } else if(upload.status == UPLOAD_FILE_END){
-    if(fsUploadFile) {
+  } else if (upload.status == UPLOAD_FILE_END){
+    if (fsUploadFile) {
       fsUploadFile.close();
     } else {
       sendERR("couldn't create file");

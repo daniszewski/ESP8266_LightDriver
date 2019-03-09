@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>led root</title>
+		<script type="application/javascript">
+			function loaddata() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+				    if (this.readyState == 4 && this.status == 200) {
+				    	document.getElementById("stats").innerText = this.responseText;
+				    	setTimeout(loaddata, 1000);
+				    }
+				};
+				xhttp.open("GET", "/stats", true);
+				xhttp.send();
+			}
+	    	setTimeout(loaddata, 100);
+		</script>
+	</head>
+	<body>
+		<h1>Light Driver</h1>
+		<div id="freemem" />
+	</body>
+</html>

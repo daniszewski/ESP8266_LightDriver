@@ -1,6 +1,6 @@
 #include "LocalStorage.h"
 
-#define FORMAT_INDICATOR "/mac"
+#define FORMAT_INDICATOR "/formatted"
 
 void LocalStorageClass::begin() {
     SPIFFS.begin();
