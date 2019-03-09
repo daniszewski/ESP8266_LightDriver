@@ -25,6 +25,7 @@ void logout();
 void setDriverName(String error);
 String getDriverName();
 bool executeFile(String filename);
+void firstBoot();
 
 
 #define ERR(...) { logToSerial("ERROR: "); logToSerial( __VA_ARGS__ ); logToSerial("\n"); setLastError(__VA_ARGS__); }

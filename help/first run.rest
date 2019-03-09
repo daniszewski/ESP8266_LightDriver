@@ -1,0 +1,21 @@
+# First run
+
+# (suggested plugin to run below REST calls - humao.rest-client)
+
+# 1. Attach ESP8266 module to USB
+# 2. Burn firmware to Flash memory
+# 3. Connect to WiFi provided by module: SSID: LIGHT_<MAC> password: esplight
+# 4. Call REST command (change the SSID and password to yours):
+PUT http://192.168.4.1/run HTTP/1.1
+
+LOGIN esplight
+WIFI {SSID} {password}
+###
+
+# 5. Disable Access Point mode after confirming that module has connected to home WiFi:
+PUT http://192.168.4.1/run HTTP/1.1
+
+LOGIN esplight
+WIFIAP 0
+###
+

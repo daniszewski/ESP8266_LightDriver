@@ -22,10 +22,7 @@ int getBootTries() {
 
 void BootTriesClass::begin() {
     if (getBootTries() <= 10) {
-        if(!executeFile("/boot")) {
-            INFO("No boot file - starting in AP mode");
-            startAP(true);
-        }
+        executeFile("/boot");
     } else { 
         INFO("Boot script disabled due to boot loop");
         bootTries = -1;
