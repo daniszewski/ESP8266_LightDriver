@@ -8,23 +8,23 @@
 #include "WebCallsQueue.h"
 
 void setup() {
-  Serial.begin(74880); //115200
-  LocalStorage.begin();
-  LightAnimator.begin([](){ PinDriver.updatePinsPwm(); });
-  BootTries.begin();
-  PinDriver.begin();
-  WebPages.begin();
-  WebCallsQueue.begin();
-  ArduinoOTA.begin();
-  bootComplete();
+    bootStart();
+    LocalStorage.begin();
+    LightAnimator.begin([](){ PinDriver.updatePinsPwm(); });
+    BootTries.begin();
+    PinDriver.begin();
+    WebPages.begin();
+    WebCallsQueue.begin();
+    ArduinoOTA.begin();
+    bootComplete();
 }
 
 void loop() {
-  if (isAdmin()) ArduinoOTA.handle();
-  WebPages.handle();
-  WebCallsQueue.handle();
-  LightAnimator.handle();
-  PinDriver.handle();
-  BootTries.handle();
-  delay(2);
+    if (isAdmin()) ArduinoOTA.handle();
+    WebPages.handle();
+    WebCallsQueue.handle();
+    LightAnimator.handle();
+    PinDriver.handle();
+    BootTries.handle();
+    delay(2);
 }

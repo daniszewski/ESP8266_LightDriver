@@ -12,11 +12,9 @@ void setLastError(String error);
 int getFreeMem();
 String getVersion();
 String getWord(String &line, int ix);
-void connectWifi(String ssid, String password);
-void startAP(bool resetWifi);
-void stopAP();
+void WiFiSTA(String ssid, String password, bool persistent);
+void WiFiAP(bool enable, bool persistent);
 void setAdminPassword(String pwd);
-void bootComplete();
 bool isBoot();
 bool isAdmin();
 void setAdmin();
@@ -25,7 +23,9 @@ void logout();
 void setDriverName(String error);
 String getDriverName();
 bool executeFile(String filename);
+void bootStart();
 void firstBoot();
+void bootComplete();
 
 
 #define ERR(...) { logToSerial("ERROR: "); logToSerial( __VA_ARGS__ ); logToSerial("\n"); setLastError(__VA_ARGS__); }

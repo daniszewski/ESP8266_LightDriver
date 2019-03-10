@@ -44,48 +44,51 @@ String getWord(String &line, int ix) {
     return r;
 }
 
+void bootStart() {
+    Serial.begin(74880); //115200
+}
+
 void firstBoot() {
-    startAP(true);
-}
-
-void connectWifi(String ssid, String password)
-{ 
-    char _ssid[64];
-    char _password[128]; 
-    ssid.toCharArray(_ssid, 64); 
-    password.toCharArray(_password, 128);    
-    WiFi.begin(_ssid, _password); 
-}
-
-void startAP(bool resetWifi)
-{ 
-    if (resetWifi) {
-        WiFi.mode(WIFI_STA);
-        WiFi.disconnect();
-        delay(100);
-    }
-    
-    IPAddress localIp(192,168,4,1);
-    IPAddress gateway(192,168,4,1);
-    IPAddress subnet(255,255,255,0);
-    
-    WiFi.softAPConfig(localIp, gateway, subnet);
-    char mac[32];
-    (AP_prefix + WiFi.macAddress()).toCharArray(mac, 32, 0);
-    WiFi.softAP(mac, wifiappwd, 10, 0, 4);
-}
-
-void stopAP() {
-    WiFi.softAPdisconnect(false); 
-    WiFi.enableAP(false);
-}
-
-void setAdminPassword(String pwd) {
-    adminpwd = pwd;
+    WiFiAP(true, true);
 }
 
 void bootComplete() {
     _boot = false;
+    INFO("WiFi mode: " + String(WiFi.getMode()));
+}
+
+void WiFiSTA(String ssid, String password, bool persistent) {
+    if (ssid.length()>0) {
+        WiFi.persistent(persistent);
+        char _ssid[64];
+        char _password[128]; 
+        ssid.toCharArray(_ssid, 64); 
+        password.toCharArray(_password, 128);
+        WiFi.begin(_ssid, _password); 
+    } else {
+        WiFi.enableSTA(false);
+    }
+}
+
+void WiFiAP(bool enable, bool persistent) {
+    WiFi.persistent(persistent);
+    if (enable) {
+        IPAddress localIp(192,168,4,1);
+        IPAddress gateway(192,168,4,1);
+        IPAddress subnet(255,255,255,0);
+        
+        if (WiFi.softAPConfig(localIp, gateway, subnet)) {
+            const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
+            if (WiFi.softAP(mac, wifiappwd, 10, 0, 4)) { INFO("AP started"); }
+            else { ERR("AP start error"); }
+        } else { ERR("AP config error"); }
+    } else {
+        WiFi.enableAP(false);
+    }
+}
+
+void setAdminPassword(String pwd) {
+    adminpwd = pwd;
 }
 
 bool isBoot() {

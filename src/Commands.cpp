@@ -18,8 +18,10 @@ bool execute(String line) {
     else if (adm && cmd == "DISABLE") PinDriver.disablePin(getWord(line, 1)); // Syntax: DISABLE <pin name>
     else if (adm && cmd == "PWD") setAdminPassword(getWord(line, 1)); // Syntax: PWD <password>
     else if (adm && cmd == "BOOTADMIN") setAdmin(); // Syntax: BOOTADMIN
-    else if (adm && cmd == "WIFI") connectWifi(getWord(line, 1), getWord(line, 2)); // Syntax: WIFI <ssid> <password>
-    else if (adm && cmd == "WIFIAP") if (getWord(line, 1)=="0") stopAP(); else startAP(false); // Syntax: WIFIAP <0 or 1>
+    else if (adm && cmd == "WIFI") WiFiSTA(getWord(line, 1), getWord(line, 2), true); // Syntax: WIFI <ssid> <password>
+    else if (adm && cmd == "WIFITEST") WiFiSTA(getWord(line, 1), getWord(line, 2), false); // Syntax: WIFITEST <ssid> <password>
+    else if (adm && cmd == "WIFIAP") WiFiAP(getWord(line, 1)=="1", true); // Syntax: WIFIAP <0 or 1>
+    else if (adm && cmd == "WIFIAPTEST") WiFiAP(getWord(line, 1)=="1", false); // Syntax: WIFIAPTEST <0 or 1>
     else if (adm && cmd == "RESTART") ESP.restart(); // Syntax: RESTART
     
     else if (cmd == "LOGIN") login(getWord(line, 1)); // Syntax: LOGIN <password>

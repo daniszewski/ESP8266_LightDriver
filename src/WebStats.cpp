@@ -24,6 +24,8 @@ String getStats() {
         }
         result += "\""+name+"\": { \"type\": \""+typeName+"\", \"value\": "+value+" },\n";
     }
+    result += "\"WiFiClient_IP\": \"" + WiFi.localIP().toString() + "\",\n";
+    result += "\"WiFiAP_IP\": \"" + WiFi.softAPIP().toString() + "\",\n";
     result += "\"version\": \"" + getVersion() + "\"\n";
     result += "}\n";
     return result;

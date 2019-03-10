@@ -27,7 +27,9 @@
 - PWD {password} - set admin password at a boot time
 - BOOTADMIN - admin commands are available without login
 - WIFI {ssid} {password} - connect to WIFI (not needed on boot time)
-- WIFIAP {state: 0, 1} - enable or disable the Access Point mode
+- WIFITEST {ssid} {password} - same a above but the setting will be restored after restart
+- WIFIAP {1 or 0} - enable or disable the AccessPoint mode
+- WIFIAPTEST {1 or 0} - same a above but the setting will be restored after restart
 - RESTART - reset the module
 
 # Remarks
