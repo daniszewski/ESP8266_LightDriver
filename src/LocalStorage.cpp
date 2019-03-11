@@ -2,14 +2,16 @@
 #include "Global.h"
 
 #define FORMAT_INDICATOR "/boot"
+#define FORMAT_INDICATOR2 "/www/index.html"
 
 void LocalStorageClass::begin() {
     SPIFFS.begin();
 
-    // file system format
+    // file system format if required
     if (!SPIFFS.exists(FORMAT_INDICATOR)) {
-        Serial.println("SPIFFS: formatting");
-        if (SPIFFS.format()) {
+        bool format = !SPIFFS.exists(FORMAT_INDICATOR2);
+        if (format) Serial.println("SPIFFS: formatting");
+        if (!format || SPIFFS.format()) {
             File f = SPIFFS.open(FORMAT_INDICATOR, "w");
             if (f) {
                 Serial.println("SPIFFS: formatting done");

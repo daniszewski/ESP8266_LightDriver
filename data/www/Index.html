@@ -1,23 +1,69 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<title>led root</title>
-		<script type="application/javascript">
-			function loaddata() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-				    if (this.readyState == 4 && this.status == 200) {
-				    	document.getElementById("stats").innerText = this.responseText;
-				    	setTimeout(loaddata, 1000);
-				    }
-				};
-				xhttp.open("GET", "/stats", true);
-				xhttp.send();
-			}
-	    	setTimeout(loaddata, 100);
-		</script>
-	</head>
-	<body>
-		<h1>Light Driver</h1>
-		<div id="freemem" />
-	</body>
+    <head>
+        <title>ESP8266 Lights</title>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+        <div id="header">
+            <h1>Lights Driver: <span id="name"></span></h1>
+        </div>
+        <div id="content">
+            <div id="menu">
+                <ul>
+                    <li><a page="page-stats">Status</a></li>
+                    <li><a page="page-wifi">Wifi configuration</a></li>
+                    <li><a page="page-scripts">Scripts</a></li>
+                </ul>
+            </div>
+            <div id="body">
+                <div id="page-loading">LOADING...</div>
+
+
+                <div id="page-stats" style="display:none">
+                    STATS<br />
+                    <div id="stats"></div>
+                </div>
+                
+
+                <div id="page-wifi" style="display:none">
+                    <h2>WiFi management</h2>
+                    <input id="chkTemporary" type="checkbox" checked="checked"/> all changes applies only until next restart
+                    <br />
+                    <h3>Access Point</h3>
+                    <div class="form-item">Status: <span id="WiFiAPState"></span></div>
+                    <div class="form-item">Host SSID: <span id="WiFiAPSSID"></span></div>
+                    <div class="form-item">Host IP: <span id="WiFiAPIP"></span></div>
+                    <input type="button" id="btnWiFiAPEnable" value="AP enable" />
+                    <input type="button" id="btnWiFiAPDisable" value="AP disable" />
+                    <br />
+                    <h3>WiFi client</h3>
+                    <div class="form-item">Status: <span id="WiFiClientState"></span></div>
+                    <div class="form-item">SSID: <span id="WiFiClientSSID"></span></div>
+                    <div class="form-item">Client IP: <span id="WiFiClientIP"></span></div>
+                    <br />
+                    <div class="form-item">SSID: <input type="text" id="wifiSSID" /></div>
+                    <div class="form-item">Password: <input type="password" id="wifiPwd" /></div>
+                    <input type="button" id="btnWiFiConnect" value="Connect" />
+                    <input type="button" id="btnWiFiDisconnect" value="Disconnect" />
+                </div>
+                
+
+                <div id="page-scripts" style="display:none">
+                    SCRIPTS<br />
+                </div>
+
+
+            </div>
+        </div>
+        <div id="footer">
+            <div class="form-item">Connection: <span id="connection"></span></div>
+            <div class="form-item">Admin mode: <span id="adminmode"></span></div>
+            <div class="form-item">Free memory: <span id="freemem"></span></div>
+            <div class="form-item">Version: <span id="version"></span></div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="jquery.min.js"'+'><'+'/script>')</script>
+        <script src="lights.js"></script>
+    </body>
 </html>

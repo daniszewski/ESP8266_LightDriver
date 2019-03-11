@@ -14,6 +14,8 @@ void sendERR(String msg) { server.send(500, "text/plain", msg); }
 void sendRedirect(String url) { server.sendHeader("Location", url, true); server.send(302, "text/plain", ""); }
 void sendNoAdmin() { server.send(500, "text/plain", "Not admin"); }
 
+void zeroConf();
+
 void WebPagesClass::begin() {
     server.on("/stats", [this](){ handleJson(getStats()); });
     server.on("/boot", [this](){ handleBoot(); });
@@ -25,7 +27,11 @@ void WebPagesClass::begin() {
             SPIFFS.rename(TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
             server.send(200); 
         } else sendNoAdmin();
-    }, [this](){ handleFileUpload(); });
+    }, [this](){ handleFileUpload(TEMPORARY_FILE); });
+    server.on("/upload", HTTP_PUT, [](){ 
+        if (isAdmin()) server.send(200); 
+        else sendNoAdmin();
+    }, [this](){ handleFileUpload(server.upload().filename); });
     server.on("/update", HTTP_POST, []() {
         if (isAdmin()) {
             server.sendHeader("Connection", "close");
@@ -52,7 +58,7 @@ String WebPagesClass::getContentType(String filename) {
 
 void WebPagesClass::handleStaticPage() {
     String url = server.uri(); url.toLowerCase();
-    if (url == "/") url = "/index.html";
+    if (url == "/" && server.method() == HTTP_GET) url = "/index.html";
 
     if (server.method() == HTTP_GET) {
         File f = SPIFFS.open(prefix+url, "r");
@@ -61,7 +67,8 @@ void WebPagesClass::handleStaticPage() {
             server.sendHeader("Content-Type", h);
             server.streamFile(f, h);
             f.close();
-        } else server.send(404, "text/plain", "404: Not found");
+        } else if (url == "/index.html") zeroConf();
+        else server.send(404, "text/plain", "404: Not found");
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
             File f = SPIFFS.open(prefix+url, "w");
@@ -92,12 +99,13 @@ void WebPagesClass::handleDir() {
     server.sendHeader("Pragma", "no-cache");
     server.sendHeader("Expires", "-1");
     Dir dir = SPIFFS.openDir("/www");
-    String list = String();
+    String list = "{\n";
     while (dir.next()) {
         File f = dir.openFile("r");
-        list += dir.fileName() + " " + String(f.size()) + "\n";
+        list += "\""+dir.fileName() + "\": " + String(f.size()) + ",\n";
         f.close();
     }
+    list+="}\n";
     server.send(200, "application/json", list);
 }
 
@@ -149,12 +157,13 @@ void WebPagesClass::handleRun() {
 }
 
 File fsUploadFile;
-void WebPagesClass::handleFileUpload() {
+void WebPagesClass::handleFileUpload(String filename) {
     if (!isAdmin()) return;
 
     HTTPUpload& upload = server.upload();
     if (upload.status == UPLOAD_FILE_START){
-        fsUploadFile = SPIFFS.open(TEMPORARY_FILE, "w");
+        INFO("Uploading file " + filename);
+        fsUploadFile = SPIFFS.open(filename, "w");
     } else if (upload.status == UPLOAD_FILE_WRITE){
         if (fsUploadFile) {
             fsUploadFile.write(upload.buf, upload.currentSize);
@@ -193,6 +202,30 @@ void WebPagesClass::handleFirmwareUpdate() {
         Serial.setDebugOutput(false);
     }
     yield();
+}
+
+void zeroConf() {
+    server.send(200, "text/html", "\
+<!DOCTYPE html>\
+<html><head><title>ESP8266 Lights</title></head><body>\
+<h1>ESP8266 ZERO CONF</h1>\
+<div style='text-align:right;width:250px'>\
+SSID: <input type='text' id='s' /><br />\
+PWD: <input type='password' id='p' /><br />\
+<input type='button' value='Connect' onclick='wifi()' />\
+<input type='button' value='Reset' onclick='reset()' />\
+</div><br /><br />\
+Client IP: <strong><span style='color:green' id='IP'></span></strong>\
+<script>\
+function getStats() {rest('GET','stats',null,function() {if (this.readyState==4) { if(this.status==200) {var j=eval('x='+this.responseText);sv('IP',j.WiFiClient_IP);} setTimeout(getStats, 1000);}});}\
+function wifi() { sv('IP','connecting...'); rest('PUT','run','LOGIN esplight\\nWIFI '+gv('s')+' '+gv('p')+'\\n'); }\
+function reset() { sv('IP','restarting...'); rest('PUT','run','LOGIN esplight\\nRESTART\\n'); }\
+function rest(method,url,body,cb) { var x=new XMLHttpRequest();x.onreadystatechange=cb;x.open(method,url,true);x.send(body);}\
+function gv(id) { return document.getElementById(id).value;}\
+function sv(id,v) { document.getElementById(id).innerText=v;}\
+setTimeout(getStats, 1000);\
+</script>\
+</body></html>");
 }
 
 WebPagesClass WebPages;

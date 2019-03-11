@@ -19,7 +19,7 @@ class WebPagesClass {
     void handleBoot();
     void handleRun();
     void handleDir();
-    void handleFileUpload();
+    void handleFileUpload(String filename);
     void handleFirmwareUpdate();
     String getContentType(String filename);
 };

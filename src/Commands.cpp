@@ -7,6 +7,7 @@
 bool execute(String line) {
     line.trim();
     String cmd = getWord(line, 0);
+    //INFO(line);
     bool adm = isAdmin();
     if      (adm && cmd == "NAME") setDriverName(getWord(line, 1)); // Syntax: NAME <name of the node>
     else if (adm && cmd == "ZERO") PinDriver.initZero(getWord(line, 1)); // Syntax: ZERO <pin name>
