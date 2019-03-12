@@ -44,4 +44,4 @@ Content-Type: application/javascript
 
 ###
 
-DELETE http://192.168.0.106/index.html
+DELETE http://192.168.0.106/lights.js

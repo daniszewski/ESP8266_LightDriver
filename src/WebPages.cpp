@@ -4,15 +4,16 @@
 
 #define TEMPORARY_FILE "/_uploaded"
 #define PREFIX_WWW "/www"
+#define MIME_TEXTPLAIN "text/plain"
 
 ESP8266WebServer server(80);
 
 String prefix = PREFIX_WWW;
 
-void sendOK() { server.send(200, "text/plain", "OK"); }
-void sendERR(String msg) { server.send(500, "text/plain", msg); }
-void sendRedirect(String url) { server.sendHeader("Location", url, true); server.send(302, "text/plain", ""); }
-void sendNoAdmin() { server.send(500, "text/plain", "Not admin"); }
+void sendOK() { server.send(200, MIME_TEXTPLAIN, "OK"); }
+void sendERR(String msg) { server.send(500, MIME_TEXTPLAIN, msg); }
+void sendRedirect(String url) { server.sendHeader("Location", url, true); server.send(302, MIME_TEXTPLAIN, ""); }
+void sendNoAdmin() { server.send(500, MIME_TEXTPLAIN, "Not admin"); }
 
 void zeroConf();
 
@@ -24,6 +25,7 @@ void WebPagesClass::begin() {
     server.onNotFound([this](){ handleStaticPage(); });
     server.on("/upload", HTTP_POST, [](){ 
         if (isAdmin()) {
+            SPIFFS.remove(prefix + "/" + server.arg(0));
             SPIFFS.rename(TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
             server.send(200); 
         } else sendNoAdmin();
@@ -35,7 +37,7 @@ void WebPagesClass::begin() {
     server.on("/update", HTTP_POST, []() {
         if (isAdmin()) {
             server.sendHeader("Connection", "close");
-            server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+            server.send(200, MIME_TEXTPLAIN, (Update.hasError()) ? "FAIL" : "OK");
             ESP.restart();
         } else sendNoAdmin();
     }, [this]() { handleFirmwareUpdate(); });
@@ -68,7 +70,7 @@ void WebPagesClass::handleStaticPage() {
             server.streamFile(f, h);
             f.close();
         } else if (url == "/index.html") zeroConf();
-        else server.send(404, "text/plain", "404: Not found");
+        else server.send(404, MIME_TEXTPLAIN, "404: Not found");
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
             File f = SPIFFS.open(prefix+url, "w");
@@ -76,8 +78,8 @@ void WebPagesClass::handleStaticPage() {
                 f.print(server.arg("plain"));
                 f.print("\n");
                 f.flush(); f.close();
-                server.send(200, "text/plain", "OK");
-            } else server.send(500, "text/plain", "File write error");
+                server.send(200, MIME_TEXTPLAIN, "OK");
+            } else server.send(500, MIME_TEXTPLAIN, "File write error");
         } else sendNoAdmin();
     } else if (server.method() == HTTP_DELETE) {
         if (isAdmin()) {
@@ -95,18 +97,18 @@ void WebPagesClass::handleJson(String json) {
 }
 
 void WebPagesClass::handleDir() {
-    server.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    server.sendHeader("Pragma", "no-cache");
-    server.sendHeader("Expires", "-1");
     Dir dir = SPIFFS.openDir("/www");
-    String list = "{\n";
+    String list = "{ ";
+    bool first = true;
     while (dir.next()) {
         File f = dir.openFile("r");
-        list += "\""+dir.fileName() + "\": " + String(f.size()) + ",\n";
+        if (first) first = false;
+        else list += ", ";
+        list += "\""+dir.fileName() + "\": " + String(f.size());
         f.close();
     }
-    list+="}\n";
-    server.send(200, "application/json", list);
+    list+=" }";
+    handleJson(list);
 }
 
 void WebPagesClass::handleBoot() {
@@ -114,7 +116,7 @@ void WebPagesClass::handleBoot() {
         if (server.method() == HTTP_GET) {
             File f = SPIFFS.open("/boot", "r");
             server.setContentLength(f.size());
-            server.streamFile(f, "text/plain");
+            server.streamFile(f, MIME_TEXTPLAIN);
             f.close();
         } else if (server.method() == HTTP_PUT) {
             File f = SPIFFS.open("/boot", "w");
@@ -123,11 +125,10 @@ void WebPagesClass::handleBoot() {
                 f.print("\n");
                 f.flush(); f.close();
                 sendOK();
-
                 f = SPIFFS.open("/boot_tries", "w");
                 f.print("0");
                 f.flush(); f.close();
-            } else server.send(500, "text/plain", "Could not write file /boot");
+            } else server.send(500, MIME_TEXTPLAIN, "Could not write file /boot");
         }
     } sendNoAdmin();
 }
