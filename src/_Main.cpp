@@ -1,6 +1,5 @@
 #include "Global.h"
 #include "LocalStorage.h"
-#include <ArduinoOTA.h>
 #include "WebPages.h"
 #include "LightAnimator.h"
 #include "PinDriver.h"
@@ -15,12 +14,10 @@ void setup() {
     PinDriver.begin();
     WebPages.begin();
     WebCallsQueue.begin();
-    ArduinoOTA.begin();
     bootComplete();
 }
 
 void loop() {
-    if (isAdmin()) ArduinoOTA.handle();
     WebPages.handle();
     WebCallsQueue.handle();
     LightAnimator.handle();
