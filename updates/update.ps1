@@ -12,7 +12,7 @@ $defaultPwd = "esplight"
 
 Add-Type -AssemblyName 'System.Net.Http'
 
-Function Upload-File {
+Function Submit-File {
     param( [String]$Url, [String]$FilePath )
     
     $file = [System.IO.Path]::GetFileName($FilePath)
@@ -34,7 +34,7 @@ Function Upload-File {
         $content.Add($formContent, "filename", $file)
         $content.Add($fileContent, "file", $file)
         $result = $client.PostAsync($Url, $content).Result
-        if ($null -ne $result) { $r = $result.EnsureSuccessStatusCode() }
+        if ($null -ne $result) { $result.EnsureSuccessStatusCode() | out-null }
         return $true
     } catch {
         Write-Host $_.Exception.Message
@@ -51,7 +51,7 @@ Function Upload-File {
 Function Get-FolderHash
 {
     param ($folder)
-    $files = dir $folder -Recurse |? { -not $_.psiscontainer }
+    $files = Get-ChildItem $folder -Recurse |Where-Object { -not $_.psiscontainer }
     $allBytes = new-object System.Collections.Generic.List[byte]
     foreach ($file in $files)
     {
@@ -59,14 +59,14 @@ Function Get-FolderHash
         $allBytes.AddRange([System.Text.Encoding]::UTF8.GetBytes($file.Name))
     }
     $hasher = [System.Security.Cryptography.MD5]::Create()
-    $ret = [string]::Join("",$($hasher.ComputeHash($allBytes.ToArray()) | %{"{0:x2}" -f $_}))
+    $ret = [string]::Join("",$($hasher.ComputeHash($allBytes.ToArray()) | ForEach-Object{"{0:x2}" -f $_}))
     return $ret
 }
 
 function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
     $indent = 0;
     ($json -Split '\n' |
-    % {
+    ForEach-Object {
         if ($_ -match '[\}\]]') { $indent-- }
         $line = (' ' * $indent * 2) + $_.TrimStart().Replace(':  ', ': ')
         if ($_ -match '[\{\[]') { $indent++ }
@@ -88,9 +88,9 @@ workflow Invoke-URLRequest {
     Return $myoutput
 }
 
-$uris = $uriRange | foreach { [String]::Format($uriPattern, $_) }
+$uris = $uriRange | ForEach-Object { [String]::Format($uriPattern, $_) }
 $sourcesCrc = Get-FolderHash $src
-$firmware = (dir $firmware).FullName
+$firmware = (Get-ChildItem $firmware).FullName
 
 if (Test-Path $configFile -PathType Leaf) {
     $config = Get-Content -Path $configFile -Raw | ConvertFrom-Json
@@ -134,7 +134,7 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
 
         if ($loggedIn -and $toUpload) {
             Write-Host(("Uploading " + $file + " to " + $hostUri))
-            if (Upload-File ($hostUri+"upload")  $_.FullName) {
+            if (Submit-File ($hostUri+"upload")  $_.FullName) {
                 $config.$hostUri.Files.$file = $lastWrite
                 $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
             }
@@ -147,7 +147,7 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
         if (-not $loggedIn) { $loggedIn = "OK" -eq (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("LOGIN " + $password)) }
         if ($loggedIn) {
             Write-Host(("Updating firmware in " + $hostUri))
-            if(Upload-File ($hostUri+"update") $firmware) {
+            if(Submit-File ($hostUri+"update") $firmware) {
                 $config.$hostUri.SourcesCrc = $sourcesCrc
                 $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
             }
