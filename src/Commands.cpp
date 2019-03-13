@@ -29,7 +29,7 @@ bool execute(String line) {
     else if (cmd == "LOGOFF") logout(); // Syntax: LOGOFF
     else if (cmd == "URL") WebCallsQueue.add(getWord(line, 1)); // Syntax: URL <url to call>
     else if (cmd == "TURN") PinDriver.turnSwitch(getWord(line, 1), getWord(line, 2)); // Syntax: TURN <pin name> <new state: 1 0 *>
-    else if (cmd == "SCRIPT") executeFile(getWord(line, 1)); // Syntax: SCRIPT <script file>
+    else if (cmd == "SCRIPT") executeFile(getScriptsPath() + getWord(line, 1)); // Syntax: SCRIPT <script file>
     else if (cmd == "SEQ") // Syntax: SEQ <pin name>
     {
         uint8_t pin = PinDriver.parsePin(getWord(line, 1)); 

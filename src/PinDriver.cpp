@@ -170,7 +170,7 @@ void PinDriverClass::disablePin(String pinName) {
 void setSwitchState(uint8_t pin, bool fnState) {
     if (switchDef[pin].fnState != fnState) {
         switchDef[pin].fnState = fnState;
-        executeFile("/www/"+(fnState ? switchDef[pin].onHigh : switchDef[pin].onLow));
+        executeFile(getScriptsPath() + (fnState ? switchDef[pin].onHigh : switchDef[pin].onLow));
     }
 }
 

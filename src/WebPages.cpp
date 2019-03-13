@@ -1,10 +1,13 @@
 #include "WebPages.h"
 #include "WebStats.h"
 #include "Commands.h"
+#include "detail/mimetable.h"
 
 #define TEMPORARY_FILE "/_uploaded"
 #define PREFIX_WWW "/www"
-#define MIME_TEXTPLAIN "text/plain"
+#define MIME_TEXTPLAIN mimeTable[3].mimeType
+
+using namespace mime;
 
 ESP8266WebServer server(80);
 
@@ -18,11 +21,15 @@ void sendNoAdmin() { server.send(500, MIME_TEXTPLAIN, "Not admin"); }
 void zeroConf();
 
 void WebPagesClass::begin() {
-    server.on("/stats", [this](){ handleJson(getStats()); });
+    server.on("/stats", HTTP_GET, [this](){ handleJson(getStats()); });
     server.on("/boot", [this](){ handleBoot(); });
     server.on("/run", [this](){ handleRun(); });
-    server.on("/dir", [this](){ handleDir(); });
-    server.onNotFound([this](){ handleStaticPage(); });
+    server.on("/dir", HTTP_GET, [this](){ if (isAdmin()) handleDir("/www"); else sendNoAdmin();});
+    server.on("/scripts", HTTP_GET, [this](){ if (isAdmin()) handleDir("/scripts"); else sendNoAdmin();});
+    server.on("/crc", HTTP_GET, [this](){ 
+        if (isAdmin()) handleJson("{ \"crc\": \""+ESP.getSketchMD5()+"\" }"); 
+        else sendNoAdmin(); 
+    });
     server.on("/upload", HTTP_POST, [](){ 
         if (isAdmin()) {
             SPIFFS.remove(prefix + "/" + server.arg(0));
@@ -36,11 +43,12 @@ void WebPagesClass::begin() {
     }, [this](){ handleFileUpload(server.upload().filename); });
     server.on("/update", HTTP_POST, []() {
         if (isAdmin()) {
-            server.sendHeader("Connection", "close");
-            server.send(200, MIME_TEXTPLAIN, (Update.hasError()) ? "FAIL" : "OK");
+            sendOK();
+            delay(500);
             ESP.restart();
         } else sendNoAdmin();
     }, [this]() { handleFirmwareUpdate(); });
+    server.onNotFound([this](){ handleStaticPage(); });
     server.begin();
 }
 
@@ -48,14 +56,19 @@ void WebPagesClass::handle() {
     server.handleClient();
 }
 
-String WebPagesClass::getContentType(String filename) {
-    if (filename.endsWith(".css")) return "text/css";
-    else if (filename.endsWith(".jpg")) return "image/jpeg";
-    else if (filename.endsWith(".js")) return "application/javascript";
-    else if (filename.endsWith(".json")) return "application/json";
-    else if (filename.endsWith(".ico")) return "image/x-icon";
-    else if (filename.endsWith(".gz")) return "application/x-gzip";
-    return "text/html";
+String WebPagesClass::getContentType(const String& path) {
+    char buff[sizeof(mimeTable[0].mimeType)];
+    // Check all entries but last one for match, return if found
+    for (size_t i=0; i < sizeof(mimeTable)/sizeof(mimeTable[0])-1; i++) {
+        strcpy_P(buff, mimeTable[i].endsWith);
+        if (path.endsWith(buff)) {
+            strcpy_P(buff, mimeTable[i].mimeType);
+            return String(buff);
+        }
+    }
+    // Fall-through and just return default type
+    strcpy_P(buff, mimeTable[sizeof(mimeTable)/sizeof(mimeTable[0])-1].mimeType);
+    return String(buff);
 }
 
 void WebPagesClass::handleStaticPage() {
@@ -63,17 +76,19 @@ void WebPagesClass::handleStaticPage() {
     if (url == "/" && server.method() == HTTP_GET) url = "/index.html";
 
     if (server.method() == HTTP_GET) {
-        File f = SPIFFS.open(prefix+url, "r");
+        if (!isAdmin() || !url.startsWith(getScriptsPath())) url = prefix + url;
+        File f = SPIFFS.open(url, "r");
         if (f) {
             String h = getContentType(url);
             server.sendHeader("Content-Type", h);
             server.streamFile(f, h);
             f.close();
-        } else if (url == "/index.html") zeroConf();
+        } else if (url == prefix + "/index.html") zeroConf();
         else server.send(404, MIME_TEXTPLAIN, "404: Not found");
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
-            File f = SPIFFS.open(prefix+url, "w");
+            if (!url.startsWith(getScriptsPath())) url = prefix + url;
+            File f = SPIFFS.open(url, "w");
             if (f) { 
                 f.print(server.arg("plain"));
                 f.print("\n");
@@ -83,21 +98,22 @@ void WebPagesClass::handleStaticPage() {
         } else sendNoAdmin();
     } else if (server.method() == HTTP_DELETE) {
         if (isAdmin()) {
-            SPIFFS.remove(prefix+url);
+            if (!url.startsWith(getScriptsPath())) url = prefix + url;
+            SPIFFS.remove(url);
             sendOK();
         } else sendNoAdmin();
     }
 }
 
-void WebPagesClass::handleJson(String json) {
+void WebPagesClass::handleJson(const String& json) {
     server.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     server.sendHeader("Pragma", "no-cache");
     server.sendHeader("Expires", "-1");
     server.send(200, "application/json", json);
 }
 
-void WebPagesClass::handleDir() {
-    Dir dir = SPIFFS.openDir("/www");
+void WebPagesClass::handleDir(const String& root) {
+    Dir dir = SPIFFS.openDir(root);
     String list = "{ ";
     bool first = true;
     while (dir.next()) {
@@ -135,7 +151,7 @@ void WebPagesClass::handleBoot() {
 
 void WebPagesClass::handleRun() {
     if (server.method() == HTTP_GET) {
-        String file = prefix+"/"+server.arg("file");
+        String file = getScriptsPath() + server.arg(0);
         file.toLowerCase();
         if (executeFile(file)) sendOK();
         else sendERR(getLastError());
@@ -158,7 +174,7 @@ void WebPagesClass::handleRun() {
 }
 
 File fsUploadFile;
-void WebPagesClass::handleFileUpload(String filename) {
+void WebPagesClass::handleFileUpload(const String& filename) {
     if (!isAdmin()) return;
 
     HTTPUpload& upload = server.upload();

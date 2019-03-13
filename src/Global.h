@@ -11,6 +11,7 @@ String getLastError();
 void setLastError(String error);
 int getFreeMem();
 String getVersion();
+String getScriptsPath();
 String getWord(String &line, int ix);
 void WiFiSTA(String ssid, String password, bool persistent);
 void WiFiAP(bool enable, bool persistent);

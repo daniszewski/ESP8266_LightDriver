@@ -32,6 +32,10 @@ String getVersion() {
     return version;
 }
 
+String getScriptsPath() {
+    return scriptsPath;
+}
+
 String getWord(String &line, int ix) {
     int p1 = 0;
     while (ix-- && p1 >= 0) p1 = line.indexOf(' ', p1+1);
@@ -79,7 +83,7 @@ void WiFiAP(bool enable, bool persistent) {
         
         if (WiFi.softAPConfig(localIp, gateway, subnet)) {
             const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
-            if (WiFi.softAP(mac, wifiappwd, 10, 0, 4)) { INFO("AP started"); }
+            if (WiFi.softAP(mac, wifiappwd.c_str(), 10, 0, 4)) { INFO("AP started"); }
             else { ERR("AP start error"); }
         } else { ERR("AP config error"); }
     } else {

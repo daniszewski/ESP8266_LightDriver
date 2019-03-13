@@ -15,13 +15,13 @@ class WebPagesClass {
   protected:
     int lastHttpTextOrigLength;
     void handleStaticPage();
-    void handleJson(String json);
+    void handleJson(const String& json);
     void handleBoot();
     void handleRun();
-    void handleDir();
-    void handleFileUpload(String filename);
+    void handleDir(const String& root);
+    void handleFileUpload(const String& filename);
     void handleFirmwareUpdate();
-    String getContentType(String filename);
+    String getContentType(const String& path);
 };
 
 extern WebPagesClass WebPages;

@@ -1,0 +1,61 @@
+### LOGIN
+PUT http://192.168.0.204/run HTTP/1.1
+content-type: text/plain
+
+LOGIN esplight
+
+### STATS
+GET http://192.168.0.204/stats HTTP/1.1
+
+
+### DIR
+GET http://192.168.0.204/dir HTTP/1.1
+
+
+### BOOT
+GET http://192.168.0.204/boot HTTP/1.1
+### 
+PUT http://192.168.0.204/boot HTTP/1.1
+content-type: text/plain
+
+NAME lights
+
+
+### AP
+PUT http://192.168.0.204/run HTTP/1.1
+
+LOGIN esplight
+WIFIAP 1
+
+###
+POST http://192.168.0.204/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="filename"
+
+jquery.min.js
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="jquery.min.js"
+Content-Type: application/javascript
+
+< d:\documents\Mariusz\projects\IoT\ESP8266_LightDriver\data\www\jquery.min.js
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+DELETE http://192.168.0.204/lights.js
+###
+POST http://192.168.0.204/update
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="filename"
+
+firmware.bin
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="firmware.bin"
+Content-Type: application/octet-stream
+
+< d:\documents\Mariusz\projects\IoT\ESP8266_LightDriver\.pioenvs\nodemcuv2\firmware.bin
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
