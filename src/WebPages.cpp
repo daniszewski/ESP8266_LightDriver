@@ -24,8 +24,8 @@ void WebPagesClass::begin() {
     server.on("/stats", HTTP_GET, [this](){ handleJson(getStats()); });
     server.on("/boot", [this](){ handleBoot(); });
     server.on("/run", [this](){ handleRun(); });
-    server.on("/dir", HTTP_GET, [this](){ if (isAdmin()) handleDir("/www"); else sendNoAdmin();});
-    server.on("/scripts", HTTP_GET, [this](){ if (isAdmin()) handleDir("/scripts"); else sendNoAdmin();});
+    //server.on("/dir", HTTP_GET, [this](){ if (isAdmin()) handleDir("/www"); else sendNoAdmin();});
+    //server.on("/scripts", HTTP_GET, [this](){ if (isAdmin()) handleDir("/scripts"); else sendNoAdmin();});
     server.on("/crc", HTTP_GET, [this](){ 
         if (isAdmin()) handleJson("{ \"crc\": \""+ESP.getSketchMD5()+"\" }"); 
         else sendNoAdmin(); 
@@ -76,15 +76,21 @@ void WebPagesClass::handleStaticPage() {
     if (url == "/" && server.method() == HTTP_GET) url = "/index.html";
 
     if (server.method() == HTTP_GET) {
-        if (!isAdmin() || !url.startsWith(getScriptsPath())) url = prefix + url;
-        File f = SPIFFS.open(url, "r");
-        if (f) {
-            String h = getContentType(url);
-            server.sendHeader("Content-Type", h);
-            server.streamFile(f, h);
-            f.close();
-        } else if (url == prefix + "/index.html") zeroConf();
-        else server.send(404, MIME_TEXTPLAIN, "404: Not found");
+        if (isAdmin() && (url.startsWith("/dir/") || url=="/dir")) {
+            url = url.substring(4);
+            if (url.endsWith("/") && url.length() > 1) url = url.substring(0, url.length() - 1);
+            handleDir(url);
+        } else {
+            if (!isAdmin() || !url.startsWith(getScriptsPath())) url = prefix + url;
+            File f = SPIFFS.open(url, "r");
+            if (f) {
+                String h = getContentType(url);
+                server.sendHeader("Content-Type", h);
+                server.streamFile(f, h);
+                f.close();
+            } else if (url == prefix + "/index.html") zeroConf();
+            else server.send(404, MIME_TEXTPLAIN, "404: Not found");
+        }
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
             if (!url.startsWith(getScriptsPath())) url = prefix + url;

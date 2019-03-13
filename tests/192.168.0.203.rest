@@ -9,8 +9,20 @@ GET http://192.168.0.203/stats HTTP/1.1
 
 
 ### DIR
-GET http://192.168.0.203/dir HTTP/1.1
+GET http://192.168.0.203/dir/www HTTP/1.1
 
+### SCRIPTS
+GET http://192.168.0.203/dir/scripts HTTP/1.1
+
+### SCRIPT TEST 1
+GET http://192.168.0.203/scripts/test1 HTTP/1.1
+### 
+PUT http://192.168.0.203/scripts/test1 HTTP/1.1
+content-type: text/plain
+
+NAME lights2
+### 
+GET http://192.168.0.203/run?file=test1 HTTP/1.1
 
 ### BOOT
 GET http://192.168.0.203/boot HTTP/1.1
