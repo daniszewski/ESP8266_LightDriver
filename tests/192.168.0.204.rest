@@ -44,7 +44,7 @@ Content-Type: application/javascript
 
 ###
 
-DELETE http://192.168.0.204/lights.js
+DELETE http://192.168.0.204/_uploaded
 ###
 POST http://192.168.0.204/update
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW

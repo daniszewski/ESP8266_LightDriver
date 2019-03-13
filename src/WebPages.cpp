@@ -24,8 +24,6 @@ void WebPagesClass::begin() {
     server.on("/stats", HTTP_GET, [this](){ handleJson(getStats()); });
     server.on("/boot", [this](){ handleBoot(); });
     server.on("/run", [this](){ handleRun(); });
-    //server.on("/dir", HTTP_GET, [this](){ if (isAdmin()) handleDir("/www"); else sendNoAdmin();});
-    //server.on("/scripts", HTTP_GET, [this](){ if (isAdmin()) handleDir("/scripts"); else sendNoAdmin();});
     server.on("/crc", HTTP_GET, [this](){ 
         if (isAdmin()) handleJson("{ \"crc\": \""+ESP.getSketchMD5()+"\" }"); 
         else sendNoAdmin(); 
@@ -76,7 +74,7 @@ void WebPagesClass::handleStaticPage() {
     if (url == "/" && server.method() == HTTP_GET) url = "/index.html";
 
     if (server.method() == HTTP_GET) {
-        if (isAdmin() && (url.startsWith("/dir/") || url=="/dir")) {
+        if (url.startsWith("/dir/") || url=="/dir") {
             url = url.substring(4);
             if (url.endsWith("/") && url.length() > 1) url = url.substring(0, url.length() - 1);
             handleDir(url);

@@ -64,20 +64,14 @@ Function Get-FolderHash
 }
 
 function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
-  $indent = 0;
-  ($json -Split '\n' |
+    $indent = 0;
+    ($json -Split '\n' |
     % {
-      if ($_ -match '[\}\]]') {
-        # This line contains  ] or }, decrement the indentation level
-        $indent--
-      }
-      $line = (' ' * $indent * 2) + $_.TrimStart().Replace(':  ', ': ')
-      if ($_ -match '[\{\[]') {
-        # This line contains [ or {, increment the indentation level
-        $indent++
-      }
-      $line
-  }) -Join "`n"
+        if ($_ -match '[\}\]]') { $indent-- }
+        $line = (' ' * $indent * 2) + $_.TrimStart().Replace(':  ', ': ')
+        if ($_ -match '[\{\[]') { $indent++ }
+        $line
+    }) -Join "`n"
 }
 
 workflow Invoke-URLRequest {
@@ -85,7 +79,7 @@ workflow Invoke-URLRequest {
     $myoutput=@()
     foreach -parallel ($uri in $uris) {
         try {
-            $x = Invoke-RestMethod -Uri ($uri+"dir") -Method Get -TimeoutSec $timeout
+            $x = Invoke-RestMethod -Uri ($uri+"dir/www") -Method Get -TimeoutSec $timeout
             $Workflow:myoutput += @{Uri=$uri; Files=$x}
         }
         catch {
@@ -140,10 +134,10 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
 
         if ($loggedIn -and $toUpload) {
             Write-Host(("Uploading " + $file + " to " + $hostUri))
-            #if (Upload-File ($hostUri+"upload")  $_.FullName) {
+            if (Upload-File ($hostUri+"upload")  $_.FullName) {
                 $config.$hostUri.Files.$file = $lastWrite
                 $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
-            #}
+            }
         }
     }
 
@@ -153,10 +147,10 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
         if (-not $loggedIn) { $loggedIn = "OK" -eq (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("LOGIN " + $password)) }
         if ($loggedIn) {
             Write-Host(("Updating firmware in " + $hostUri))
-            #if(Upload-File ($hostUri+"update") $firmware) {
+            if(Upload-File ($hostUri+"update") $firmware) {
                 $config.$hostUri.SourcesCrc = $sourcesCrc
                 $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
-            #}
+            }
             Write-Host("Done")
         }
     }
