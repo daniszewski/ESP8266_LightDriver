@@ -25,16 +25,16 @@ SLIDE 30 1023
 END
 
 ###
-GET http://192.168.0.202/anim01_l HTTP/1.1
+GET http://192.168.0.202/script/anim01_l HTTP/1.1
 ###
-GET http://192.168.0.202/anim01_h HTTP/1.1
+GET http://192.168.0.202/script/anim01_h HTTP/1.1
 ### 
-PUT http://192.168.0.202/anim01_l HTTP/1.1
+PUT http://192.168.0.202/script/anim01_l HTTP/1.1
 content-type: text/plain
 
 URL http://192.168.0.201/run?file=anim01_l
 ### 
-PUT http://192.168.0.202/anim01_h HTTP/1.1
+PUT http://192.168.0.202/script/anim01_h HTTP/1.1
 content-type: text/plain
 
 URL http://192.168.0.201/run?file=anim01_h

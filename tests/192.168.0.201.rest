@@ -18,24 +18,25 @@ content-type: text/plain
 
 
 ### ANIM01_L
-GET http://192.168.0.201/anim01_l HTTP/1.1
+GET http://192.168.0.201/scripts/anim01_l HTTP/1.1
 ###
-PUT http://192.168.0.201/anim01_l HTTP/1.1
+PUT http://192.168.0.201/scripts/anim01_l HTTP/1.1
 content-type: text/plain
 
 < ./192.168.0.201/anim01_l.txt
 
 
 ### ANIM01_H
-GET http://192.168.0.201/anim01_h HTTP/1.1
+GET http://192.168.0.201/scripts/anim01_h HTTP/1.1
 ### 
-PUT http://192.168.0.201/anim01_h HTTP/1.1
+PUT http://192.168.0.201/scripts/anim01_h HTTP/1.1
 content-type: text/plain
 
-< ./192.168.0.201/anim01_h.txt
-
+< ./192.168.0.201/scripts/anim01_h.txt
 
 ### Tests
 PUT http://192.168.0.201/run
 
 TURN D3 1
+###
+GET http://192.168.0.201/run?file=anim01_h
