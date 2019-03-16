@@ -48,8 +48,7 @@ Function Submit-File {
     }
 }
 
-Function Get-FolderHash
-{
+Function Get-FolderHash {
     param ($folder)
     $files = Get-ChildItem $folder -Recurse |Where-Object { -not $_.psiscontainer }
     $allBytes = new-object System.Collections.Generic.List[byte]
@@ -61,6 +60,14 @@ Function Get-FolderHash
     $hasher = [System.Security.Cryptography.MD5]::Create()
     $ret = [string]::Join("",$($hasher.ComputeHash($allBytes.ToArray()) | ForEach-Object{"{0:x2}" -f $_}))
     return $ret
+}
+
+
+function Parse-JsonFile([string]$file) {
+    $text = Get-Content $file -Raw
+    $parser = New-Object Web.Script.Serialization.JavaScriptSerializer
+    $parser.MaxJsonLength = $text.length
+    Write-Output -NoEnumerate $parser.DeserializeObject($text)
 }
 
 function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
@@ -93,7 +100,7 @@ $sourcesCrc = Get-FolderHash $src
 $firmware = (Get-ChildItem $firmware).FullName
 
 if (Test-Path $configFile -PathType Leaf) {
-    $config = Get-Content -Path $configFile -Raw | ConvertFrom-Json
+    $config = Parse-JsonFile $configFile
 } else {
     $config = @{}
 }
@@ -103,15 +110,18 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
     $currentFiles = $_.Files
     $loggedIn = $false
 
+    Write-Host "Checking" $hostUri
+
     if ($null -eq $config.$hostUri) {
         $config.Add($hostUri, @{})
         # default config per node
-        $config.$hostUri.Config = @{}
-        $config.$hostUri.Files = @{}
+        $config.$hostUri.Add("Config", @{})
+        $config.$hostUri.Add("Files", @{"Root"="www"})
         $config.$hostUri.Config.Password = $defaultPwd
     }
     
     $password = $config.$hostUri.Config.Password
+    $count = 0
 
     # WWW files update
     Get-ChildItem $path | Foreach-Object {
@@ -133,6 +143,7 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
         if (-not $loggedIn-and $toUpload) { $loggedIn = "OK" -eq (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("LOGIN " + $password)) }
 
         if ($loggedIn -and $toUpload) {
+            $count++
             Write-Host(("Uploading " + $file + " to " + $hostUri))
             if (Submit-File ($hostUri+"upload")  $_.FullName) {
                 $config.$hostUri.Files.$file = $lastWrite
@@ -142,16 +153,23 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
     }
 
     # Firmware update
-    # This should be the last step because the node will restart after this
+    # This should be the last step because the node will be restarted after firmware upgrade
     if (($config.$hostUri.SourcesCrc -ne $sourcesCrc)) {
         if (-not $loggedIn) { $loggedIn = "OK" -eq (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("LOGIN " + $password)) }
         if ($loggedIn) {
+            $count++
             Write-Host(("Updating firmware in " + $hostUri))
             if(Submit-File ($hostUri+"update") $firmware) {
                 $config.$hostUri.SourcesCrc = $sourcesCrc
                 $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
             }
-            Write-Host("Done")
+            Write-Host("Done - restarting")
         }
     }
+    if (0 -eq $count) {
+        Write-Host "Nothing to update"
+    }
 }
+
+
+Write-Host "All done"
