@@ -1,7 +1,7 @@
 # CONFIG
 $uriPattern = "http://192.168.0.{0}/"
 $uriRange = 201..210
-$path = "data\www\"
+$path = "emulator\storage\www\"
 $src = "src"
 $firmware = ".pioenvs\nodemcuv2\firmware.bin"
 $timeout = 5

@@ -1,11 +1,13 @@
 .pio
 .pioenvs
 .piolibdeps
-.vscode/.browse.c_cpp.db*
+.vscode/.browse.*
 .vscode/c_cpp_properties.json
 .vscode/arduino.json
 .vscode/settings.json
 .vscode/extensions.json
 .vscode/ipch
 updates/update-config.json
-
+emulator/bin
+emulator/obj
+emulator/.vs
