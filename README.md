@@ -7,13 +7,13 @@ All ESP8266-based hardware with at least 2048kB of flash memory and USB controll
 # Features
 - PWM or AC zero crossing light dimming
 - 1-state, 2-states and stair switches, closing circuits or by A/C phase detector
+- up to 10 light sections/wall switches per one ESP8266 module
 - light animations with sequence definitions based on events from switches
 - admin mode for setup, OTA updates, etc...
 - web server with access to all functions
-- communication between different modules via REST Api
+- communication between modules via REST Api
 - internal scripting language
-- live stats
-- safe switch for boot loop errors
+- live stats (current switch states, light levels)
 - virtual switches managed remotely
 
 # Build instruction
