@@ -44,7 +44,7 @@ firmware.bin
 Content-Disposition: form-data; name="file"; filename="firmware.bin"
 Content-Type: application/octet-stream
 
-< d:\documents\Mariusz\projects\IoT\ESP8266_LightDriver\.pioenvs\nodemcuv2\firmware.bin
+< .\.pioenvs\nodemcuv2\firmware.bin
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###

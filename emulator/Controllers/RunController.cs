@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +12,35 @@ namespace ESP8266DriverEmu.Controllers
     [ApiController]
     public class RunController : ControllerBase
     {
-        [HttpGet("{name}")]
-        public ActionResult<string> Get(string name)
+        [HttpGet("{file}")]
+        public ActionResult<string> Get(string file)
         {
-            return Put(System.IO.File.ReadAllText(@"storage\scripts\" + name));
+            Run(System.IO.File.ReadAllText(@"storage\scripts\" + file));
+            return "OK";
         }
 
         [HttpPut()]
-        public ActionResult<string> Put([FromBody] string content)
+        public ActionResult<string> Put()
         {
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+            {
+                Run(reader.ReadToEnd());
+                return "OK";
+            }
+        }
 
-            return "OK";
+        void Run(string content)
+        {
+            var i = ESP8266DriverEmu.Driver.DriverEmu.Instance;
+            int lineNo = 1;
+            foreach (var line in content.Split('\n'))
+            {
+                if (!i.execute(line))
+                {
+                    i.ERR("Unknown command in line " + (lineNo).ToString());
+                }
+                lineNo++;
+            }
         }
     }
 }

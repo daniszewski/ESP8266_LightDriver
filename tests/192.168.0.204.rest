@@ -39,7 +39,7 @@ jquery.min.js
 Content-Disposition: form-data; name="file"; filename="jquery.min.js"
 Content-Type: application/javascript
 
-< d:\documents\Mariusz\projects\IoT\ESP8266_LightDriver\data\www\jquery.min.js
+< d:\documents\Mariusz\projects\IoT\ESP8266_LightDriver\emulator\storage\www\jquery.min.js
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###

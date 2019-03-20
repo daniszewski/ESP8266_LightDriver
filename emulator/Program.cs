@@ -7,14 +7,18 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ESP8266DriverEmu.Driver;
 
 namespace ESP8266DriverEmu
 {
     public class Program
     {
+        DriverEmu emu;
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            using(var emu = DriverEmu.Instance) {
+                CreateWebHostBuilder(args).Build().Run();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

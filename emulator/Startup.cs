@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +40,21 @@ namespace ESP8266DriverEmu
 
             app.UseMvc();
             app.UseFileServer();
+            app.MapWhen(x => x.Request.Method == "PUT" && x.Request.Path != "/boot", HandleBranch);
+        }
+        private static void HandleBranch(IApplicationBuilder app)
+        {
+            app.Run(async context =>
+            {
+                var filename = context.Request.Path.ToString().ToLower().Replace("/", "\\").Trim('\\');
+                if (!filename.StartsWith(@"scripts\")) filename = @"www\" + filename;
+
+                using (var sr = new StreamReader(context.Request.Body))
+                {
+                    File.WriteAllText(Path.Combine("storage", filename), sr.ReadToEnd());
+                }
+                await context.Response.WriteAsync("OK");
+            });
         }
     }
 }
