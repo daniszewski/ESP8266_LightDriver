@@ -16,7 +16,7 @@ namespace ESP8266DriverEmu.Driver
         Timer _timer;
 
         public LightAnimatorClass() {
-            _timer = new Timer(_ =>  OnTick(), null, 10, Timeout.Infinite );
+            _timer = new Timer(_ =>  OnTick(), null, 10, 10 );
         }
         private void OnTick()
         {
@@ -62,6 +62,8 @@ namespace ESP8266DriverEmu.Driver
             currentConfigAnimation.enable();
         }
 
-        public void Dispose() {}
+        public void Dispose() {
+            _timer.Dispose();
+        }
     }
 }

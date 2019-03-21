@@ -7,6 +7,16 @@
 </head>
 <body>
     <div id="header">
+        <span style="float:right;margin:10px 10px 10px 10px;">
+            Admin:
+            <span id="pnlLogin" style="display: none;">
+                <input type="password" id="loginPwd" />
+                <input type="button" id="btnLogin" value="Login" />
+            </span>
+            <span id="pnlLogoff" style="display: none;">
+                <input type="button" id="btnLogoff" value="Logoff" />
+            </span>
+        </span>
         <h1>Lights Driver: <span id="name"></span></h1>
     </div>
     <div id="content">
@@ -22,8 +32,14 @@
 
 
             <div id="page-stats" style="display:none">
-                STATS<br />
-                <div id="stats"></div>
+                <div id="stats-pins"></div>
+
+                <script id="template-pin" type="text/x-custom-template">
+                    <div id="pin-$name$" class="pin-$type$">
+                        <div class="pin-title">$name$: $type$</div>
+                        <div class="pin-state">$value$</div>
+                    </div>
+                </script>
             </div>
 
 

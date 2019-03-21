@@ -2,7 +2,7 @@ var stats = { "name": "", "freemem": -1, "admin": 0, "WiFiClient_SSID": "", "WiF
 
 function rest(type, url, body, callback) {
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = callback;
+    if(callback) xhttp.onreadystatechange = callback;
     xhttp.open(type, url, true);
     xhttp.send(body);
 }
@@ -39,9 +39,27 @@ function updateStatsView() {
     $('#WiFiAPSSID').text(stats.WiFiAP_SSID);
     $('#WiFiAPIP').text(stats.WiFiAP_IP);
     $('#WiFiAPState').text(stats.WiFiAP_IP !== '0.0.0.0' ? "enabled" : "disabled");
-    $('#wifiClientSSID').text(stats.WiFiClient_SSID);
+    $('#WiFiClientSSID').text(stats.WiFiClient_SSID);
     $('#WiFiClientIP').text(stats.WiFiClient_IP);
     $('#WiFiClientState').text(stats.WiFiClient_IP !== '0.0.0.0' ? "enabled" : "disabled");
+    var statsContainer = $('#stats-pins');
+    var tmpl = $('#template-pin');
+    if (stats.pins) {
+        for(var i=0;i<stats.pins.length;i++) {
+            var pin = stats.pins[i];
+            var id = "pin-" + pin.name;
+            var current = $('#'+id);
+            if (current.length == 0) {
+                statsContainer.append('<div></div>');
+                current = statsContainer.children().last();
+            }
+            var html = tmpl.html().replace(/\$type\$/g, pin.type).replace(/\$name\$/g, pin.name).replace(/\$value\$/g, pin.value);
+            current.replaceWith(html);
+        }
+    }
+    $('#page-wifi input').attr('disabled', stats.admin !== 1);
+    $(stats.admin===0 ? '#pnlLogin' : '#pnlLogoff').show();
+    $(stats.admin===1 ? '#pnlLogin' : '#pnlLogoff').hide();
 }
 
 function showPage(page) {
@@ -54,6 +72,34 @@ function showPage(page) {
 function initButtons() {
     $('#menu ul li a').click(function() { showPage($(this).attr('page')); });
     $('#menu ul li a').each(function() { this.href="javascript:void(0);"; });
+    $('#btnWiFiAPEnable').click(function() { switchAP(true); }); 
+    $('#btnWiFiAPDisable').click(function() { switchAP(false); }); 
+    $('#btnWiFiConnect').click(function() { wifi(true); }); 
+    $('#btnWiFiDisconnect').click(function() { wifi(false); }); 
+    $('#loginPwd').keypress(function(e) {var code = e.keyCode || e.which; if(code == 13) login();})
+    $('#btnLogin').click(function() {login();});
+    $('#btnLogoff').click(function() {logoff();});
+}
+
+function switchAP(enabled) {
+    var temp = $('#chkTemporary')[0].checked;
+    rest('PUT','run', (temp ? 'WIFIAP ':'WIFIAPTEST ') + (enabled ? "1" : "0"), null);
+}
+
+function wifi(enabled) {
+    var temp = $('#chkTemporary')[0].checked;
+    var ssid = enabled ? $('#wifiSSID').val()+' ' : ' ';
+    var pwd = enabled ? $('#wifiPwd').val() : ' ';
+    rest('PUT','run', (temp ? 'WIFI ':'WIFITEST ') + ssid + pwd, null);
+}
+
+function login() {
+    rest('PUT','run', 'LOGIN '+$('#loginPwd').val(), null);
+    $('#loginPwd').val('');
+}
+
+function logoff() {
+    rest('PUT','run', 'LOGOFF', null);
 }
 
 (function() {

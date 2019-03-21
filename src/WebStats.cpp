@@ -6,6 +6,7 @@ String getStats() {
     result += "\"name\": \"" + getDriverName() + "\",\n";
     result += "\"freemem\": "+String(system_get_free_heap_size()) + ",\n";
     result += "\"admin\": "+String(isAdmin()) + ",\n";
+    result += "\"pins\": [\n";
     for(int i=0;i<PINCOUNTALL;i++) {
         uint8_t pin = PinDriver.getPin(i);
         char type = PinDriver.getPinType(pin);
@@ -22,9 +23,10 @@ String getStats() {
             typeName = "LIGHT";
             value = String(PinDriver.getPinAnim(pin)->getValue());
         }
-        result += "\""+name+"\": { \"type\": \""+typeName+"\", \"value\": "+value+" },\n";
+        if (i>0) result += ",\n";
+        result += "{\"name\": \""+name+"\", \"type\": \""+typeName+"\", \"value\": "+value+" }";
     }
-    result += "\"WiFiClient_SSID\": \"" + WiFi.SSID() + "\",\n";
+    result += "\n],\n\"WiFiClient_SSID\": \"" + WiFi.SSID() + "\",\n";
     result += "\"WiFiClient_IP\": \"" + WiFi.localIP().toString() + "\",\n";
     result += "\"WiFiAP_SSID\": \"" + WiFi.softAPSSID() + "\",\n";
     result += "\"WiFiAP_IP\": \"" + WiFi.softAPIP().toString() + "\",\n";

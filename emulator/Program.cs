@@ -19,6 +19,7 @@ namespace ESP8266DriverEmu
             using(var emu = DriverEmu.Instance) {
                 CreateWebHostBuilder(args).Build().Run();
             }
+            DriverEmu.Instance = null;
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
