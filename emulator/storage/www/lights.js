@@ -29,7 +29,7 @@ function loadStats() {
         }
     });
 }
-
+var admin = false;
 function updateStatsView() {
     $('#name').text(stats.name);
     $('#version').text(stats.version);
@@ -58,13 +58,20 @@ function updateStatsView() {
         }
     }
     $('#page-wifi input').attr('disabled', stats.admin !== 1);
+    $('#page-boot input').attr('disabled', stats.admin !== 1);
     $(stats.admin===0 ? '#pnlLogin' : '#pnlLogoff').show();
     $(stats.admin===1 ? '#pnlLogin' : '#pnlLogoff').hide();
+    
+    if (!admin && stats.admin) { // fresh logon
+        loadBootFile();
+    }
+    admin = stats.admin;
 }
 
 function showPage(page) {
     $('#body').children('div').hide();
     $('#body #'+page).show();
+    $('#body #'+page).trigger('isShown');
     $('#menu ul li').removeClass('selected');
     $('#menu ul li a[page="'+page+'"]').parent().addClass('selected');
 }
@@ -79,6 +86,8 @@ function initButtons() {
     $('#loginPwd').keypress(function(e) {var code = e.keyCode || e.which; if(code == 13) login();})
     $('#btnLogin').click(function() {login();});
     $('#btnLogoff').click(function() {logoff();});
+    //$('#body #page-boot').bind('isShown', loadBootFile);
+    $('#btnBootSave').click(function() {saveBootFile();});
 }
 
 function switchAP(enabled) {
@@ -100,6 +109,23 @@ function login() {
 
 function logoff() {
     rest('PUT','run', 'LOGOFF', null);
+}
+
+function loadBootFile() {
+    $('#txtBoot').attr('disabled', true);
+    rest('GET','boot', null, function (e) { 
+        var xhr = e.currentTarget;
+        if (xhr.readyState === 4) {
+            if(xhr.status === 200) {
+                $('#txtBoot').val(xhr.responseText);
+            }
+            $('#txtBoot').attr('disabled', false);
+        }
+    });
+}
+
+function saveBootFile() {
+    rest('PUT','boot', $('#txtBoot').val(), null);
 }
 
 (function() {

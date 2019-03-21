@@ -7,7 +7,7 @@
 </head>
 <body>
     <div id="header">
-        <span style="float:right;margin:10px 10px 10px 10px;">
+        <span style="float:right;margin:20px 10px 10px 10px;">
             Admin:
             <span id="pnlLogin" style="display: none;">
                 <input type="password" id="loginPwd" />
@@ -24,7 +24,10 @@
             <ul>
                 <li><a page="page-stats">Status</a></li>
                 <li><a page="page-wifi">Wifi configuration</a></li>
+                <li><a page="page-boot">Startup</a></li>
                 <li><a page="page-scripts">Scripts</a></li>
+                <li><a page="page-wwwroot">Static files</a></li>
+                <li><a page="page-help"><strong>Help</strong></a></li>
             </ul>
         </div>
         <div id="body">
@@ -32,6 +35,7 @@
 
 
             <div id="page-stats" style="display:none">
+                <h2>Live status</h2>
                 <div id="stats-pins"></div>
 
                 <script id="template-pin" type="text/x-custom-template">
@@ -66,10 +70,68 @@
             </div>
 
 
-            <div id="page-scripts" style="display:none">
-                SCRIPTS MANAGER<br />
+            <div id="page-boot" style="display:none">
+                <h2>Startup script</h2>
+                <textarea id="txtBoot" style="position:absolute; width: 665px; top:40px;bottom:30px;"></textarea>
+                <input id="btnBootSave" type="button" value="Save" style="position:absolute; bottom:4px;left:48%" />
             </div>
 
+
+            <div id="page-scripts" style="display:none">
+                <h2>Scripts manager</h2>
+            </div>
+
+
+            <div id="page-wwwroot" style="display:none">
+                <h2>Static files manager</h2>
+            </div>
+
+
+            <div id="page-help" style="display:none">
+                <h2>Help</h2>
+<pre>
+1. Non-admin commands (always available)
+- LOGIN {password} - admin login
+- LOGOFF - logoff admin
+- URL {url to call} - call web url, http://{ip}/run?file={script} to run remote script
+- TURN {pin name} {new state: 1 0 *} - change state of switch registered under specified pin 
+    (also virtual pins: V0, V1, ..., V9)
+- SCRIPT {script file} - run script (from local storage)
+- SEQ {pin name} - start a light sequence definition under specified pin
+
+2. Sequence commands (available after starting a sequence)
+- VALUE {target value} - instantly assign a value to the light
+- DELAY {time of delay} - wait specified number of 1/100 of a second
+- SLIDE {time of activity} {target value} - transpose the current light level to the target 
+    value within provided time
+- REPEAT {no of commands} {no of repeats} - repeat last x commands provided number of times 
+    (-1 - inifite)
+- END - end current sequence definition
+
+3. Admin commands (available after providing proper password to LOGIN command)
+- NAME {name of the node} - Sets name of this module
+- ZERO {pin name} - Initialize zero cross phase detector on specified pin
+- PHASESTART {phase start: 0-10000} - sets the time offset of half-phase starting point in microseconds
+- PHASEEND {phase end: 0-10000} - sets the time offset of half-phase ending point in microseconds
+- PULSE {pulse length} - zero cross phase triac steering pulse length in microseconds
+- LIGHT {pin name} {mode: PWM, ZERO} - setup a light of type "mode" on specified pin
+- SWITCH {pin name} {switch type: 1 2 X} {on close} {on open} - setup an action button (1-single state, 
+    2-states, X-stair switch)
+- DISABLE {pin name} - disable previously setup pin
+- PWD {password} - set admin password at a boot time
+- BOOTADMIN - admin commands are available without login
+- WIFI {ssid} {password} - connect to WIFI (not needed on boot time)
+- WIFITEST {ssid} {password} - same a above but the setting will be restored after restart
+- WIFIAP {1 or 0} - enable or disable the AccessPoint mode
+- WIFIAPTEST {1 or 0} - same a above but the setting will be restored after restart
+- RESTART - reset the module
+
+# Remarks
+
+The {pin name} can be D0, D1, ..., D9 and in case of switches additionaly V0, V1, ..., V9 for virtual 
+switches available by WIFI
+</pre>
+            </div>
 
         </div>
     </div>
