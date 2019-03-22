@@ -40,20 +40,40 @@ namespace ESP8266DriverEmu
 
             app.UseMvc();
             app.UseFileServer();
-            app.MapWhen(x => x.Request.Method == "PUT" && x.Request.Path != "/boot", HandleBranch);
+            app.MapWhen(x => x.Request.Method == "PUT" && x.Request.Path != "/boot" && x.Request.Path != "/run", HandlePut);
+            app.MapWhen(x => x.Request.Method == "DELETE" && x.Request.Path != "/boot" && x.Request.Path != "/run", HandleDelete);
         }
-        private static void HandleBranch(IApplicationBuilder app)
+        private static void HandlePut(IApplicationBuilder app)
         {
             app.Run(async context =>
             {
-                var filename = context.Request.Path.ToString().ToLower().Replace("/", "\\").Trim('\\');
-                if (!filename.StartsWith(@"scripts\")) filename = @"www\" + filename;
+                if (ESP8266DriverEmu.Driver.DriverEmu.Instance.isAdmin()) {
+                    var filename = context.Request.Path.ToString().ToLower().Replace("/", "\\").Trim('\\');
+                    if (!filename.StartsWith(@"scripts\")) filename = @"www\" + filename;
 
-                using (var sr = new StreamReader(context.Request.Body))
-                {
-                    File.WriteAllText(Path.Combine("storage", filename), sr.ReadToEnd());
+                    using (var sr = new StreamReader(context.Request.Body))
+                    {
+                        File.WriteAllText(Path.Combine("storage", filename), sr.ReadToEnd());
+                    }
+                    await context.Response.WriteAsync("OK");
+                } else {
+                    await context.Response.WriteAsync("Not admin");
                 }
-                await context.Response.WriteAsync("OK");
+            });
+        }
+
+        private static void HandleDelete(IApplicationBuilder app)
+        {
+            app.Run(async context =>
+            {
+                if (ESP8266DriverEmu.Driver.DriverEmu.Instance.isAdmin()) {
+                    var filename = context.Request.Path.ToString().ToLower().Replace("/", "\\").Trim('\\');
+                    if (!filename.StartsWith(@"scripts\")) filename = @"www\" + filename;
+                    File.Delete(Path.Combine("storage", filename));
+                    await context.Response.WriteAsync("OK");
+                } else {
+                    await context.Response.WriteAsync("Not admin");
+                }
             });
         }
     }

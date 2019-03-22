@@ -53,7 +53,7 @@ body, #header, #content, #footer {
     width: 220px;
     height: 100%;
     bottom: 0px;
-    background-color: #bde;
+    background-color: #e5f0f5;
 }
 
 #body {
@@ -95,6 +95,7 @@ h1 {
     width: 200px;
     color: lightgray;
     font-size: 12px;
+    padding-top:3px;
 }
 
 #footer .form-item span {
@@ -103,7 +104,6 @@ h1 {
 }
 
 #body .form-item {
-    width: 650px;
     height:18px;
     color: gray;
     position: relative;
@@ -147,4 +147,65 @@ h1 {
 }
 .pin-state {
     padding-top:14px;
+}
+
+.buttons {
+    border: solid 1px #468;
+    background-color: #e5f0f5;
+    display: block;
+    padding: 3px 3px 3px 3px;
+    text-align: center;
+    margin: 4px 4px 4px 4px;
+}
+
+.files {
+    border: solid 1px #aaa;
+    overflow: auto;
+}
+
+.files ul {
+    margin:0;
+    padding:0;
+}
+.files ul li {
+    list-style: none;
+    margin:2px;
+    padding:2px;
+    cursor:pointer;
+}
+
+.files ul li:hover {
+    background-color: #e5f0f5;
+}
+
+.files ul li span {
+    float: right;
+    color:green;
+    font-size: 10px;
+    padding-top:1px;
+}
+
+#messages {
+    position: absolute;
+    left:50%;
+    right:50%;
+    top:20px;
+    margin-left:-200px;
+    margin-right:-200px;
+}
+
+#messages div {
+    border: solid 1px #346;
+    background-color: black;
+    color:#e5f0f5;
+    padding:3px 3px 3px 3px;
+    text-align: center;
+}
+
+.files .delete {
+    float:right;
+    color:red;
+    font-size: 10px;
+    margin-left:3px;
+    padding-top:3px;
 }

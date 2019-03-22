@@ -20,8 +20,8 @@ namespace ESP8266DriverEmu.Controllers
         public ActionResult<Dictionary<string, int>> Get(string name)
         {
             name = name.Trim('/').Replace('/', '\\');
-            return System.IO.Directory.GetFileSystemEntries(name)
-                .ToDictionary(x => x, x => (int)new System.IO.FileInfo(x).Length);
+            return System.IO.Directory.GetFileSystemEntries("storage\\"+name)
+                .ToDictionary(x => System.IO.Path.GetFileName(x), x => (int)new System.IO.FileInfo(x).Length);
         }
     }
 }

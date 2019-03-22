@@ -15,6 +15,7 @@
             </span>
             <span id="pnlLogoff" style="display: none;">
                 <input type="button" id="btnLogoff" value="Logoff" />
+                <input type="button" id="btnRestart" value="Restart" />
             </span>
         </span>
         <h1>Lights Driver: <span id="name"></span></h1>
@@ -55,8 +56,10 @@
                 <div class="form-item">Status: <span id="WiFiAPState"></span></div>
                 <div class="form-item">Host SSID: <span id="WiFiAPSSID"></span></div>
                 <div class="form-item">Host IP: <span id="WiFiAPIP"></span></div>
-                <input type="button" id="btnWiFiAPEnable" value="AP enable" />
-                <input type="button" id="btnWiFiAPDisable" value="AP disable" />
+                <div class="buttons">
+                    <input type="button" id="btnWiFiAPEnable" value="AP enable" />
+                    <input type="button" id="btnWiFiAPDisable" value="AP disable" />
+                </div>
                 <br />
                 <h3>WiFi client</h3>
                 <div class="form-item">Status: <span id="WiFiClientState"></span></div>
@@ -65,25 +68,56 @@
                 <br />
                 <div class="form-item">SSID: <input type="text" id="wifiSSID" /></div>
                 <div class="form-item">Password: <input type="password" id="wifiPwd" /></div>
-                <input type="button" id="btnWiFiConnect" value="Connect" />
-                <input type="button" id="btnWiFiDisconnect" value="Disconnect" />
+                <div class="buttons">
+                    <input type="button" id="btnWiFiConnect" value="Connect" />
+                    <input type="button" id="btnWiFiDisconnect" value="Disconnect" />
+                </div>
             </div>
 
 
             <div id="page-boot" style="display:none">
                 <h2>Startup script</h2>
-                <textarea id="txtBoot" style="position:absolute; width: 665px; top:40px;bottom:30px;"></textarea>
-                <input id="btnBootSave" type="button" value="Save" style="position:absolute; bottom:4px;left:48%" />
+                <textarea id="txtBoot" style="position:absolute; width: 665px; top:40px;bottom:44px;"></textarea>
+                <div class="buttons" style="position:absolute; bottom:4px; width:656px">
+                    <input id="btnBootLoad" type="button" value="Load" />
+                    <input id="btnBootSave" type="button" value="Save" />
+                </div>
             </div>
 
 
             <div id="page-scripts" style="display:none">
                 <h2>Scripts manager</h2>
+                <div class="files" style="position:absolute; width:190px; top:40px;bottom:44px;left:8px;">
+                    <ul id="files-scripts"></ul>
+                </div>
+                <input id="txtScriptName" type="text" style="position:absolute; width: 462px; top:40px;right:8px;"/>
+                <textarea id="txtScript" style="position:absolute; width: 460px; top:70px;bottom:44px;right:8px;"></textarea>
+                <div style="position:absolute; bottom:26px;left:8px;">
+                    <a href="javascript:loadDirScripts();">Refresh</a>
+                </div>
+                <div class="buttons" style="position:absolute; bottom:4px;right:4px;width:458px">
+                    <input id="btnScriptSave" type="button" value="Save" />
+                    <input id="btnScriptDelete" type="button" value="Delete" />
+                    <input id="btnScriptRun" type="button" value="Run" />
+                </div>
             </div>
 
 
             <div id="page-wwwroot" style="display:none">
                 <h2>Static files manager</h2>
+                <div class="files" style="position:absolute; width:662px; top:40px;bottom:44px;left:8px;">
+                    <ul id="files-www"></ul>
+                </div>
+                <div class="buttons" style="position:absolute; bottom:4px; width:656px">
+                    <div style="position:absolute; bottom:6px;left:8px;">
+                        <a href="javascript:loadDirWww();">Refresh</a>
+                    </div>
+                    <form id="formUpload" url="upload" enctype="multipart/form-data" style="display:none">
+                        <input id="filename" name="filename" type="text" />
+                        <input id="fileUpload" name="fileUpload" type="file" />
+                    </form>
+                    <input id="btnFileUpload" type="button" value="Upload" />
+                </div>
             </div>
 
 
@@ -141,6 +175,7 @@ switches available by WIFI
         <div class="form-item">Free memory: <span id="freemem"></span></div>
         <div class="form-item">Version: <span id="version"></span></div>
     </div>
+    <div id="messages"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="jquery.min.js"' + '><' + '/script>')</script>
     <script src="lights.js"></script>
