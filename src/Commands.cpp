@@ -23,6 +23,7 @@ bool execute(String line) {
     else if (adm && cmd == "WIFITEST") WiFiSTA(getWord(line, 1), getWord(line, 2), false); // Syntax: WIFITEST <ssid> <password>
     else if (adm && cmd == "WIFIAP") WiFiAP(getWord(line, 1)=="1", true); // Syntax: WIFIAP <0 or 1>
     else if (adm && cmd == "WIFIAPTEST") WiFiAP(getWord(line, 1)=="1", false); // Syntax: WIFIAPTEST <0 or 1>
+    else if (adm && cmd == "DELETE") deleteFile(getWord(line, 1)); // Syntax: DELETE <full_filepath>
     else if (adm && cmd == "RESTART") ESP.restart(); // Syntax: RESTART
     
     else if (cmd == "LOGIN") login(getWord(line, 1)); // Syntax: LOGIN <password>

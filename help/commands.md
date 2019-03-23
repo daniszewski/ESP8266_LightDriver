@@ -30,6 +30,7 @@
 - WIFITEST {ssid} {password} - same a above but the setting will be restored after restart
 - WIFIAP {1 or 0} - enable or disable the AccessPoint mode
 - WIFIAPTEST {1 or 0} - same a above but the setting will be restored after restart
+- DELETE {filename} - delete a file from internal storage
 - RESTART - reset the module
 
 # Remarks

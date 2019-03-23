@@ -146,3 +146,7 @@ bool executeFile(String filename) {
     ERR(filename+": file doesn't exist.");
     return false;
 }
+
+void deleteFile(String filename) {
+    if (isAdmin()) SPIFFS.remove(filename);
+}

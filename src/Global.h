@@ -27,6 +27,7 @@ bool executeFile(String filename);
 void bootStart();
 void firstBoot();
 void bootComplete();
+void deleteFile(String filename);
 
 
 #define ERR(...) { logToSerial("ERROR: "); logToSerial( __VA_ARGS__ ); logToSerial("\n"); setLastError(__VA_ARGS__); }
