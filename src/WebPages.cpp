@@ -116,7 +116,8 @@ void WebPagesClass::handleJson(const String& json) {
     server.send(200, "application/json", json);
 }
 
-void WebPagesClass::handleDir(const String& root) {
+void WebPagesClass::handleDir(String root) {
+    if (root=="") root = "/www";
     Dir dir = SPIFFS.openDir(root);
     String list = "{ ";
     bool first = true;
@@ -124,7 +125,7 @@ void WebPagesClass::handleDir(const String& root) {
         File f = dir.openFile("r");
         if (first) first = false;
         else list += ", ";
-        list += "\""+dir.fileName() + "\": " + String(f.size());
+        list += "\""+dir.fileName().substring(root.length() + 1) + "\": " + String(f.size());
         f.close();
     }
     list+=" }";
@@ -160,7 +161,7 @@ void WebPagesClass::handleRun() {
         if (executeFile(file)) sendOK();
         else sendERR(getLastError());
     } else if (server.method() == HTTP_PUT) {
-        String body = server.arg("plain");
+        String body = server.arg("plain")+'\n';
         int lineStart = 0, lineEnd = 0, lineCounter = 1;
         do {
             lineEnd = body.indexOf('\n',lineStart);

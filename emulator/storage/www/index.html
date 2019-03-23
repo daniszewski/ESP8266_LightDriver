@@ -145,12 +145,12 @@
 3. Admin commands (available after providing proper password to LOGIN command)
 - NAME {name of the node} - Sets name of this module
 - ZERO {pin name} - Initialize zero cross phase detector on specified pin
-- PHASESTART {phase start: 0-10000} - sets the time offset of half-phase starting point in microseconds
+- PHASESTART {phase start: 0-10000} - sets the time offset of half-phase starting point in microsecs
 - PHASEEND {phase end: 0-10000} - sets the time offset of half-phase ending point in microseconds
 - PULSE {pulse length} - zero cross phase triac steering pulse length in microseconds
 - LIGHT {pin name} {mode: PWM, ZERO} - setup a light of type "mode" on specified pin
-- SWITCH {pin name} {switch type: 1 2 X} {on close} {on open} - setup an action button (1-single state, 
-    2-states, X-stair switch)
+- SWITCH {pin name} {switch type: 1 2 X} {on close} {on open} - setup an action button 
+    (1-single state, 2-states, X-stair switch)
 - DISABLE {pin name} - disable previously setup pin
 - PWD {password} - set admin password at a boot time
 - BOOTADMIN - admin commands are available without login

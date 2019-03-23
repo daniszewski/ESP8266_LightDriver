@@ -65,7 +65,7 @@ Function Get-FolderHash {
 
 function Parse-JsonFile([string]$file) {
     $text = Get-Content $file -Raw
-    $parser = New-Object Web.Script.Serialization.JavaScriptSerializer
+    $parser = New-Object System.Web.Script.Serialization.JavaScriptSerializer
     $parser.MaxJsonLength = $text.length
     Write-Output -NoEnumerate $parser.DeserializeObject($text)
 }
@@ -132,7 +132,7 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
         $lastUpdate = $config.$hostUri.Files.$file
         if ($null -eq $lastUpdate) { $lastUpdate = 0; }
     
-        $wwwfile = ("/www/" + $file)
+        $wwwfile = ($file)
         $currentSize = $currentFiles.$wwwfile
 
         $toUpload = $false

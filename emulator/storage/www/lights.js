@@ -1,14 +1,14 @@
 var stats = { "name": "", "freemem": -1, "admin": 0, "WiFiClient_SSID": "", "WiFiClient_IP": "0.0.0.0", "WiFiAP_SSID": "", "WiFiAP_IP": "0.0.0.0", "version": "0.0", "connection": 0};
 
 function rest(type, url, body, oncomplete, onsuccess, onerror) {
-    $.ajax({type: type, url: url, data: body, complete: oncomplete, success: onsuccess, error: onerror});
+    $.ajax({type: type, url: url, data: body, complete: oncomplete, success: onsuccess, error: onerror, contentType: 'text/plain'});
 }
 
 function loadStats() {
     rest('GET','stats',null,
         function() {updateStatsView();setTimeout(loadStats, 1000); }, 
         function(result) {stats = $.extend(stats, result, { "connection": 1 });},
-        function() {stats.connection = 0; stats.admin = 0;}
+        function(x,a,t) {stats.connection = 0; stats.admin = 0;message(t,800);}
     );
 }
 
@@ -79,7 +79,7 @@ function initButtons() {
     $('#btnScriptRun').click(function() {runScript();});
     $('#btnFileUpload').click(function() {$('#fileUpload').trigger('click');});
     $('#fileUpload').change(function () {
-        $('#filename').val(_folder+'/'+$(this).val().split('\\').pop());
+        $('#filename').val((_folder.length>0?_folder+'/':'')+$(this).val().split('\\').pop());
         $.ajax({ url: 'upload', type: 'POST', data: new FormData($('#formUpload')[0]), cache: false, contentType: false, processData: false, success: loadDirWww });
     });
 }
@@ -170,10 +170,10 @@ function deleteFile(file, callback) {
     rest('DELETE',_folder+'/'+_file, null, null, function(x) { message(x); if(callback) callback()});
 }
 
-function message(msg) {
+function message(msg, delay=2000) {
     $('#messages').append('<div>'+msg+'</div>');
     var x = $('#messages').children().last()
-    setTimeout(function() {x.remove();}, 2000);
+    setTimeout(function() {x.remove();}, delay);
 }
 
 (function() {

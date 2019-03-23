@@ -110,8 +110,10 @@ void setAdmin() {
 bool login(String password) {
     if (adminpwd == password) {
         _admin = true;
+        INFO("Logged in");
         return true;
     }
+    ERR("Wrong password");
     return false;
 }
 

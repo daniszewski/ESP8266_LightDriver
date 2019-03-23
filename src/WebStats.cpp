@@ -7,6 +7,7 @@ String getStats() {
     result += "\"freemem\": "+String(system_get_free_heap_size()) + ",\n";
     result += "\"admin\": "+String(isAdmin()) + ",\n";
     result += "\"pins\": [\n";
+    bool second = false;
     for(int i=0;i<PINCOUNTALL;i++) {
         uint8_t pin = PinDriver.getPin(i);
         char type = PinDriver.getPinType(pin);
@@ -23,7 +24,8 @@ String getStats() {
             typeName = "LIGHT";
             value = String(PinDriver.getPinAnim(pin)->getValue());
         }
-        if (i>0) result += ",\n";
+        if (second) result += ",\n";
+        else second = true;
         result += "{\"name\": \""+name+"\", \"type\": \""+typeName+"\", \"value\": "+value+" }";
     }
     result += "\n],\n\"WiFiClient_SSID\": \"" + WiFi.SSID() + "\",\n";

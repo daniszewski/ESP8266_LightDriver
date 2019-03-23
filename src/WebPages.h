@@ -18,7 +18,7 @@ class WebPagesClass {
     void handleJson(const String& json);
     void handleBoot();
     void handleRun();
-    void handleDir(const String& root);
+    void handleDir(String root);
     void handleFileUpload(const String& filename);
     void handleFirmwareUpdate();
     String getContentType(const String& path);

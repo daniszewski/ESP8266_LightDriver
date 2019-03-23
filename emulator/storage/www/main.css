@@ -209,3 +209,12 @@ h1 {
     margin-left:3px;
     padding-top:3px;
 }
+
+#page-help pre {
+    position: absolute;
+    left: 5px;
+    right: 0px;
+    top:35px;
+    bottom: 0px;
+    overflow: auto;
+}
