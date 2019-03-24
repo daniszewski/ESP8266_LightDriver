@@ -33,8 +33,10 @@ class PinDriverClass {
         bool getSwitchValue(uint8_t pin);
         void turnSwitch(String pinName, String state);
         void updatePinsPwm();
+        float getZeroFreq();
     protected:
         void handleSwitches();
+        void handleZeroCounter();
 };
 
 extern PinDriverClass PinDriver;

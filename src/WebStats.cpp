@@ -17,7 +17,10 @@ String getStats() {
         name.setCharAt(1, '0'+i);
         String value;
         String typeName;
-        if (type=='S') {
+        if (type=='X') {
+            typeName = "ZERO";
+            value = String(PinDriver.getZeroFreq());
+        } else if (type=='S') {
             typeName = "SWITCH";
             value = String(PinDriver.getSwitchValue(pin) ? 1 : 0);
         } else if (type=='P' || type=='Z') {

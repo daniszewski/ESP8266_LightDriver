@@ -23,7 +23,10 @@ namespace ESP8266DriverEmu.Controllers
                 var d = new Dictionary<string,object>();
                 var pin = kvp.Value;
                 d.Add("name", kvp.Key);
-                if (pin is PinSwitch) {
+                if (pin is PinZero) {
+                    d.Add("type", "ZERO");
+                    d.Add("value", "100");
+                } else if (pin is PinSwitch) {
                     d.Add("type", "SWITCH");
                     d.Add("value", DriverEmu.Instance.PinDriver.getSwitchValue(kvp.Key));
                 } else { //PinLight

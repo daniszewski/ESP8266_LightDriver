@@ -17,6 +17,10 @@ namespace ESP8266DriverEmu.Driver
         public LightAnimation anim;
     }
 
+    public class PinZero : IPin {
+        public string name { get; set; }
+    }
+
     public class PinSwitch : IPin {
         public string name { get; set; }
         public string onLow;
@@ -40,6 +44,7 @@ namespace ESP8266DriverEmu.Driver
 
         public void initZero(String pinName) {
             pinZero = pinName;
+            _pins.Add(pinName, new PinZero() { name=pinName });
         }
 
         public void setPhaseStartTime(int time) {

@@ -13,6 +13,10 @@ int phaseStartTime = 2000;
 int phaseEndTime = 9000;
 bool boot = true;
 
+int zeroCounter = 0;
+unsigned long zeroLastCheck = 0; 
+float zeroFreq;
+
 // Phase based drived
 PhasePlanStep _planSteps[20];
 byte _phasePlanPosition;
@@ -124,6 +128,7 @@ void setupTimer() {
 
 unsigned long phaseZeroTime = 0;
 void zeroDetected() {
+    zeroCounter++;
     if (isBoot()) return;
     if (micros() < phaseZeroTime + 2000) return;
     phaseZeroTime = micros();
@@ -214,6 +219,21 @@ void PinDriverClass::turnSwitch(String pinName, String state) {
     onSwitchHandler(pin, targetState);
 }
 
+void PinDriverClass::handleZeroCounter() {
+    unsigned long ct = millis();
+    if (ct > zeroLastCheck + 2000) {
+        zeroFreq = zeroCounter*1000.0/(ct-zeroLastCheck);
+        zeroLastCheck = ct;
+        zeroCounter = 0;
+    } else if (ct < zeroLastCheck) { // millis() overflow
+        zeroLastCheck = ct;
+        zeroCounter = 0;
+    }
+}
+
+float PinDriverClass::getZeroFreq() {
+    return zeroFreq;
+}
 
 void PinDriverClass::begin() {
     setupTimer();
@@ -221,6 +241,7 @@ void PinDriverClass::begin() {
 
 void PinDriverClass::handle() {
     handleSwitches();
+    handleZeroCounter();
 }
 
 PinDriverClass PinDriver; // Singleton

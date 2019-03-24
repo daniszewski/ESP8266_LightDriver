@@ -132,7 +132,11 @@ h1 {
     background-color: #df6;
 }
 
-.pin-LIGHT, .pin-SWITCH {
+.pin-ZERO {
+    background-color: #6df;
+}
+
+.pin-LIGHT, .pin-SWITCH, .pin-ZERO {
     width: 90px;
     height: 60px;
     display: inline-block;
