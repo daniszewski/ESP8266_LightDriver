@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace ESP8266DriverEmu.Driver
 {
-    public class LightAnimatorClass : IDisposable
+    public class PowerAnimatorClass : IDisposable
     {
         public event EventHandler OnCallback;
-        Dictionary<string, LightAnimation> animations = new Dictionary<string, LightAnimation>();
-        LightAnimation currentConfigAnimation;
+        Dictionary<string, PowerAnimation> animations = new Dictionary<string, PowerAnimation>();
+        PowerAnimation currentConfigAnimation;
 
         Timer _timer;
 
-        public LightAnimatorClass() {
+        public PowerAnimatorClass() {
             _timer = new Timer(_ =>  OnTick(), null, 10, 10 );
         }
         private void OnTick()
@@ -34,15 +34,15 @@ namespace ESP8266DriverEmu.Driver
             }
         }
 
-        public LightAnimation ensureAnimation(string id) {
-            if (!animations.TryGetValue(id, out LightAnimation result)) {
-                result = new LightAnimation();
+        public PowerAnimation ensureAnimation(string id) {
+            if (!animations.TryGetValue(id, out PowerAnimation result)) {
+                result = new PowerAnimation();
                 animations.Add(id, result);
             }
             return result;
         }
 
-        public LightAnimation configStart(string id, bool isTriggeredExternaly) {
+        public PowerAnimation configStart(string id, bool isTriggeredExternaly) {
             currentConfigAnimation = ensureAnimation(id);
             currentConfigAnimation._isTriggeredExternaly = isTriggeredExternaly;
             currentConfigAnimation.clear();

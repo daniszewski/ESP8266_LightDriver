@@ -1,6 +1,6 @@
-#include "LightAnimation.h"
+#include "PowerAnimation.h"
 
-void LightAnimation::animate() {
+void PowerAnimation::animate() {
   if(!_enabled || _stepIndex>=_steps.GetSize()) return;
 
   AnimStep *s = &_steps[_stepIndex];
@@ -24,30 +24,30 @@ void LightAnimation::animate() {
   }
 }
 
-short LightAnimation::getValue() {
+short PowerAnimation::getValue() {
   return (short)_value;
 }
 
-int LightAnimation::getId() {
+int PowerAnimation::getId() {
   return _id;
 }
 
-void LightAnimation::setId(int id) {
+void PowerAnimation::setId(int id) {
   _id = id;
 }
 
-void LightAnimation::clear() {
+void PowerAnimation::clear() {
   _enabled = false;
   _stepIndex = 0;
   _steps.Clear();
 }
 
-void LightAnimation::enable() {
+void PowerAnimation::enable() {
   _stepIndex = 0;
   _enabled = true;
 }
 
-void LightAnimation::addStep(unsigned short stepTime, short targetValue, short nextStepRel, short repeat) {
+void PowerAnimation::addStep(unsigned short stepTime, short targetValue, short nextStepRel, short repeat) {
   _enabled = false;
   AnimStep s;
   s.stepTime = stepTime;

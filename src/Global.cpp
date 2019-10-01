@@ -54,6 +54,7 @@ void bootStart() {
 
 void firstBoot() {
     WiFiAP(true, true);
+
 }
 
 void bootComplete() {
@@ -68,7 +69,7 @@ void WiFiSTA(String ssid, String password, bool persistent) {
         char _password[128]; 
         ssid.toCharArray(_ssid, 64); 
         password.toCharArray(_password, 128);
-        WiFi.begin(_ssid, _password); 
+        WiFi.begin(_ssid, _password);
     } else {
         WiFi.enableSTA(false);
     }
@@ -77,15 +78,18 @@ void WiFiSTA(String ssid, String password, bool persistent) {
 void WiFiAP(bool enable, bool persistent) {
     WiFi.persistent(persistent);
     if (enable) {
-        IPAddress localIp(192,168,4,1);
-        IPAddress gateway(192,168,4,1);
-        IPAddress subnet(255,255,255,0);
-        
-        if (WiFi.softAPConfig(localIp, gateway, subnet)) {
-            const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
-            if (WiFi.softAP(mac, wifiappwd.c_str(), 10, 0, 4)) { INFO("AP started"); }
-            else { ERR("AP start error"); }
-        } else { ERR("AP config error"); }
+        const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
+        if (WiFi.softAP(mac, wifiappwd, 10, false, 4)) { 
+            IPAddress localIp(192,168,4,1);
+            IPAddress gateway(192,168,4,1);
+            IPAddress subnet(255,255,255,0);
+            delay(100);
+            if (WiFi.softAPConfig(localIp, gateway, subnet)) {
+                INFO("AP started");
+                Serial.print("Soft-AP with IP: ");
+                Serial.println(WiFi.softAPIP());
+            } else { ERR("AP config error"); }
+        } else { ERR("AP start error"); }
     } else {
         WiFi.enableAP(false);
     }

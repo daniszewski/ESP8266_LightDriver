@@ -1,12 +1,12 @@
 # CONFIG
 $uriPattern = "http://192.168.0.{0}/"
-$uriRange = 201..210
+$uriRange = 151..151
 $path = "emulator\storage\www\"
 $src = "src"
-$firmware = ".pioenvs\nodemcuv2\firmware.bin"
+$firmware = ".pio\build\nodemcuv2\firmware.bin"
 $timeout = 5
 $configFile = "updates\update-config.json"
-$defaultPwd = "esplight"
+$defaultPwd = "esppower"
 
 # IMPLEMENTATION
 

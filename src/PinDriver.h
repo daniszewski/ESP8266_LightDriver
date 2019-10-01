@@ -2,7 +2,7 @@
 #define PINDRIVER_H
 
 #include "Global.h"
-#include "LightAnimation.h"
+#include "PowerAnimation.h"
 
 #ifndef D9
     #define D9 3
@@ -28,8 +28,8 @@ class PinDriverClass {
         uint8_t getPin(int ix);
         uint8_t parsePin(String pinName);
         char getPinType(uint8_t pin);
-        void setPinAnim(uint8_t pin, LightAnimation* anim);
-        LightAnimation* getPinAnim(uint8_t pin);
+        void setPinAnim(uint8_t pin, PowerAnimation* anim);
+        PowerAnimation* getPinAnim(uint8_t pin);
         bool getSwitchValue(uint8_t pin);
         void turnSwitch(String pinName, String state);
         void updatePinsPwm();

@@ -2,7 +2,7 @@
 PUT http://192.168.0.204/run HTTP/1.1
 content-type: text/plain
 
-LOGIN esplight
+LOGIN esppower
 
 ### STATS
 GET http://192.168.0.204/stats HTTP/1.1
@@ -24,7 +24,7 @@ NAME lights
 ### AP
 PUT http://192.168.0.204/run HTTP/1.1
 
-LOGIN esplight
+LOGIN esppower
 WIFIAP 1
 
 ###

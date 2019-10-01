@@ -24,8 +24,11 @@ String getStats() {
             typeName = "SWITCH";
             value = String(PinDriver.getSwitchValue(pin) ? 1 : 0);
         } else if (type=='P' || type=='Z') {
-            typeName = "LIGHT";
+            typeName = type=='P' ? "PWM" : "PHASE";
             value = String(PinDriver.getPinAnim(pin)->getValue());
+        } else if (type=='O') {
+            typeName = "ON/OFF";
+            value = PinDriver.getPinAnim(pin)->getValue() < 512 ? "\"ON\"" : "\"OFF\"";
         }
         if (second) result += ",\n";
         else second = true;

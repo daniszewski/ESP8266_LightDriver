@@ -21,10 +21,10 @@ function updateStatsView() {
     $('#connection').text(stats.connection === 0 ? "disconnected" : "connected");
     $('#WiFiAPSSID').text(stats.WiFiAP_SSID);
     $('#WiFiAPIP').text(stats.WiFiAP_IP);
-    $('#WiFiAPState').text(stats.WiFiAP_IP !== '0.0.0.0' ? "enabled" : "disabled");
+    $('#WiFiAPState').text(stats.WiFiAP_IP !== '0.0.0.0' && stats.WiFiAP_IP !== '(IP unset)' ? "enabled" : "disabled");
     $('#WiFiClientSSID').text(stats.WiFiClient_SSID);
     $('#WiFiClientIP').text(stats.WiFiClient_IP);
-    $('#WiFiClientState').text(stats.WiFiClient_IP !== '0.0.0.0' ? "enabled" : "disabled");
+    $('#WiFiClientState').text(stats.WiFiClient_IP !== '0.0.0.0' && stats.WiFiClient_IP !== '(IP unset)' ? "enabled" : "disabled");
     var statsContainer = $('#stats-pins');
     var tmpl = $('#template-pin');
     if (stats.pins) {
@@ -36,7 +36,11 @@ function updateStatsView() {
                 statsContainer.append('<div></div>');
                 current = statsContainer.children().last();
             }
-            var html = tmpl.html().replace(/\$type\$/g, pin.type).replace(/\$name\$/g, pin.name).replace(/\$value\$/g, pin.value);
+            var html = tmpl.html()
+                .replace(/\$type\$/g, pin.type)
+                .replace(/\$typecss\$/g, pin.type.replace('/',''))
+                .replace(/\$name\$/g, pin.name)
+                .replace(/\$value\$/g, pin.value);
             current.replaceWith(html);
         }
     }

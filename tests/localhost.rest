@@ -2,7 +2,7 @@
 PUT http://localhost:5000/run HTTP/1.1
 content-type: text/plain
 
-LOGIN esplight
+LOGIN esppower
 
 ### STATS
 GET http://localhost:5000/stats HTTP/1.1

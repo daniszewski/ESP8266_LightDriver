@@ -1,7 +1,7 @@
 #include "Global.h"
 #include "Commands.h"
 #include "PinDriver.h"
-#include "LightAnimator.h"
+#include "PowerAnimator.h"
 #include "WebCallsQueue.h"
 
 bool execute(String line) {
@@ -14,7 +14,7 @@ bool execute(String line) {
     else if (adm && cmd == "PHASESTART") PinDriver.setPhaseStartTime(getWord(line, 1).toInt()); // Syntax: PHASESTART <phase start: 0-10000>
     else if (adm && cmd == "PHASEEND") PinDriver.setPhaseEndTime(getWord(line, 1).toInt()); // Syntax: PHASEEND <phase end: 0-10000>
     else if (adm && cmd == "PULSE") PinDriver.setPulseLength(getWord(line, 1).toInt()); // Syntax: PULSE <pulse length>
-    else if (adm && cmd == "LIGHT") PinDriver.initPin(getWord(line, 1), getWord(line, 2)); // Syntax: LIGHT <pin name> <mode: PWM, ZERO>
+    else if (adm && cmd == "OUTPUT") PinDriver.initPin(getWord(line, 1), getWord(line, 2)); // Syntax: OUTPUT <pin name> <mode: PWM, ZERO, ONOFF>
     else if (adm && cmd == "SWITCH") PinDriver.initSwitch(getWord(line, 1), getWord(line, 2), getWord(line, 3), getWord(line, 4)); // Syntax: SWITCH <pin name> <switch type> <on close> <on open>
     else if (adm && cmd == "DISABLE") PinDriver.disablePin(getWord(line, 1)); // Syntax: DISABLE <pin name>
     else if (adm && cmd == "PWD") setAdminPassword(getWord(line, 1)); // Syntax: PWD <password>
@@ -35,13 +35,13 @@ bool execute(String line) {
     {
         uint8_t pin = PinDriver.parsePin(getWord(line, 1)); 
         char type = PinDriver.getPinType(pin);
-        PinDriver.setPinAnim(pin, LightAnimator.configStart(pin, type=='Z' ? HIGH : LOW));
+        PinDriver.setPinAnim(pin, PowerAnimator.configStart(pin, type=='Z' ? HIGH : LOW));
     }
-    else if (cmd == "VALUE") LightAnimator.configAddStep(getWord(line, 1).toInt(), 0); // Syntax: VALUE <target value>
-    else if (cmd == "DELAY") LightAnimator.configAddStep(-1, getWord(line, 1).toInt()); // Syntax: DELAY <time of delay>
-    else if (cmd == "SLIDE") LightAnimator.configAddStep(getWord(line, 2).toInt(), getWord(line, 1).toInt()); // Syntax: SLIDE <time of activity> <target value>
-    else if (cmd == "REPEAT") LightAnimator.configAddRepeat(getWord(line, 1).toInt(), getWord(line, 2).toInt()); // Syntax: REPEAT <no of commands> <no of repeats>
-    else if (cmd == "END") LightAnimator.configEnd(); // Syntax: END
+    else if (cmd == "VALUE") PowerAnimator.configAddStep(getWord(line, 1).toInt(), 0); // Syntax: VALUE <target value>
+    else if (cmd == "DELAY") PowerAnimator.configAddStep(-1, getWord(line, 1).toInt()); // Syntax: DELAY <time of delay>
+    else if (cmd == "SLIDE") PowerAnimator.configAddStep(getWord(line, 2).toInt(), getWord(line, 1).toInt()); // Syntax: SLIDE <time of activity> <target value>
+    else if (cmd == "REPEAT") PowerAnimator.configAddRepeat(getWord(line, 1).toInt(), getWord(line, 2).toInt()); // Syntax: REPEAT <no of commands> <no of repeats>
+    else if (cmd == "END") PowerAnimator.configEnd(); // Syntax: END
     else if (cmd != "" && cmd.charAt(0) != '#') return false;
     return true;
 }

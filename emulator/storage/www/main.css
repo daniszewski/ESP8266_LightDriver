@@ -124,7 +124,7 @@ h1 {
     margin-top: -3px;
 }
 
-.pin-LIGHT {
+.pin-PWM, .pin-PHASE, .pin-ONOFF {
     background-color: #fd6;
 }
 
@@ -136,7 +136,7 @@ h1 {
     background-color: #6df;
 }
 
-.pin-LIGHT, .pin-SWITCH, .pin-ZERO {
+.pin-PWM, .pin-PHASE, .pin-ONOFF, .pin-SWITCH, .pin-ZERO {
     width: 90px;
     height: 60px;
     display: inline-block;

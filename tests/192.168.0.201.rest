@@ -2,7 +2,7 @@
 PUT http://192.168.0.201/run HTTP/1.1
 content-type: text/plain
 
-LOGIN esplight
+LOGIN esppower
 
 ### STATS
 GET http://192.168.0.201/stats HTTP/1.1

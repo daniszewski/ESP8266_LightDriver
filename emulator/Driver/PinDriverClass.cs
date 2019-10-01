@@ -11,10 +11,11 @@ namespace ESP8266DriverEmu.Driver
         string name {get; set; }
     }
 
-    public class PinLight : IPin {
+    public class PinPower : IPin {
         public string name { get; set; }
-        public char mode;
-        public LightAnimation anim;
+        public char mode { get; set; }
+        public string type { get; set; }
+        public PowerAnimation anim { get; set; }
     }
 
     public class PinZero : IPin {
@@ -23,12 +24,12 @@ namespace ESP8266DriverEmu.Driver
 
     public class PinSwitch : IPin {
         public string name { get; set; }
-        public string onLow;
-        public string onHigh;
-        public char type;
-        public bool hwState;
-        public bool fnState; 
-        public DateTime lastCloseTime;
+        public string onLow { get; set; }
+        public string onHigh { get; set; }
+        public char type { get; set; }
+        public bool hwState { get; set; }
+        public bool fnState { get; set; }
+        public DateTime lastCloseTime { get; set; }
     }
 
     public class PinDriverClass : IDisposable
@@ -59,8 +60,8 @@ namespace ESP8266DriverEmu.Driver
             pulseLength = time;
         }
 
-        public void initPin(String pinName, String modeWord) { // mode: PWM, ZERO, OFF
-            _pins.Add(pinName, new PinLight() { name=pinName, mode = modeWord[0] });
+        public void initPin(String pinName, String modeWord) { // mode: PWM, ZERO, ONOFF, OFF
+            _pins.Add(pinName, new PinPower() { name=pinName, mode = modeWord[0], type = modeWord });
         }
 
         public void initSwitch(string pinName, string switchType, string onHigh, string onLow) {
@@ -103,12 +104,12 @@ namespace ESP8266DriverEmu.Driver
             return (_pins[pin] as PinSwitch).fnState;
         }
 
-        public void setPinAnim(string pin, LightAnimation anim) {
-            (_pins[pin] as PinLight).anim = anim;
+        public void setPinAnim(string pin, PowerAnimation anim) {
+            (_pins[pin] as PinPower).anim = anim;
         }
 
-        public LightAnimation getPinAnim(string pin) {
-            return (_pins[pin] as PinLight).anim;
+        public PowerAnimation getPinAnim(string pin) {
+            return (_pins[pin] as PinPower).anim;
         }
 
         public void Dispose()

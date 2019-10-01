@@ -35,7 +35,7 @@ namespace ESP8266DriverEmu.Driver
         public string WiFiAPSSID = "";
         public string WiFiAPIP = "0.0.0.0";
 
-        public LightAnimatorClass LightAnimator;
+        public PowerAnimatorClass PowerAnimator;
         public PinDriverClass PinDriver;
 
         public DriverEmu()
@@ -51,15 +51,15 @@ namespace ESP8266DriverEmu.Driver
         public void Init()
         {
             version = "0.1";
-            adminpwd = "esplight";
+            adminpwd = "espPower";
             scriptsPath = "/scripts/";
             driverName = "emu";
             _admin = false;
             _boot = true;
             if (PinDriver != null) PinDriver.Dispose();
-            if (LightAnimator != null) LightAnimator.Dispose();
+            if (PowerAnimator != null) PowerAnimator.Dispose();
             PinDriver = new PinDriverClass();
-            LightAnimator = new LightAnimatorClass();
+            PowerAnimator = new PowerAnimatorClass();
 
             executeFile(@"storage\boot");
             bootComplete();
@@ -148,7 +148,7 @@ namespace ESP8266DriverEmu.Driver
             else if (adm && cmd == "PHASESTART") PinDriver.setPhaseStartTime(int.Parse(getWord(line, 1))); // Syntax: PHASESTART <phase start: 0-10000>
             else if (adm && cmd == "PHASEEND") PinDriver.setPhaseEndTime(int.Parse(getWord(line, 1))); // Syntax: PHASEEND <phase end: 0-10000>
             else if (adm && cmd == "PULSE") PinDriver.setPulseLength(int.Parse(getWord(line, 1))); // Syntax: PULSE <pulse length>
-            else if (adm && cmd == "LIGHT") PinDriver.initPin(getWord(line, 1), getWord(line, 2)); // Syntax: LIGHT <pin name> <mode: PWM, ZERO>
+            else if (adm && cmd == "OUTPUT") PinDriver.initPin(getWord(line, 1), getWord(line, 2)); // Syntax: OUTPUT <pin name> <mode: PWM, ZERO, ONOFF>
             else if (adm && cmd == "SWITCH") PinDriver.initSwitch(getWord(line, 1), getWord(line, 2), getWord(line, 3), getWord(line, 4)); // Syntax: SWITCH <pin name> <switch type> <on close> <on open>
             else if (adm && cmd == "DISABLE") PinDriver.disablePin(getWord(line, 1)); // Syntax: DISABLE <pin name>
             else if (adm && cmd == "PWD") setAdminPassword(getWord(line, 1)); // Syntax: PWD <password>
@@ -167,13 +167,13 @@ namespace ESP8266DriverEmu.Driver
             else if (cmd == "SEQ") // Syntax: SEQ <pin name>
             {
                 string pin = getWord(line, 1);
-                PinDriver.setPinAnim(pin, LightAnimator.configStart(pin, false));
+                PinDriver.setPinAnim(pin, PowerAnimator.configStart(pin, false));
             }
-            else if (cmd == "VALUE") LightAnimator.configAddStep(int.Parse(getWord(line, 1)), 0); // Syntax: VALUE <target value>
-            else if (cmd == "DELAY") LightAnimator.configAddStep(-1, int.Parse(getWord(line, 1))); // Syntax: DELAY <time of delay>
-            else if (cmd == "SLIDE") LightAnimator.configAddStep(int.Parse(getWord(line, 2)), int.Parse(getWord(line, 1))); // Syntax: SLIDE <time of activity> <target value>
-            else if (cmd == "REPEAT") LightAnimator.configAddRepeat(int.Parse(getWord(line, 1)), int.Parse(getWord(line, 2))); // Syntax: REPEAT <no of commands> <no of repeats>
-            else if (cmd == "END") LightAnimator.configEnd(); // Syntax: END
+            else if (cmd == "VALUE") PowerAnimator.configAddStep(int.Parse(getWord(line, 1)), 0); // Syntax: VALUE <target value>
+            else if (cmd == "DELAY") PowerAnimator.configAddStep(-1, int.Parse(getWord(line, 1))); // Syntax: DELAY <time of delay>
+            else if (cmd == "SLIDE") PowerAnimator.configAddStep(int.Parse(getWord(line, 2)), int.Parse(getWord(line, 1))); // Syntax: SLIDE <time of activity> <target value>
+            else if (cmd == "REPEAT") PowerAnimator.configAddRepeat(int.Parse(getWord(line, 1)), int.Parse(getWord(line, 2))); // Syntax: REPEAT <no of commands> <no of repeats>
+            else if (cmd == "END") PowerAnimator.configEnd(); // Syntax: END
             else if (cmd != "" && cmd[0] != '#') return false;
             return true;
         }
@@ -210,7 +210,7 @@ namespace ESP8266DriverEmu.Driver
         public void Dispose()
         {
             if (PinDriver != null) PinDriver.Dispose();
-            if (LightAnimator != null) LightAnimator.Dispose();
+            if (PowerAnimator != null) PowerAnimator.Dispose();
         }
     }
 }

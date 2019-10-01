@@ -1,5 +1,5 @@
-#ifndef LIGHTANIMATION_H
-#define LIGHTANIMATION_H
+#ifndef POWERANIMATION_H
+#define POWERANIMATION_H
 
 #include "DynArray.h"
 
@@ -15,7 +15,7 @@ struct AnimStep {
   short _repeat;
 };
 
-class LightAnimation {
+class PowerAnimation {
   public:
     DynArray<AnimStep> _steps;
     bool _isTriggeredExternaly;

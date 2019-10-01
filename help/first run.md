@@ -2,7 +2,7 @@
 
 1. Attach ESP8266 module to USB
 2. Burn firmware to Flash memory
-3. Connect to WiFi provided by module: SSID: LIGHT_<MAC> password: esplight
+3. Connect to WiFi provided by module: SSID: POWER_<MAC> password: esppower
     - If you have problems with receiving the IP from internal DHCP server please use static: 192.168.4.2
 4. Browse a web page hosted on url http://192.168.4.1/
 5. Put your WIFI credentials on the form and click "Connect"

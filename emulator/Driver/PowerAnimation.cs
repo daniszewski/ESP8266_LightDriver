@@ -18,7 +18,7 @@ namespace ESP8266DriverEmu.Driver
         public int _repeat;
     }
 
-    public class LightAnimation
+    public class PowerAnimation
     {
         bool _enabled;
         int _stepIndex;

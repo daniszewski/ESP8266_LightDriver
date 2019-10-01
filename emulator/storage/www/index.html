@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ESP8266 Lights</title>
+    <title>ESP8266 Power Driver</title>
     <link rel="stylesheet" href="main.css" />
     <link rel="icon" href="/favicon.png" type="image/x-icon" />
 </head>
@@ -18,7 +18,7 @@
                 <input type="button" id="btnRestart" value="Restart" />
             </span>
         </span>
-        <h1>Lights Driver: <span id="name"></span></h1>
+        <h1>Power Driver: <span id="name"></span></h1>
     </div>
     <div id="content">
         <div id="menu">
@@ -40,7 +40,7 @@
                 <div id="stats-pins"></div>
 
                 <script id="template-pin" type="text/x-custom-template">
-                    <div id="pin-$name$" class="pin-$type$">
+                    <div id="pin-$name$" class="pin-$typecss$">
                         <div class="pin-title"><strong>$name$</strong>: $type$</div>
                         <div class="pin-state">$value$</div>
                     </div>
@@ -131,12 +131,12 @@
 - TURN {pin name} {new state: 1 0 *} - change state of switch registered under specified pin 
     (also virtual pins: V0, V1, ..., V9)
 - SCRIPT {script file} - run script (from local storage)
-- SEQ {pin name} - start a light sequence definition under specified pin
+- SEQ {pin name} - start an output sequence definition under specified pin
 
 2. Sequence commands (available after starting a sequence)
-- VALUE {target value} - instantly assign a value to the light
+- VALUE {target value} - instantly assign a value to the output
 - DELAY {time of delay} - wait specified number of 1/100 of a second
-- SLIDE {time of activity} {target value} - transpose the current light level to the target 
+- SLIDE {time of activity} {target value} - transpose the current output level to the target 
     value within provided time
 - REPEAT {no of commands} {no of repeats} - repeat last x commands provided number of times 
     (-1 - inifite)
@@ -148,7 +148,7 @@
 - PHASESTART {phase start: 0-10000} - sets the time offset of half-phase starting point in microsecs
 - PHASEEND {phase end: 0-10000} - sets the time offset of half-phase ending point in microseconds
 - PULSE {pulse length} - zero cross phase triac steering pulse length in microseconds
-- LIGHT {pin name} {mode: PWM, ZERO} - setup a light of type "mode" on specified pin
+- OUTPUT {pin name} {mode: PWM, ZERO, ONOFF} - setup an output of type "mode" on specified pin
 - SWITCH {pin name} {switch type: 1 2 X} {on close} {on open} - setup an action button 
     (1-single state, 2-states, X-stair switch)
 - DISABLE {pin name} - disable previously setup pin
@@ -179,6 +179,6 @@ switches available by WIFI
     <div id="messages"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="jquery.min.js"' + '><' + '/script>')</script>
-    <script src="lights.js"></script>
+    <script src="custom.js"></script>
 </body>
 </html>

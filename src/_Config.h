@@ -1,9 +1,8 @@
 #include <Stream.h>
 
-String version = "0.9.1.2";
+String version = "0.9.1.3";
 
-String AP_prefix = "LIGHTS_"; // max length 14 because the MAC address (17 chars) will be added later and max total SSID length is 31
-String adminpwd = "esplight";
-String wifiappwd = "esplight";
+String AP_prefix = "POWER_"; // max length 14 because the MAC address (17 chars) will be added later and max total SSID length is 31
 String scriptsPath = "/scripts/";
-
+String adminpwd = "esppower";
+const char * wifiappwd = "esppower";

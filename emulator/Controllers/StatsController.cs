@@ -29,9 +29,14 @@ namespace ESP8266DriverEmu.Controllers
                 } else if (pin is PinSwitch) {
                     d.Add("type", "SWITCH");
                     d.Add("value", DriverEmu.Instance.PinDriver.getSwitchValue(kvp.Key));
-                } else { //PinLight
-                    d.Add("type", "LIGHT");
-                    d.Add("value", (pin as PinLight).anim?.getValue());
+                } else { //PinPower
+                    var ppow = pin as PinPower;
+                    d.Add("type", ppow.type);
+                    if (ppow.type=="ONOFF") {
+                        d.Add("value", ppow.anim?.getValue() <512 ? "\"ON\"" : "\"OFF\"");
+                    } else {
+                        d.Add("value", ppow.anim?.getValue());
+                    }
                 }
                 pins.Add(d);
             }
