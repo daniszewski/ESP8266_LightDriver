@@ -12,7 +12,7 @@ class PowerAnimatorClass {
     void animate();
 
     PowerAnimation* configStart(int id, bool isTriggeredExternaly);
-    void configAddStep(short value, unsigned short delay);
+    void configAddStep(String value, unsigned short delay);
     void configAddRepeat(short commands, short count);
     void configEnd();
 

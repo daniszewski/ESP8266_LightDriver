@@ -1,10 +1,13 @@
-# ESP8266_PowerDriver
+# ESP8266 Power Driver
+
 ESP8266-based controller for handling the power of multiple main current sources. The user can define different animations played in response to any state change of wall switches.
 
-# Handled platforms
+## Handled platforms
+
 All ESP8266-based hardware with at least 2048kB of flash memory and USB controller on board.
 
-# Features
+## Features
+
 - PWM, AC zero crossing light dimming, simple ON/OFF relays
 - 1-state, 2-states and stair switches, closing circuits or by A/C phase detector
 - up to 10 power sections/wall switches per one ESP8266 module
@@ -16,16 +19,17 @@ All ESP8266-based hardware with at least 2048kB of flash memory and USB controll
 - live stats (current switch states, power levels)
 - virtual switches managed remotely
 
-# Build instruction
+## Build instruction
+
 There are two ways to build it and deploy to the hardware:
 
 1. Arduino platform
-- Requirements
-    - ESP8266 boards (version 2.4.2) from http://arduino.esp8266.com/stable/package_esp8266com_index.json
-- To build use src.ino file to open the sketch and build it
+    - Requirements
+        - ESP8266 boards (version 2.4.2) from <http://arduino.esp8266.com/stable/package_esp8266com_index.json>
+    - To build use src.ino file to open the sketch and build it
 2. VS Code
-- Requirements
-    - PlatformIO extension in latest build (platformio update)
-- To build call the "Build" task
+    - Requirements
+        - PlatformIO extension in latest build (platformio update)
+    - To build call the "Build" task
 
 To maintain compatibility with Arduino environment all the source code files must be placed in one folder (src) along with empty src.ino (sketch file).

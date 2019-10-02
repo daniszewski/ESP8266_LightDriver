@@ -134,12 +134,12 @@
 - SEQ {pin name} - start an output sequence definition under specified pin
 
 2. Sequence commands (available after starting a sequence)
-- VALUE {target value} - instantly assign a value to the output
+- VALUE {target value} - instantly assign a value to the output (0-1023, ON, OFF, LOW, HIGH)
 - DELAY {time of delay} - wait specified number of 1/100 of a second
 - SLIDE {time of activity} {target value} - transpose the current output level to the target 
-    value within provided time
+    value within provided time (value: 0-1023, ON, OFF, LOW, HIGH)
 - REPEAT {no of commands} {no of repeats} - repeat last x commands provided number of times 
-    (-1 - inifite)
+    (-1 - infinite)
 - END - end current sequence definition
 
 3. Admin commands (available after providing proper password to LOGIN command)

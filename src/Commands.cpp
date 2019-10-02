@@ -37,9 +37,9 @@ bool execute(String line) {
         char type = PinDriver.getPinType(pin);
         PinDriver.setPinAnim(pin, PowerAnimator.configStart(pin, type=='Z' ? HIGH : LOW));
     }
-    else if (cmd == "VALUE") PowerAnimator.configAddStep(getWord(line, 1).toInt(), 0); // Syntax: VALUE <target value>
-    else if (cmd == "DELAY") PowerAnimator.configAddStep(-1, getWord(line, 1).toInt()); // Syntax: DELAY <time of delay>
-    else if (cmd == "SLIDE") PowerAnimator.configAddStep(getWord(line, 2).toInt(), getWord(line, 1).toInt()); // Syntax: SLIDE <time of activity> <target value>
+    else if (cmd == "VALUE") PowerAnimator.configAddStep(getWord(line, 1), 0); // Syntax: VALUE <target value: 0-1023, ON, OFF, LOW, HIGH>
+    else if (cmd == "DELAY") PowerAnimator.configAddStep("-1", getWord(line, 1).toInt()); // Syntax: DELAY <time of delay>
+    else if (cmd == "SLIDE") PowerAnimator.configAddStep(getWord(line, 2), getWord(line, 1).toInt()); // Syntax: SLIDE <time of activity> <target value: 0-1023, ON, OFF, LOW, HIGH>
     else if (cmd == "REPEAT") PowerAnimator.configAddRepeat(getWord(line, 1).toInt(), getWord(line, 2).toInt()); // Syntax: REPEAT <no of commands> <no of repeats>
     else if (cmd == "END") PowerAnimator.configEnd(); // Syntax: END
     else if (cmd != "" && cmd.charAt(0) != '#') return false;
