@@ -1,18 +1,33 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558 
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "PlatformIO",
-            "task": "Build",
+            "type": "shell",
+            "command": "platformio",
+            "args": [
+                "run",
+                "-t", "upload"
+            ],
             "problemMatcher": [
                 "$platformio"
             ],
+            "label": "PlatformIO: Upload WIFI",
+        },
+        {
+            "type": "shell",
+            "command": "platformio",
+            "args": [
+                "run"
+            ],
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "label": "PlatformIO: Upload COM",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         }
+
     ]
 }
