@@ -5,27 +5,35 @@ void PowerAnimation::animate() {
 
   AnimStep *s = &_steps[_stepIndex];
 
-  if (s->_stepTime) {
-    if (s->targetValue>=0) _value += ((float)s->targetValue-_value) / (float)s->_stepTime;
-    s->_stepTime--;
+  if (_stepTime) {
+    if (s->targetValue>=0) _value += ((float)s->targetValue-_value) / (float)_stepTime;
+    _stepTime--;
   } else {
-    while (s->_stepTime==0) {
-      s->_stepTime = s->stepTime;
-      if (s->targetValue>=0) _value = s->targetValue;
+    while (_stepTime==0) {
+      if (s->targetValue>=0) _value = s->targetValue; // write final value
       if (s->_repeat != 0) {
         if(s->_repeat > 0) s->_repeat--;
         _stepIndex += s->nextStepRel;
       } else {
-        s->_repeat = s->repeat;
-        _stepIndex++;
+        s->_repeat = s->repeat; // reset of dynamic repeat counter
+        _stepIndex++; // next animation step
       }
-      s = &_steps[_stepIndex];
+      s = &_steps[_stepIndex]; // change current step
+      _stepTime = s->stepTime; // get time from new step
     }
   }
 }
 
 short PowerAnimation::getValue() {
   return (short)_value;
+}
+
+unsigned short PowerAnimation::getStepIndex() {
+  return _stepIndex;
+}
+
+unsigned int PowerAnimation::getStepTime() {
+  return _stepTime;
 }
 
 int PowerAnimation::getId() {
@@ -39,11 +47,14 @@ void PowerAnimation::setId(int id) {
 void PowerAnimation::clear() {
   _enabled = false;
   _stepIndex = 0;
+  _stepTime = 0;
   _steps.Clear();
 }
 
 void PowerAnimation::enable() {
   _stepIndex = 0;
+  AnimStep *s = &_steps[_stepIndex];
+  _stepTime = s->stepTime;
   _enabled = true;
 }
 
@@ -54,7 +65,6 @@ void PowerAnimation::addStep(unsigned short stepTime, short targetValue, short n
   s.targetValue = targetValue;
   s.nextStepRel = nextStepRel;
   s.repeat = repeat;
-  s._stepTime = stepTime;
   s._repeat = repeat;
 
   _steps.Add(s);

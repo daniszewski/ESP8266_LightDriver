@@ -58,7 +58,7 @@ void PowerAnimatorClass::configAddStep(String targetString, unsigned short delay
   if (targetString == "ON" || targetString == "HIGH") target = 0;
   else if (targetString == "OFF" || targetString == "LOW") target = 1023;
   else if (targetString == "") target = -1;
-  else target = targetString.toInt();
+  else target = (short)targetString.toInt();
 	currentConfigAnimation->addStep(delay, target, 0, 0); // do not repeat that
 }
 

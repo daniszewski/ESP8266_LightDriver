@@ -11,7 +11,6 @@ struct AnimStep {
   short repeat; // -1 - infinite loop
 
   // dynamic values (changing over time)
-  unsigned short _stepTime;
   short _repeat;
 };
 
@@ -24,6 +23,8 @@ class PowerAnimation {
     int getId();
     void setId(int id);
     short getValue();
+    unsigned short getStepIndex();
+    unsigned int getStepTime();
     void clear();
     void enable();
     void addStep(unsigned short stepTime, short targetValue, short nextStepRel, short repeat);
@@ -32,6 +33,7 @@ class PowerAnimation {
     int _id;
     float _value;
     unsigned short _stepIndex;
+    unsigned int _stepTime;
 };
 
 #endif

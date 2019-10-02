@@ -25,14 +25,16 @@ String getStats() {
             value = String(PinDriver.getSwitchValue(pin) ? 1 : 0);
         } else if (type=='P' || type=='Z') {
             typeName = type=='P' ? "PWM" : "PHASE";
-            value = String(PinDriver.getPinAnim(pin)->getValue());
+            PowerAnimation* anim = PinDriver.getPinAnim(pin);
+            value = String(anim->getValue()) + ", \"seqstep\": " + String(anim->getStepIndex()) + ", \"timeleft\": " + String(anim->getStepTime());
         } else if (type=='O') {
             typeName = "ON/OFF";
-            value = PinDriver.getPinAnim(pin)->getValue() < 512 ? "\"ON\"" : "\"OFF\"";
+            PowerAnimation* anim = PinDriver.getPinAnim(pin);
+            value = String(anim->getValue() < 512 ? "\"ON\"" : "\"OFF\"") + ", \"seqstep\": " + String(anim->getStepIndex()) + ", \"timeleft\": " + String(anim->getStepTime());;
         }
         if (second) result += ",\n";
         else second = true;
-        result += "{\"name\": \""+name+"\", \"type\": \""+typeName+"\", \"value\": "+value+" }";
+        result += "{\"name\": \"" + name + "\", \"type\": \"" + typeName + "\", \"value\": " + value + " }";
     }
     result += "\n],\n\"WiFiClient_SSID\": \"" + WiFi.SSID() + "\",\n";
     result += "\"WiFiClient_IP\": \"" + WiFi.localIP().toString() + "\",\n";
