@@ -11,6 +11,7 @@ $defaultPwd = "esppower"
 # IMPLEMENTATION
 
 Add-Type -AssemblyName 'System.Net.Http'
+Add-Type -AssemblyName 'System.Web.Extensions'
 
 Function Submit-File {
     param( [String]$Url, [String]$FilePath )
