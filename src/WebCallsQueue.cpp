@@ -1,6 +1,7 @@
 #include "WebCallsQueue.h"
 
 String urlsToPing = "";
+WiFiClient client;
 HTTPClient http;
 
 void WebCallsQueueClass::begin() {
@@ -16,7 +17,7 @@ void WebCallsQueueClass::handle() {
     int httpCode = 1;
     if (url.length()>2) { 
         INFO("Calling url: " + url);
-        http.begin(url);
+        http.begin(client, url);
         httpCode = http.GET();
         INFO("Result: " + String(httpCode));
         http.end();

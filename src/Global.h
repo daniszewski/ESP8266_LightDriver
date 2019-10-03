@@ -13,6 +13,7 @@ int getFreeMem();
 String getVersion();
 String getScriptsPath();
 String getWord(String &line, int ix);
+unsigned int parseTime(String &time);
 void WiFiSTA(String ssid, String password, bool persistent);
 void WiFiAP(bool enable, bool persistent);
 void setAdminPassword(String pwd);

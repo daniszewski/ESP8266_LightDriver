@@ -48,6 +48,36 @@ String getWord(String &line, int ix) {
     return r;
 }
 
+
+unsigned int parseTime(String &time) {
+    unsigned int result = 0;
+    unsigned short part = 0;
+    unsigned short len = time.length();
+    bool dot = false;
+    for (unsigned short i=0; i < len; i++)
+    {
+        char c = time[i];
+        if (c >= '0' && c <= '9') part = (ushort)(part * 10 + (c - '0'));
+        else if (c == ':')
+        {
+            result = (result + part) * 60;
+            part = 0;
+        }
+        else if (c == '.')
+        {
+            result = result + part;
+            dot = true;
+            part = 0;
+            if (len - i == 2) part = (ushort)((time[++i] - '0') * 10);
+            else if (len - i == 3) part = (ushort)((time[i + 1] - '0') * 10 + (time[i + 2] - '0'));
+            break;
+        }
+    }
+    if (!dot) result = (result + part) * 100;
+    else result = result * 100 + part;
+    return result;
+}
+
 void bootStart() {
     Serial.begin(74880); //115200
 }

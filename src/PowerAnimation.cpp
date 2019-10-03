@@ -58,7 +58,7 @@ void PowerAnimation::enable() {
   _enabled = true;
 }
 
-void PowerAnimation::addStep(unsigned short stepTime, short targetValue, short nextStepRel, short repeat) {
+void PowerAnimation::addStep(unsigned int stepTime, short targetValue, short nextStepRel, short repeat) {
   _enabled = false;
   AnimStep s;
   s.stepTime = stepTime;

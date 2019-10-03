@@ -53,13 +53,13 @@ PowerAnimation* PowerAnimatorClass::configStart(int id, bool isTriggeredExternal
   return currentConfigAnimation;
 }
 
-void PowerAnimatorClass::configAddStep(String targetString, unsigned short delay) {
+void PowerAnimatorClass::configAddStep(String targetString, String timeInfo) {
   short target;
   if (targetString == "ON" || targetString == "HIGH") target = 0;
   else if (targetString == "OFF" || targetString == "LOW") target = 1023;
   else if (targetString == "") target = -1;
   else target = (short)targetString.toInt();
-	currentConfigAnimation->addStep(delay, target, 0, 0); // do not repeat that
+	currentConfigAnimation->addStep(parseTime(timeInfo), target, 0, 0); // do not repeat that
 }
 
 void PowerAnimatorClass::configAddRepeat(short commands, short count) {

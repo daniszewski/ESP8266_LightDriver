@@ -5,7 +5,7 @@
 
 struct AnimStep {
   // static values:
-	unsigned short stepTime; // in anim cycles
+	unsigned int stepTime; // in anim cycles (1/100 of sec), the range is about 1.36 years
 	short targetValue; // -1 - no change
   short nextStepRel; // relative index of next step (default: 1)
   short repeat; // -1 - infinite loop
@@ -27,7 +27,7 @@ class PowerAnimation {
     unsigned int getStepTime();
     void clear();
     void enable();
-    void addStep(unsigned short stepTime, short targetValue, short nextStepRel, short repeat);
+    void addStep(unsigned int stepTime, short targetValue, short nextStepRel, short repeat);
   protected:
     bool _enabled;
     int _id;

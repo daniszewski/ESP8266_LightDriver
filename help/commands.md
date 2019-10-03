@@ -14,8 +14,8 @@
 2. Sequence commands (available after starting a sequence)
 
     - VALUE {target value} - instantly assign a value to the output (0-1023, ON, OFF, LOW, HIGH)
-    - DELAY {time of delay} - wait specified number of 1/100 of a second
-    - SLIDE {time of activity} {target value} - transpose the current output level to the target value within provided time
+    - DELAY {time of delay} - wait specified time, format: [[h:]m:]s[.f]
+    - SLIDE {time of activity} {target value} - transpose the current output level to the target value (0-1023) within provided time (same as DELAY command)
     - REPEAT {no of commands} {no of repeats} - repeat last x commands provided number of times (-1 - inifite)
     - END - end current sequence definition
 
