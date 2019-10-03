@@ -2,7 +2,6 @@
 #define WEBCALLSQUEUE_H
 
 #include "Global.h"
-#include <ESP8266HTTPClient.h>
 
 class WebCallsQueueClass {
     public:

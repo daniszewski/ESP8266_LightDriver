@@ -12,6 +12,15 @@ function loadStats() {
     );
 }
 
+function formatTime(time) {
+    time = time / 100; // seconds
+    if (time > 172800) return Math.round(time/86400).toString() + " DAYS";
+    else if (time > 7200) return Math.round(time/3600).toString() + " HOURS";
+    else if (time > 120) return Math.round(time/60).toString() + " MINS";
+    else if (time > 2) return Math.round(time).toString() + " SECS";
+    else return "<2 SECS";
+}
+
 var admin = false;
 function updateStatsView() {
     $('#name').text(stats.name);
@@ -40,7 +49,9 @@ function updateStatsView() {
                 .replace(/\$type\$/g, pin.type)
                 .replace(/\$typecss\$/g, pin.type.replace('/',''))
                 .replace(/\$name\$/g, pin.name)
-                .replace(/\$value\$/g, pin.value);
+                .replace(/\$value\$/g, pin.value)
+                .replace(/\$step\$/g, pin.seqstep.toString())
+                .replace(/\$time\$/g, formatTime(pin.timeleft));
             current.replaceWith(html);
         }
     }

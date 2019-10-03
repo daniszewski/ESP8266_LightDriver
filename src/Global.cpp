@@ -11,6 +11,9 @@ String driverName;
 bool _admin = false;
 bool _boot = true;
 
+const char CHR_0 = '0';
+const char CHR_9 = '9';
+
 int logToSerial(String msg) { 
     Serial.print(msg); 
     return 0; 
@@ -57,7 +60,7 @@ unsigned int parseTime(String &time) {
     for (unsigned short i=0; i < len; i++)
     {
         char c = time[i];
-        if (c >= '0' && c <= '9') part = (ushort)(part * 10 + (c - '0'));
+        if (c >= CHR_0 && c <= CHR_9) part = (ushort)(part * 10 + (c - CHR_0));
         else if (c == ':')
         {
             result = (result + part) * 60;
@@ -68,8 +71,8 @@ unsigned int parseTime(String &time) {
             result = result + part;
             dot = true;
             part = 0;
-            if (len - i == 2) part = (ushort)((time[++i] - '0') * 10);
-            else if (len - i == 3) part = (ushort)((time[i + 1] - '0') * 10 + (time[i + 2] - '0'));
+            if (len - i == 2) part = (ushort)((time[++i] - CHR_0) * 10);
+            else if (len - i == 3) part = (ushort)((time[i + 1] - CHR_0) * 10 + (time[i + 2] - CHR_0));
             break;
         }
     }
@@ -115,11 +118,11 @@ void WiFiAP(bool enable, bool persistent) {
             IPAddress subnet(255,255,255,0);
             delay(100);
             if (WiFi.softAPConfig(localIp, gateway, subnet)) {
-                INFO("AP started");
-                Serial.print("Soft-AP with IP: ");
+                INFO(F("AP started"));
+                Serial.print(F("Soft-AP with IP: "));
                 Serial.println(WiFi.softAPIP());
-            } else { ERR("AP config error"); }
-        } else { ERR("AP start error"); }
+            } else { ERR(F("AP config error")); }
+        } else { ERR(F("AP start error")); }
     } else {
         WiFi.enableAP(false);
     }
@@ -144,10 +147,10 @@ void setAdmin() {
 bool login(String password) {
     if (adminpwd == password) {
         _admin = true;
-        INFO("Logged in");
+        INFO(F("Logged in"));
         return true;
     }
-    ERR("Wrong password");
+    ERR(F("Wrong password"));
     return false;
 }
 

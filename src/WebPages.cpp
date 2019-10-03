@@ -3,43 +3,49 @@
 #include "Commands.h"
 #include "detail/mimetable.h"
 
-#define TEMPORARY_FILE "/_uploaded"
-#define PREFIX_WWW "/www"
 #define MIME_TEXTPLAIN mimeTable[3].mimeType
 
 using namespace mime;
 
 ESP8266WebServer server(80);
 
-String prefix = PREFIX_WWW;
+static const char * STR_OK = "OK";
+static const char * STR_PLAIN = "plain";
+static const char * STR_R = "r";
+static const char * STR_W = "w";
+static const char * STR_INDEXHTML = "/index.html";
+static const char * STR_WWW = "/www";
+static const char * STR_TEMPORARY_FILE = "/_uploaded";
 
-void sendOK() { server.send(200, MIME_TEXTPLAIN, "OK"); }
+String prefix = STR_WWW;
+
+void sendOK() { server.send(200, MIME_TEXTPLAIN, STR_OK); }
 void sendERR(String msg) { server.send(500, MIME_TEXTPLAIN, msg); }
-void sendRedirect(String url) { server.sendHeader("Location", url, true); server.send(302, MIME_TEXTPLAIN, ""); }
-void sendNoAdmin() { server.send(500, MIME_TEXTPLAIN, "Not admin"); }
+void sendRedirect(String url) { server.sendHeader(F("Location"), url, true); server.send(302, MIME_TEXTPLAIN, ""); }
+void sendNoAdmin() { server.send(500, MIME_TEXTPLAIN, F("Not admin")); }
 
 void zeroConf();
 
 void WebPagesClass::begin() {
-    server.on("/stats", HTTP_GET, [this](){ handleJson(getStats()); });
-    server.on("/boot", [this](){ handleBoot(); });
-    server.on("/run", [this](){ handleRun(); });
-    server.on("/crc", HTTP_GET, [this](){ 
+    server.on(F("/stats"), HTTP_GET, [this](){ sendStats(&server); });
+    server.on(F("/boot"), [this](){ handleBoot(); });
+    server.on(F("/run"), [this](){ handleRun(); });
+    server.on(F("/crc"), HTTP_GET, [this](){ 
         if (isAdmin()) handleJson("{ \"crc\": \""+ESP.getSketchMD5()+"\" }"); 
         else sendNoAdmin(); 
     });
-    server.on("/upload", HTTP_POST, [](){ 
+    server.on(F("/upload"), HTTP_POST, [](){ 
         if (isAdmin()) {
             SPIFFS.remove(prefix + "/" + server.arg(0));
-            SPIFFS.rename(TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
+            SPIFFS.rename(STR_TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
             server.send(200); 
         } else sendNoAdmin();
-    }, [this](){ handleFileUpload(TEMPORARY_FILE); });
-    server.on("/upload", HTTP_PUT, [](){ 
+    }, [this](){ handleFileUpload(STR_TEMPORARY_FILE); });
+    server.on(F("/upload"), HTTP_PUT, [](){ 
         if (isAdmin()) server.send(200); 
         else sendNoAdmin();
     }, [this](){ handleFileUpload(server.upload().filename); });
-    server.on("/update", HTTP_POST, []() {
+    server.on(F("/update"), HTTP_POST, []() {
         if (isAdmin()) {
             sendOK();
             delay(500);
@@ -71,34 +77,34 @@ String WebPagesClass::getContentType(const String& path) {
 
 void WebPagesClass::handleStaticPage() {
     String url = server.uri(); url.toLowerCase();
-    if (url == "/" && server.method() == HTTP_GET) url = "/index.html";
+    if (url == "/" && server.method() == HTTP_GET) url = STR_INDEXHTML;
 
     if (server.method() == HTTP_GET) {
-        if (url.startsWith("/dir/") || url=="/dir") {
+        if (url.startsWith(F("/dir/")) || url==F("/dir")) {
             url = url.substring(4);
             if (url.endsWith("/") && url.length() > 1) url = url.substring(0, url.length() - 1);
             handleDir(url);
         } else {
             if (!isAdmin() || !url.startsWith(getScriptsPath())) url = prefix + url;
-            File f = SPIFFS.open(url, "r");
+            File f = SPIFFS.open(url, STR_R);
             if (f) {
                 String h = getContentType(url);
-                server.sendHeader("Content-Type", h);
+                server.sendHeader(F("Content-Type"), h);
                 server.streamFile(f, h);
                 f.close();
-            } else if (url == prefix + "/index.html") zeroConf();
-            else server.send(404, MIME_TEXTPLAIN, "404: Not found");
+            } else if (url == prefix + STR_INDEXHTML) zeroConf();
+            else server.send(404, MIME_TEXTPLAIN, F("404: Not found"));
         }
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
             if (!url.startsWith(getScriptsPath())) url = prefix + url;
-            File f = SPIFFS.open(url, "w");
+            File f = SPIFFS.open(url, STR_W);
             if (f) { 
-                f.print(server.arg("plain"));
+                f.print(server.arg(STR_PLAIN));
                 f.print("\n");
                 f.flush(); f.close();
-                server.send(200, MIME_TEXTPLAIN, "OK");
-            } else server.send(500, MIME_TEXTPLAIN, "File write error");
+                server.send(200, MIME_TEXTPLAIN, STR_OK);
+            } else server.send(500, MIME_TEXTPLAIN, F("File write error"));
         } else sendNoAdmin();
     } else if (server.method() == HTTP_DELETE) {
         if (isAdmin()) {
@@ -110,50 +116,50 @@ void WebPagesClass::handleStaticPage() {
 }
 
 void WebPagesClass::handleJson(const String& json) {
-    server.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    server.sendHeader("Pragma", "no-cache");
-    server.sendHeader("Expires", "-1");
-    server.send(200, "application/json", json);
+    server.sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
+    server.sendHeader(F("Pragma"), F("no-cache"));
+    server.sendHeader(F("Expires"), F("-1"));
+    server.send(200, F("application/json"), json);
 }
 
 void WebPagesClass::handleDir(String root) {
-    if (root=="") root = "/www";
+    if (root=="") root = STR_WWW;
     Dir dir = SPIFFS.openDir(root);
     String list = "{ ";
     bool first = true;
     while (dir.next()) {
-        File f = dir.openFile("r");
+        File f = dir.openFile(STR_R);
         if (first) first = false;
-        else list += ", ";
+        else list += F(", ");
         list += "\""+dir.fileName().substring(root.length() + 1) + "\": " + String(f.size());
         f.close();
     }
-    list+=" }";
+    list+=F(" }");
     handleJson(list);
 }
 
 void WebPagesClass::handleBoot() {
     if (isAdmin()) {
         if (server.method() == HTTP_GET) {
-            File f = SPIFFS.open("/boot", "r");
+            File f = SPIFFS.open(F("/boot"), STR_R);
             if (f) {
                 server.setContentLength(f.size());
-                String h = getContentType("/boot");
-                server.sendHeader("Content-Type", h);
+                String h = getContentType(F("/boot"));
+                server.sendHeader(F("Content-Type"), h);
                 server.streamFile(f, h);
                 f.close();
-            } else server.send(500, MIME_TEXTPLAIN, "Could not read file /boot");
+            } else server.send(500, MIME_TEXTPLAIN, F("Could not read file /boot"));
         } else if (server.method() == HTTP_PUT) {
-            File f = SPIFFS.open("/boot", "w");
+            File f = SPIFFS.open(F("/boot"), STR_W);
             if (f) { 
-                f.print(server.arg("plain"));
+                f.print(server.arg(STR_PLAIN));
                 f.print("\n");
                 f.flush(); f.close();
                 sendOK();
-                f = SPIFFS.open("/boot_tries", "w");
-                f.print("0");
+                f = SPIFFS.open(F("/boot_tries"), STR_W);
+                f.print(F("0"));
                 f.flush(); f.close();
-            } else server.send(500, MIME_TEXTPLAIN, "Could not write file /boot");
+            } else server.send(500, MIME_TEXTPLAIN, F("Could not write file /boot"));
         }
     } sendNoAdmin();
 }
@@ -165,7 +171,7 @@ void WebPagesClass::handleRun() {
         if (executeFile(file)) sendOK();
         else sendERR(getLastError());
     } else if (server.method() == HTTP_PUT) {
-        String body = server.arg("plain")+'\n';
+        String body = server.arg(STR_PLAIN)+'\n';
         int lineStart = 0, lineEnd = 0, lineCounter = 1;
         do {
             lineEnd = body.indexOf('\n',lineStart);
@@ -189,7 +195,7 @@ void WebPagesClass::handleFileUpload(const String& filename) {
     HTTPUpload& upload = server.upload();
     if (upload.status == UPLOAD_FILE_START){
         INFO("Uploading file " + filename);
-        fsUploadFile = SPIFFS.open(filename, "w");
+        fsUploadFile = SPIFFS.open(filename, STR_W);
     } else if (upload.status == UPLOAD_FILE_WRITE){
         if (fsUploadFile) {
             fsUploadFile.write(upload.buf, upload.currentSize);
@@ -198,7 +204,7 @@ void WebPagesClass::handleFileUpload(const String& filename) {
         if (fsUploadFile) {
             fsUploadFile.close();
         } else {
-            sendERR("couldn't create file");
+            sendERR(F("couldn't create file"));
         }
     }
 }
@@ -210,7 +216,7 @@ void WebPagesClass::handleFirmwareUpdate() {
     if (upload.status == UPLOAD_FILE_START) {
         Serial.setDebugOutput(true);
         WiFiUDP::stopAll();
-        Serial.printf("Update: %s\n", upload.filename.c_str());
+        Serial.printf(PSTR("Update: %s\n"), upload.filename.c_str());
         uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
         if (!Update.begin(maxSketchSpace)) { //start with max available size
             Update.printError(Serial);
@@ -221,7 +227,7 @@ void WebPagesClass::handleFirmwareUpdate() {
         }
     } else if (upload.status == UPLOAD_FILE_END) {
         if (Update.end(true)) { //true to set the size to the current progress
-            Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+            Serial.printf(PSTR("Update Success: %u\nRebooting...\n"), upload.totalSize);
         } else {
             Update.printError(Serial);
         }
@@ -231,7 +237,7 @@ void WebPagesClass::handleFirmwareUpdate() {
 }
 
 void zeroConf() {
-    server.send(200, "text/html", "\
+    server.send(200, F("text/html"), F("\
 <!DOCTYPE html>\
 <html><head><title>ESP8266 Powers</title></head><body>\
 <h1>ESP8266 ZERO CONF</h1>\
@@ -251,7 +257,7 @@ function gv(id) { return document.getElementById(id).value;}\
 function sv(id,v) { document.getElementById(id).innerText=v;}\
 setTimeout(getStats, 1000);\
 </script>\
-</body></html>");
+</body></html>"));
 }
 
 WebPagesClass WebPages;

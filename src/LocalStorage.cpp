@@ -1,8 +1,8 @@
 #include "LocalStorage.h"
 #include "Global.h"
 
-#define FORMAT_INDICATOR "/boot"
-#define FORMAT_INDICATOR2 "/www/index.html"
+#define FORMAT_INDICATOR F("/boot")
+#define FORMAT_INDICATOR2 F("/www/index.html")
 
 void LocalStorageClass::begin() {
     SPIFFS.begin();
@@ -10,17 +10,17 @@ void LocalStorageClass::begin() {
     // file system format if required
     if (!SPIFFS.exists(FORMAT_INDICATOR)) {
         bool format = !SPIFFS.exists(FORMAT_INDICATOR2);
-        if (format) Serial.println("SPIFFS: formatting");
+        if (format) Serial.println(F("SPIFFS: formatting"));
         if (!format || SPIFFS.format()) {
             File f = SPIFFS.open(FORMAT_INDICATOR, "w");
             if (f) {
-                Serial.println("SPIFFS: formatting done");
+                Serial.println(F("SPIFFS: formatting done"));
                 f.println("NAME " + WiFi.macAddress());
                 f.close();
                 firstBoot();
             }
-            else Serial.println("SPIFFS: formatting error (creating indicator file)");
-        } else Serial.println("SPIFFS: formatting error");
+            else Serial.println(F("SPIFFS: formatting error (creating indicator file)"));
+        } else Serial.println(F("SPIFFS: formatting error"));
     }
 }
 

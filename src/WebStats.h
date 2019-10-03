@@ -2,7 +2,8 @@
 #define WEBSTATS_H
 
 #include "Global.h"
+#include <ESP8266WebServer.h>
 
-String getStats();
+void sendStats(ESP8266WebServer *server);
 
 #endif

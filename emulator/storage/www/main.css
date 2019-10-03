@@ -144,6 +144,7 @@ h1 {
     padding: 1px;
     border: solid 1px #000;
     text-align: center;
+    position: relative;
 }
 .pin-title {
     border: solid 1px #000;
@@ -151,6 +152,24 @@ h1 {
 }
 .pin-state {
     padding-top:14px;
+}
+.pin-time {
+    position:absolute;
+    width:60px;
+    bottom:0px;
+    right:2px;
+    text-align: right;
+    font-size: 8px;
+    color:blue;
+}
+.pin-step {
+    position:absolute;
+    width:30px;
+    bottom:0px;
+    left:2px;
+    text-align: left;
+    font-size: 8px;
+    color: green;
 }
 
 .buttons {

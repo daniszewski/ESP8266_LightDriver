@@ -37,9 +37,9 @@ uint8_t PinDriverClass::getPin(int ix) {
 uint8_t PinDriverClass::parsePin(String pin) { // D0 D1 ... D9 V0 V1 ... V9
     char t = pin.charAt(0);
     char c = pin.charAt(1);
-    if (c<'0') c='0';
-    if (c>'9') c='9';
-    return pins[c-'0' + (t=='D' ? 0 : 10)];
+    if (c < CHR_0) c = CHR_0;
+    if (c > CHR_9) c = CHR_9;
+    return pins[c - CHR_0 + (t=='D' ? 0 : 10)];
 }
 
 void PinDriverClass::initZero(String pinName) {
@@ -159,7 +159,7 @@ void PinDriverClass::initSwitch(String pinName, String switchType, String onHigh
     onHigh.toLowerCase();
     pinType[pin] = 'S';
     char type = switchType.charAt(0); // 1, 2 or T/P/Z
-    if (type > '9') type = 'T';
+    if (type > CHR_9) type = 'T';
     if (pin < 22) pinMode(pin, pin == 16 ? INPUT : INPUT_PULLUP); // pin 16 doesn't have a pullup option in ESP8266
     switchDef[pin] = { type, false, false, millis(), onLow, onHigh };
 }

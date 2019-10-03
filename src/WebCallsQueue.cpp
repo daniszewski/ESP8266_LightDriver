@@ -1,4 +1,7 @@
 #include "WebCallsQueue.h"
+#include <ESP8266HTTPClient.h>
+
+//TODO: get rid of ESP8266HTTPClient to save memory (5kB progmem and 300b ram)
 
 String urlsToPing = "";
 WiFiClient client;
