@@ -12,3 +12,4 @@ updates/update-config.json
 emulator/bin
 emulator/obj
 emulator/.vs
+firmware.map
