@@ -6,8 +6,10 @@ void PowerAnimation::animate() {
   AnimStep *s = &_steps[_stepIndex];
 
   if (_stepTime) {
-    if (s->targetValue>=0) _value += ((float)s->targetValue-_value) / (float)_stepTime;
-    _stepTime--;
+    if (_stepTime < UINT32_MAX) {
+      if (s->targetValue>=0) _value += ((float)s->targetValue-_value) / (float)_stepTime;
+      _stepTime--;
+    }
   } else {
     while (_stepTime==0) {
       if (s->targetValue>=0) _value = s->targetValue; // write final value

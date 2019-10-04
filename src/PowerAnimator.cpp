@@ -67,7 +67,7 @@ void PowerAnimatorClass::configAddRepeat(short commands, short count) {
 }
 
 void PowerAnimatorClass::configEnd() {
-  currentConfigAnimation->addStep(6000, -1, 0, -1); // every minute jump to itself
+  currentConfigAnimation->addStep(UINT32_MAX, -1, 0, -1); // every minute jump to itself
   currentConfigAnimation->enable();
 }
 

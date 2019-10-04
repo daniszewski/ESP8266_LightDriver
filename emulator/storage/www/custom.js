@@ -12,13 +12,23 @@ function loadStats() {
     );
 }
 
-function formatTime(time) {
+function formatTimeShort(time) {
     time = time / 100; // seconds
-    if (time > 172800) return Math.round(time/86400).toString() + " DAYS";
-    else if (time > 7200) return Math.round(time/3600).toString() + " HOURS";
-    else if (time > 120) return Math.round(time/60).toString() + " MINS";
-    else if (time > 2) return Math.round(time).toString() + " SECS";
-    else return "<2 SECS";
+    if (time > 42949670) return "inf.";
+    if (time > 172800) return Math.round(time/86400).toString() + " days left";
+    if (time > 7200) return Math.round(time/3600).toString() + " hours left";
+    if (time > 120) return Math.round(time/60).toString() + " mins left";
+    if (time > 2) return Math.round(time).toString() + " secs left";
+    return "<2 secs left";
+}
+
+function formatInt(num, len) { return ('0'.repeat(len)+num).slice(-len);}
+
+function formatTimeLong(time) {
+    time = time / 100; // seconds
+    if (time > 42949670) return "no changes planned";
+    return (time > 86400 ? (Math.floor(time/86400) + ' day'+time>=172800 ? 's':'') : '') + // days
+        ' '+formatInt(Math.floor(time/3600)%86400,2)+':'+formatInt(Math.floor(time/60)%3600,2)+':'+formatInt(Math.floor(time)%60,2);
 }
 
 var admin = false;
@@ -45,13 +55,15 @@ function updateStatsView() {
                 statsContainer.append('<div></div>');
                 current = statsContainer.children().last();
             }
+            var tstr = formatTimeShort(pin.timeleft);
             var html = tmpl.html()
                 .replace(/\$type\$/g, pin.type)
                 .replace(/\$typecss\$/g, pin.type.replace('/',''))
                 .replace(/\$name\$/g, pin.name)
                 .replace(/\$value\$/g, pin.value)
-                .replace(/\$step\$/g, pin.seqstep.toString())
-                .replace(/\$time\$/g, formatTime(pin.timeleft));
+                .replace(/\$step\$/g, tstr==='inf.'?"":pin.seqstep.toString())
+                .replace(/\$time\$/g, tstr)
+                .replace(/\$timetooltip\$/g, formatTimeLong(pin.timeleft));
             current.replaceWith(html);
         }
     }

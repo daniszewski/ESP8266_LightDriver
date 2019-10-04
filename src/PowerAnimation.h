@@ -1,6 +1,7 @@
 #ifndef POWERANIMATION_H
 #define POWERANIMATION_H
 
+#include <stdint.h>
 #include "DynArray.h"
 
 struct AnimStep {
