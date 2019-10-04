@@ -1,6 +1,6 @@
 # CONFIG
 $uriPattern = "http://192.168.0.{0}/"
-$uriRange = 151..151
+$uriRange = 216..216
 $path = "emulator\storage\www\"
 $src = "src"
 $firmware = ".pio\build\nodemcuv2\firmware.bin"

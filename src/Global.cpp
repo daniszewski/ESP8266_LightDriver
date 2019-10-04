@@ -87,7 +87,6 @@ void bootStart() {
 
 void firstBoot() {
     WiFiAP(true, true);
-
 }
 
 void bootComplete() {
@@ -98,10 +97,10 @@ void bootComplete() {
 void WiFiSTA(String ssid, String password, bool persistent) {
     if (ssid.length()>0) {
         WiFi.persistent(persistent);
-        char _ssid[64];
-        char _password[128]; 
-        ssid.toCharArray(_ssid, 64); 
-        password.toCharArray(_password, 128);
+        char _ssid[32];
+        char _password[32]; 
+        ssid.toCharArray(_ssid, 32); 
+        password.toCharArray(_password, 32);
         WiFi.begin(_ssid, _password);
     } else {
         WiFi.enableSTA(false);
@@ -113,13 +112,13 @@ void WiFiAP(bool enable, bool persistent) {
     if (enable) {
         const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
         if (WiFi.softAP(mac, wifiappwd, 10, false, 4)) { 
+            INFO(F("AP started"));
+            delay(100);
             IPAddress localIp(192,168,4,1);
             IPAddress gateway(192,168,4,1);
             IPAddress subnet(255,255,255,0);
-            delay(100);
             if (WiFi.softAPConfig(localIp, gateway, subnet)) {
-                INFO(F("AP started"));
-                Serial.print(F("Soft-AP with IP: "));
+                INFO(F("Soft-AP with IP: "));
                 Serial.println(WiFi.softAPIP());
             } else { ERR(F("AP config error")); }
         } else { ERR(F("AP start error")); }
@@ -172,7 +171,7 @@ bool executeFile(String filename) {
         int line = 1;
         while (f.available()) {
             if (!execute(f.readStringUntil('\n'))) {
-                ERR(filename+": unknown command in line "+String(line));
+                ERR(filename+PSTR(": unknown command in line ")+String(line));
                 f.close();
             }
             line++;
@@ -180,7 +179,7 @@ bool executeFile(String filename) {
         f.close(); 
         return true; 
     }
-    ERR(filename+": file doesn't exist.");
+    ERR(filename+PSTR(": file doesn't exist."));
     return false;
 }
 

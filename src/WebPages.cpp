@@ -239,7 +239,7 @@ void WebPagesClass::handleFirmwareUpdate() {
 void zeroConf() {
     server.send(200, F("text/html"), F("\
 <!DOCTYPE html>\
-<html><head><title>ESP8266 Powers</title></head><body>\
+<html><head><title>ESP8266 driver zero conf</title></head><body>\
 <h1>ESP8266 ZERO CONF</h1>\
 <div style='text-align:right;width:250px'>\
 SSID: <input type='text' id='s' /><br />\
@@ -250,8 +250,8 @@ PWD: <input type='password' id='p' /><br />\
 Client IP: <strong><span style='color:green' id='IP'></span></strong>\
 <script>\
 function getStats() {rest('GET','stats',null,function() {if (this.readyState==4) { if(this.status==200) {var j=eval('x='+this.responseText);sv('IP',j.WiFiClient_IP);} setTimeout(getStats, 1000);}});}\
-function wifi() { sv('IP','connecting...'); rest('PUT','run','LOGIN espPower\\nWIFI '+gv('s')+' '+gv('p')+'\\n'); }\
-function reset() { sv('IP','restarting...'); rest('PUT','run','LOGIN espPower\\nRESTART\\n'); }\
+function wifi() { sv('IP','connecting...'); rest('PUT','run','LOGIN esppower\\nWIFI '+gv('s')+' '+gv('p')+'\\n'); }\
+function reset() { sv('IP','restarting...'); rest('PUT','run','LOGIN esppower\\nRESTART\\n'); }\
 function rest(method,url,body,cb) { var x=new XMLHttpRequest();x.onreadystatechange=cb;x.open(method,url,true);x.send(body);}\
 function gv(id) { return document.getElementById(id).value;}\
 function sv(id,v) { document.getElementById(id).innerText=v;}\

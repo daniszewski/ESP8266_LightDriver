@@ -30,12 +30,13 @@ void firstBoot();
 void bootComplete();
 void deleteFile(String filename);
 
-
-// #define ERR(...) { logToSerial(F("ERROR: ")); logToSerial( __VA_ARGS__ ); logToSerial(F("\n")); setLastError(__VA_ARGS__); }
-// #define INFO(...) { logToSerial(F("INFO: ")); logToSerial( __VA_ARGS__ ); logToSerial(F("\n")); }
-
-#define ERR(...)
-#define INFO(...)
+#ifndef NDEBUG
+    #define ERR(...) { logToSerial(F("ERROR: ")); logToSerial( __VA_ARGS__ ); logToSerial(F("\n")); setLastError(__VA_ARGS__); }
+    #define INFO(...) { logToSerial(F("INFO: ")); logToSerial( __VA_ARGS__ ); logToSerial(F("\n")); }
+#else
+    #define ERR(...) { setLastError(__VA_ARGS__); }
+    #define INFO(...)
+#endif
 
 extern const char CHR_0;
 extern const char CHR_9;
