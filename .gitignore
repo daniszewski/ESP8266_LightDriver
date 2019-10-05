@@ -13,3 +13,4 @@ emulator/bin
 emulator/obj
 emulator/.vs
 firmware.map
+src/src.ino.cpp

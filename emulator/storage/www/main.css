@@ -137,6 +137,10 @@ h1 {
     background-color: #6df;
 }
 
+.pin-ONOFF {
+    cursor: grab;
+}
+
 .pin-PWM, .pin-PHASE, .pin-ONOFF, .pin-SWITCH, .pin-ZERO {
     width: 90px;
     height: 60px;
@@ -147,6 +151,7 @@ h1 {
     text-align: center;
     position: relative;
 }
+
 .pin-title {
     border: solid 1px #000;
     background-color: orange;

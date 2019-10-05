@@ -1,5 +1,5 @@
 # CONFIG
-$uriPattern = "http://192.168.0.{0}/"
+$uriPattern = "http://192.168.1.{0}/"
 $uriRange = 216..216
 $path = "emulator\storage\www\"
 $src = "src"

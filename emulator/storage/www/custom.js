@@ -65,6 +65,9 @@ function updateStatsView() {
                 .replace(/\$time\$/g, tstr)
                 .replace(/\$timetooltip\$/g, formatTimeLong(pin.timeleft));
             current.replaceWith(html);
+            current = $('#'+id);
+            current[0].pin = pin;
+            if (pin.type==='ON/OFF') current.click(clickONOFF);
         }
     }
     $('#page-wifi input').attr('disabled', stats.admin !== 1);
@@ -76,6 +79,11 @@ function updateStatsView() {
         loadBootFile();
     }
     admin = stats.admin;
+}
+
+function clickONOFF(obj) {
+    var pin = obj.currentTarget.pin;
+    rest('PUT','run','SEQ '+pin.name+'\nVALUE '+(pin.value==='ON'?'OFF':'ON')+'\nEND\n');
 }
 
 function showPage(page) {
