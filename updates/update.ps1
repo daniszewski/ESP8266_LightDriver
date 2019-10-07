@@ -1,12 +1,12 @@
 # CONFIG
-$uriPattern = "http://192.168.1.{0}/"
-$uriRange = 216..216
 $path = "emulator\storage\www\"
 $src = "src"
 $firmware = ".pio\build\nodemcuv2\firmware.bin"
 $timeout = 5
 $configFile = "updates\update-config.json"
 $defaultPwd = "esppower"
+$defaultUriPattern = "http://192.168.0.{0}/" # change it in update-config.json if needed
+$defaultUriRange = "200-210" # change it in update-config.json if needed
 
 # IMPLEMENTATION
 
@@ -63,8 +63,7 @@ Function Get-FolderHash {
     return $ret
 }
 
-
-function Parse-JsonFile([string]$file) {
+function Get-Json([string]$file) {
     $text = Get-Content $file -Raw
     $parser = New-Object System.Web.Script.Serialization.JavaScriptSerializer
     $parser.MaxJsonLength = $text.length
@@ -96,15 +95,28 @@ workflow Invoke-URLRequest {
     Return $myoutput
 }
 
+function Get-Config([Object]$x, [String]$name, [String]$defaultValue) {
+    if ($null -eq $x.$name) { 
+        $x.$name = $defaultValue;
+        $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
+    }
+    Return $x.$name
+}
+
+if (Test-Path $configFile -PathType Leaf) {
+    $config = Get-Json $configFile
+} else {
+    $config = @{Config=@{}}
+}
+
+$globalConfig = $config.Config
+$uriPattern = Get-Config $globalConfig "UriPattern" $defaultUriPattern
+$uriRangeText = Get-Config $globalConfig "UriRange" $defaultUriRange
+$uriRangeText = $uriRangeText.Replace("..", "-")
+$uriRange = $uriRangeText.Split("-")[0]..$uriRangeText.Split("-")[1]
 $uris = $uriRange | ForEach-Object { [String]::Format($uriPattern, $_) }
 $sourcesCrc = Get-FolderHash $src
 $firmware = (Get-ChildItem $firmware).FullName
-
-if (Test-Path $configFile -PathType Leaf) {
-    $config = Parse-JsonFile $configFile
-} else {
-    $config = @{}
-}
 
 Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
     $hostUri = $_.Uri
