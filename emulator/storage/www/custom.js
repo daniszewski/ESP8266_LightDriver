@@ -1,12 +1,16 @@
 var stats = { "name": "", "freemem": -1, "admin": 0, "WiFiClient_SSID": "", "WiFiClient_IP": "0.0.0.0", "WiFiAP_SSID": "", "WiFiAP_IP": "0.0.0.0", "version": "0.0", "connection": 0};
 
 function rest(type, url, body, oncomplete, onsuccess, onerror) {
-    $.ajax({type: type, url: url, data: body, complete: oncomplete, success: onsuccess, error: onerror, contentType: 'text/plain'});
+    $.ajax({type: type, url: url, data: body, complete: function() { if(oncomplete) oncomplete(); if(url!=="stats") loadStatsAdhoc(); }, success: onsuccess, error: onerror, contentType: 'text/plain'});
 }
 
 function loadStats() {
+    loadStatsAdhoc(function() {if($('#autorefresh').is(':checked')) setTimeout(loadStats, 1000);});
+}
+
+function loadStatsAdhoc(loopfunc) {
     rest('GET','stats',null,
-        function() {updateStatsView();setTimeout(loadStats, 1000); }, 
+        function() {updateStatsView(); if(loopfunc) loopfunc(); }, 
         function(result) {stats = $.extend(stats, result, { "connection": 1 });},
         function(x,a,t) {stats.connection = 0; stats.admin = 0;message(t,800);}
     );
@@ -116,6 +120,9 @@ function initButtons() {
     $('#fileUpload').change(function () {
         $('#filename').val((_folder.length>0?_folder+'/':'')+$(this).val().split('\\').pop());
         $.ajax({ url: 'upload', type: 'POST', data: new FormData($('#formUpload')[0]), cache: false, contentType: false, processData: false, success: loadDirWww });
+    });
+    $('#autorefresh').change(function() {
+        if(this.checked) loadStats();
     });
 }
 

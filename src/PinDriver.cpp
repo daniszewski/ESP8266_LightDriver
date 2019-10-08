@@ -45,7 +45,7 @@ uint8_t PinDriverClass::parsePin(String pin) { // D0 D1 ... D9 V0 V1 ... V9
 void PinDriverClass::initZero(String pinName) {
     uint8_t pin = parsePin(pinName);
     pinType[pin] = 'X'; // cross zero
-    if (pin < 22) attachInterrupt(digitalPinToInterrupt(pin), zeroDetected, RISING);
+    if (pin < FIRTSVIRTUALPIN) attachInterrupt(digitalPinToInterrupt(pin), zeroDetected, RISING);
 }
 
 void PinDriverClass::setPhaseStartTime(int time) {
@@ -146,11 +146,13 @@ void PinDriverClass::updatePinsPwm() {
     }
 }
 
-void PinDriverClass::initPin(String pinName, String modeWord) { // mode: PWM, ZERO, OFF
+void PinDriverClass::initPin(String pinName, String modeWord) { // mode: PWM, ZERO, ONOFF
     uint8_t pin = parsePin(pinName);
     char mode = modeWord.charAt(0);
     pinType[pin] = mode;
-    pinMode(pin, OUTPUT);
+    if (pin < FIRTSVIRTUALPIN) {
+        pinMode(pin, OUTPUT);
+    }
 }
 
 void PinDriverClass::initSwitch(String pinName, String switchType, String onHigh, String onLow) {
@@ -160,7 +162,7 @@ void PinDriverClass::initSwitch(String pinName, String switchType, String onHigh
     pinType[pin] = 'S';
     char type = switchType.charAt(0); // 1, 2 or T/P/Z
     if (type > CHR_9) type = 'T';
-    if (pin < 22) pinMode(pin, pin == 16 ? INPUT : INPUT_PULLUP); // pin 16 doesn't have a pullup option in ESP8266
+    if (pin < FIRTSVIRTUALPIN) pinMode(pin, pin == 16 ? INPUT : INPUT_PULLUP); // pin 16 doesn't have a pullup option in ESP8266
     switchDef[pin] = { type, false, false, millis(), onLow, onHigh };
 }
 
@@ -168,7 +170,7 @@ void PinDriverClass::disablePin(String pinName) {
     uint8_t pin = parsePin(pinName);
     if (pinType[pin] == 'X') detachInterrupt(digitalPinToInterrupt(pin));
     pinType[pin] = ' ';
-    if (pin < 22) {
+    if (pin < FIRTSVIRTUALPIN) {
         pinMode(pin, OUTPUT);
         digitalWrite(pin, LOW);
     }

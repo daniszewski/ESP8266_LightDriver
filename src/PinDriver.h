@@ -12,6 +12,7 @@
 #define ZERO_DELAY_THRESHOLD 100
 #define PINCOUNTALL 20
 #define PINCOUNT 10
+#define FIRTSVIRTUALPIN 22
 
 class PinDriverClass {
     public:

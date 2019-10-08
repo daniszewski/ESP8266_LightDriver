@@ -92,15 +92,22 @@ h1 {
 
 #footer .form-item {
     display: inline-block;
-    width: 200px;
+    width: 170px;
     color: lightgray;
     font-size: 12px;
     padding-top:3px;
+    margin:0px;
 }
 
 #footer .form-item span {
     font-weight: bold;
     color: white;
+}
+
+#footer input {
+    float: right;
+    margin-top: 0px;
+    margin-bottom: -6px;
 }
 
 #body .form-item {

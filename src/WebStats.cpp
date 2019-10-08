@@ -21,7 +21,7 @@ void sendStats(ESP8266WebServer *server) {
         if (type < 'A') continue;
         String name = "D_";
         if (i>9) name.setCharAt(0, 'V');
-        name.setCharAt(1, CHR_0 + i);
+        name.setCharAt(1, CHR_0 + (i > 9 ? i - 10 : i));
         String value;
         String typeName;
         if (type=='X') {
