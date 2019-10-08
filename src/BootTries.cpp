@@ -16,7 +16,7 @@ int getBootTries() {
                 f.printf("%i", ++bootTries);
                 f.flush(); f.close();
             }
-            INFO("New boot script try #" + String(bootTries));
+            INFO(PSTR("New boot script try #") + String(bootTries));
         }
     }
     return bootTries;

@@ -15,7 +15,7 @@ void LocalStorageClass::begin() {
             File f = SPIFFS.open(FORMAT_INDICATOR, "w");
             if (f) {
                 Serial.println(F("SPIFFS: formatting done"));
-                f.println("NAME " + WiFi.macAddress());
+                f.println(PSTR("NAME ") + WiFi.macAddress());
                 f.close();
                 firstBoot();
             }

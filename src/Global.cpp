@@ -91,7 +91,7 @@ void firstBoot() {
 
 void bootComplete() {
     _boot = false;
-    INFO("WiFi mode: " + String(WiFi.getMode()));
+    INFO(PSTR("WiFi mode: ") + String(WiFi.getMode()));
 }
 
 void WiFiSTA(String ssid, String password, bool persistent) {

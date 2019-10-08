@@ -178,7 +178,7 @@ void WebPagesClass::handleRun() {
             if (lineEnd<0) lineEnd = body.length();
             String line = body.substring(lineStart, lineEnd); line.trim();
             if (!execute(line)) {
-                ERR("Unknown command in line "+String(lineCounter));
+                ERR(PSTR("Unknown command in line ") + String(lineCounter));
                 sendERR(getLastError());
                 return;
             }
@@ -194,7 +194,7 @@ void WebPagesClass::handleFileUpload(const String& filename) {
 
     HTTPUpload& upload = server.upload();
     if (upload.status == UPLOAD_FILE_START){
-        INFO("Uploading file " + filename);
+        INFO(PSTR("Uploading file ") + filename);
         fsUploadFile = SPIFFS.open(filename, STR_W);
     } else if (upload.status == UPLOAD_FILE_WRITE){
         if (fsUploadFile) {

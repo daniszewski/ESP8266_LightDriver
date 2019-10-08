@@ -19,10 +19,10 @@ void WebCallsQueueClass::handle() {
     url.trim();
     int httpCode = 1;
     if (url.length()>2) { 
-        INFO("Calling url: " + url);
+        INFO(PSTR("Calling url: ") + url);
         http.begin(client, url);
         httpCode = http.GET();
-        INFO("Result: " + String(httpCode));
+        INFO(PSTR("Result: ") + String(httpCode));
         http.end();
     }
     if(httpCode > 0) urlsToPing = urlsToPing.substring(len);
