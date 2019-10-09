@@ -22,7 +22,7 @@ namespace ESP8266DriverEmu.Controllers
 
             using (var br = new BinaryReader(Request.Form.Files[0].OpenReadStream()))
             {
-                System.IO.File.WriteAllBytes(@"storage\" + filename, br.ReadBytes((int)Request.Form.Files[0].Length));
+                System.IO.File.WriteAllBytes(@"..\data\" + filename, br.ReadBytes((int)Request.Form.Files[0].Length));
             }
             return "OK";
         }

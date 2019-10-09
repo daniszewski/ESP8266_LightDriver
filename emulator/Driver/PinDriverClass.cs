@@ -85,7 +85,7 @@ namespace ESP8266DriverEmu.Driver
             PinSwitch s = _pins[pin] as PinSwitch;
             if (s.fnState != fnState) {
                 s.fnState = fnState;
-                DriverEmu.Instance.executeFile(@"storage\scripts\" + (fnState ? s.onHigh : s.onLow));
+                DriverEmu.Instance.executeFile(@"..\data\scripts\" + (fnState ? s.onHigh : s.onLow));
             }
         }
 

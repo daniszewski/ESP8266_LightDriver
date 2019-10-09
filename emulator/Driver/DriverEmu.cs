@@ -61,7 +61,7 @@ namespace ESP8266DriverEmu.Driver
             PinDriver = new PinDriverClass();
             PowerAnimator = new PowerAnimatorClass();
 
-            executeFile(@"storage\boot");
+            executeFile(@"..\data\boot");
             bootComplete();
         }
         public void setAdminPassword(String pwd)
@@ -163,7 +163,7 @@ namespace ESP8266DriverEmu.Driver
             else if (cmd == "LOGOFF") logout(); // Syntax: LOGOFF
             else if (cmd == "URL") new WebClient().DownloadStringAsync(new Uri(getWord(line, 1))); // Syntax: URL <url to call>
             else if (cmd == "TURN") PinDriver.turnSwitch(getWord(line, 1), getWord(line, 2)); // Syntax: TURN <pin name> <new state: 1 0 *>
-            else if (cmd == "SCRIPT") executeFile(@"storage\\scripts\\" + getWord(line, 1)); // Syntax: SCRIPT <script file>
+            else if (cmd == "SCRIPT") executeFile(@"..\\data\\scripts\\" + getWord(line, 1)); // Syntax: SCRIPT <script file>
             else if (cmd == "SEQ") // Syntax: SEQ <pin name>
             {
                 string pin = getWord(line, 1);

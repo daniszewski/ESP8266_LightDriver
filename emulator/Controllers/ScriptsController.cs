@@ -14,7 +14,7 @@ namespace ESP8266DriverEmu.Controllers
         public ActionResult<string> Get(string name)
         {
             try {
-                return System.IO.File.ReadAllText(System.IO.Path.Combine(@"storage/scripts",name));
+                return System.IO.File.ReadAllText(System.IO.Path.Combine(@"../data/scripts",name));
             } catch (Exception ex) {
                 return ex.Message;
             }

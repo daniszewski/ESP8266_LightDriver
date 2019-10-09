@@ -15,7 +15,7 @@ namespace ESP8266DriverEmu.Controllers
         [HttpGet("{file}")]
         public ActionResult<string> Get(string file)
         {
-            Run(System.IO.File.ReadAllText(@"storage\scripts\" + file));
+            Run(System.IO.File.ReadAllText(@"..\data\scripts\" + file));
             return "OK";
         }
 

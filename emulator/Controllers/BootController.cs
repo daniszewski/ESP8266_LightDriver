@@ -18,7 +18,7 @@ namespace ESP8266DriverEmu.Controllers
         {
             if (!ESP8266DriverEmu.Driver.DriverEmu.Instance.isAdmin()) return "Not admin";
             try {
-                return System.IO.File.ReadAllText(@"storage/boot");
+                return System.IO.File.ReadAllText(@"../data/boot");
             } catch (Exception ex) {
                 return ex.Message;
             }
@@ -31,7 +31,7 @@ namespace ESP8266DriverEmu.Controllers
 
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
             {  
-                System.IO.File.WriteAllText(@"storage/boot", reader.ReadToEnd()+"\n");
+                System.IO.File.WriteAllText(@"../data/boot", reader.ReadToEnd()+"\n");
                 return "OK";
             }
         }
