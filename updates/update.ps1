@@ -1,5 +1,5 @@
 # CONFIG
-$path = "emulator\storage\www\"
+$path = "data\www\"
 $src = "src"
 $firmware = ".pio\build\nodemcuv2\firmware.bin"
 $timeout = 5
@@ -167,7 +167,7 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
 
     # Firmware update
     # This should be the last step because the node will be restarted after firmware upgrade
-    if (($config.$hostUri.SourcesCrc -ne $sourcesCrc)) {
+    if (($config.$hostUri.SourcesCrc -ne "SKIP") -and ($config.$hostUri.SourcesCrc -ne $sourcesCrc)) {
         if (-not $loggedIn) { $loggedIn = "OK" -eq (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("LOGIN " + $password)) }
         if ($loggedIn) {
             $count++
