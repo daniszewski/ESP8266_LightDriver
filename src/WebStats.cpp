@@ -42,7 +42,8 @@ void sendStats(ESP8266WebServer *server) {
         if (second) server->sendContent(",\n");
         else second = true;
         server->sendContent(F("{\"name\": \""));
-        server->sendContent(name);
+        if (name) server->sendContent(name);
+        else server->sendContent(F("unnamed"));
         server->sendContent(F("\", \"type\": \""));
         server->sendContent(typeName);
         server->sendContent(F("\", \"value\": "));

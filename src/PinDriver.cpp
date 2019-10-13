@@ -1,4 +1,5 @@
 #include "PinDriver.h"
+#include "PowerAnimator.h"
 
 struct SwitchDef { char type; bool hwState; bool fnState; unsigned long lastCloseTime; String onLow; String onHigh; };
 struct PhasePlanStep { int wait; byte pin; byte state; };
@@ -153,6 +154,9 @@ void PinDriverClass::initPin(String pinName, String modeWord) { // mode: PWM, ZE
     if (pin < FIRTSVIRTUALPIN) {
         pinMode(pin, OUTPUT);
     }
+    setPinAnim(pin, PowerAnimator.configStart(pin, mode=='Z' ? HIGH : LOW));
+    PowerAnimator.configAddStep("0", "");
+    PowerAnimator.configEnd();
 }
 
 void PinDriverClass::initSwitch(String pinName, String switchType, String onHigh, String onLow) {
