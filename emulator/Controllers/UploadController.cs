@@ -18,7 +18,7 @@ namespace ESP8266DriverEmu.Controllers
 
             if (Request.Form.Files.Count == 0) return "No file";
             var filename = Request.Form["filename"][0].ToLower().Replace("/", "\\").Trim('\\');
-            if (!filename.StartsWith(@"scripts\")) filename = @"www\" + filename;
+            if (filename.StartsWith(@"scripts\")) filename = @"www\" + filename;
 
             using (var br = new BinaryReader(Request.Form.Files[0].OpenReadStream()))
             {

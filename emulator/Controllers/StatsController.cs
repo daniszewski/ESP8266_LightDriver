@@ -45,7 +45,7 @@ namespace ESP8266DriverEmu.Controllers
             result.Add("WiFiClient_IP", DriverEmu.Instance.WiFiIP);
             result.Add("WiFiAP_SSID", DriverEmu.Instance.WiFiAPSSID);
             result.Add("WiFiAP_IP", DriverEmu.Instance.WiFiAPIP);
-            result.Add("version", DriverEmu.Instance.version);
+            result.Add("version", "UI DEMO");
 
             return result;
         }

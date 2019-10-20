@@ -53,7 +53,7 @@ namespace ESP8266DriverEmu
 
                     using (var sr = new StreamReader(context.Request.Body))
                     {
-                        File.WriteAllText(Path.Combine("storage", filename), sr.ReadToEnd());
+                        File.WriteAllText(Path.Combine("../data", filename), sr.ReadToEnd());
                     }
                     await context.Response.WriteAsync("OK");
                 } else {
@@ -69,7 +69,7 @@ namespace ESP8266DriverEmu
                 if (ESP8266DriverEmu.Driver.DriverEmu.Instance.isAdmin()) {
                     var filename = context.Request.Path.ToString().ToLower().Replace("/", "\\").Trim('\\');
                     if (!filename.StartsWith(@"scripts\")) filename = @"www\" + filename;
-                    File.Delete(Path.Combine("storage", filename));
+                    File.Delete(Path.Combine("../data", filename));
                     await context.Response.WriteAsync("OK");
                 } else {
                     await context.Response.WriteAsync("Not admin");

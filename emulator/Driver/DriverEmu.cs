@@ -51,7 +51,7 @@ namespace ESP8266DriverEmu.Driver
         public void Init()
         {
             version = "0.1";
-            adminpwd = "espPower";
+            adminpwd = "esppower";
             scriptsPath = "/scripts/";
             driverName = "emu";
             _admin = false;
