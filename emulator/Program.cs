@@ -13,7 +13,6 @@ namespace ESP8266DriverEmu
 {
     public class Program
     {
-        DriverEmu emu;
         public static void Main(string[] args)
         {
             using(var emu = DriverEmu.Instance) {
@@ -24,8 +23,7 @@ namespace ESP8266DriverEmu
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseWebRoot("storage/www") // name it whatever you want    
-                .UseStartup<Startup>()
-            ;
+                .UseWebRoot("../data/www") // name it whatever you want    
+                .UseStartup<Startup>();
     }
 }
