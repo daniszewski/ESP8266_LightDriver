@@ -15,7 +15,12 @@ static const char * STR_R = "r";
 static const char * STR_W = "w";
 static const char * STR_INDEXHTML = "/index.html";
 static const char * STR_WWW = "/www";
+static const char * STR_BOOT = "/boot";
+static const char * STR_UPLOAD = "/upload";
+static const char * STR_UPDATE = "/update";
+static const char * STR_BOOT_TRIES = "/boot_tries";
 static const char * STR_TEMPORARY_FILE = "/_uploaded";
+static const char STR_CONTENT_TYPE[] PROGMEM = "Content-Type";
 
 String prefix = STR_WWW;
 
@@ -28,24 +33,24 @@ void zeroConf();
 
 void WebPagesClass::begin() {
     server.on(F("/stats"), HTTP_GET, [this](){ sendStats(&server); });
-    server.on(F("/boot"), [this](){ handleBoot(); });
+    server.on(STR_BOOT, [this](){ handleBoot(); });
     server.on(F("/run"), [this](){ handleRun(); });
     server.on(F("/crc"), HTTP_GET, [this](){ 
         if (isAdmin()) handleJson("{ \"crc\": \""+ESP.getSketchMD5()+"\" }"); 
         else sendNoAdmin(); 
     });
-    server.on(F("/upload"), HTTP_POST, [](){ 
+    server.on(STR_UPLOAD, HTTP_POST, [](){ 
         if (isAdmin()) {
             SPIFFS.remove(prefix + "/" + server.arg(0));
             SPIFFS.rename(STR_TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
             server.send(200); 
         } else sendNoAdmin();
     }, [this](){ handleFileUpload(STR_TEMPORARY_FILE); });
-    server.on(F("/upload"), HTTP_PUT, [](){ 
+    server.on(STR_UPLOAD, HTTP_PUT, [](){ 
         if (isAdmin()) server.send(200); 
         else sendNoAdmin();
     }, [this](){ handleFileUpload(server.upload().filename); });
-    server.on(F("/update"), HTTP_POST, []() {
+    server.on(STR_UPDATE, HTTP_POST, []() {
         if (isAdmin()) {
             sendOK();
             delay(500);
@@ -89,7 +94,7 @@ void WebPagesClass::handleStaticPage() {
             File f = SPIFFS.open(url, STR_R);
             if (f) {
                 String h = getContentType(url);
-                server.sendHeader(F("Content-Type"), h);
+                server.sendHeader(STR_CONTENT_TYPE, h);
                 server.streamFile(f, h);
                 f.close();
             } else if (url == prefix + STR_INDEXHTML) zeroConf();
@@ -115,11 +120,11 @@ void WebPagesClass::handleStaticPage() {
     }
 }
 
-void WebPagesClass::handleJson(const String& json) {
+void WebPagesClass::handleJson(const String& msg) {
     server.sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
     server.sendHeader(F("Pragma"), F("no-cache"));
     server.sendHeader(F("Expires"), F("-1"));
-    server.send(200, F("application/json"), json);
+    server.send(200, mimeTable[json].mimeType, msg);
 }
 
 void WebPagesClass::handleDir(String root) {
@@ -141,22 +146,22 @@ void WebPagesClass::handleDir(String root) {
 void WebPagesClass::handleBoot() {
     if (isAdmin()) {
         if (server.method() == HTTP_GET) {
-            File f = SPIFFS.open(F("/boot"), STR_R);
+            File f = SPIFFS.open(STR_BOOT, STR_R);
             if (f) {
                 server.setContentLength(f.size());
-                String h = getContentType(F("/boot"));
-                server.sendHeader(F("Content-Type"), h);
+                String h = getContentType(STR_BOOT);
+                server.sendHeader(STR_CONTENT_TYPE, h);
                 server.streamFile(f, h);
                 f.close();
             } else server.send(500, MIME_TEXTPLAIN, F("Could not read file /boot"));
         } else if (server.method() == HTTP_PUT) {
-            File f = SPIFFS.open(F("/boot"), STR_W);
+            File f = SPIFFS.open(STR_BOOT, STR_W);
             if (f) { 
                 f.print(server.arg(STR_PLAIN));
                 f.print("\n");
                 f.flush(); f.close();
                 sendOK();
-                f = SPIFFS.open(F("/boot_tries"), STR_W);
+                f = SPIFFS.open(STR_BOOT_TRIES, STR_W);
                 f.print(F("0"));
                 f.flush(); f.close();
             } else server.send(500, MIME_TEXTPLAIN, F("Could not write file /boot"));
@@ -237,7 +242,7 @@ void WebPagesClass::handleFirmwareUpdate() {
 }
 
 void zeroConf() {
-    server.send(200, F("text/html"), F("\
+    server.send(200, mimeTable[html].mimeType, F("\
 <!DOCTYPE html>\
 <html><head><title>ESP8266 driver zero conf</title></head><body>\
 <h1>ESP8266 ZERO CONF</h1>\

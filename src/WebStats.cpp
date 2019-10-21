@@ -30,16 +30,13 @@ void sendStats(ESP8266WebServer *server) {
         } else if (type=='S') {
             typeName = "SWITCH";
             value = String(PinDriver.getSwitchValue(pin) ? 1 : 0);
-        } else if (type=='P' || type=='Z') {
-            typeName = type=='P' ? "PWM" : "PHASE";
+        } else if (type=='O' || type=='P' || type=='Z') {
+            typeName = type=='O' ? F("ON/OFF") : type=='P' ? F("PWM") : F("PHASE");
             PowerAnimation* anim = PinDriver.getPinAnim(pin);
-            value = String(anim->getValue()) + ", \"seqstep\": " + String(anim->getStepIndex()) + ", \"timeleft\": " + String(anim->getStepTime());
-        } else if (type=='O') {
-            typeName = "ON/OFF";
-            PowerAnimation* anim = PinDriver.getPinAnim(pin);
-            value = String(anim->getValue() < 512 ? "\"ON\"" : "\"OFF\"") + ", \"seqstep\": " + String(anim->getStepIndex()) + ", \"timeleft\": " + String(anim->getStepTime());;
+            value = (type=='O' ? (anim->getValue() < 512 ? F("\"ON\"") : F("\"OFF\"")) : String(anim->getValue())) 
+                + F(", \"seqstep\": ") + String(anim->getStepIndex()) + F(", \"timeleft\": ") + String(anim->getStepTime());
         }
-        if (second) server->sendContent(",\n");
+        if (second) server->sendContent(F(",\n"));
         else second = true;
         server->sendContent(F("{\"name\": \""));
         if (name) server->sendContent(name);
