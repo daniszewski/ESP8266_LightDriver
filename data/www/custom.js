@@ -17,6 +17,7 @@ function loadStatsAdhoc(loopfunc) {
 }
 
 function formatTimeShort(time) {
+    if (typeof time === 'undefined') return "inf.";
     time = time / 100; // seconds
     if (time > 42949670) return "inf.";
     if (time > 172800) return Math.round(time/86400).toString() + " days left";
@@ -29,6 +30,7 @@ function formatTimeShort(time) {
 function formatInt(num, len) { return ('0'.repeat(len)+num).slice(-len);}
 
 function formatTimeLong(time) {
+    if (typeof time === 'undefined') return "no changes planned";
     time = time / 100; // seconds
     if (time > 42949670) return "no changes planned";
     return (time > 86400 ? (Math.floor(time/86400) + ' day'+time>=172800 ? 's':'') : '') + // days
