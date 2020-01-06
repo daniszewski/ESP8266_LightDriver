@@ -111,7 +111,7 @@ void WiFiAP(bool enable, bool persistent) {
     WiFi.persistent(persistent);
     if (enable) {
         const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
-        if (WiFi.softAP(mac, wifiappwd, 10, false, 4)) { 
+        if (WiFi.softAP(mac, wifiappwd, 6, false, 4)) { 
             INFO(F("AP started"));
             delay(100);
             IPAddress localIp(192,168,4,1);

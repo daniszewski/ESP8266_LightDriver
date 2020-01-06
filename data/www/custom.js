@@ -49,7 +49,9 @@ function updateStatsView() {
     $('#WiFiAPState').text(stats.WiFiAP_IP !== '0.0.0.0' && stats.WiFiAP_IP !== '(IP unset)' ? "enabled" : "disabled");
     $('#WiFiClientSSID').text(stats.WiFiClient_SSID);
     $('#WiFiClientIP').text(stats.WiFiClient_IP);
-    $('#WiFiClientState').text(stats.WiFiClient_IP !== '0.0.0.0' && stats.WiFiClient_IP !== '(IP unset)' ? "enabled" : "disabled");
+    $('#WiFiClientState').text((stats.WiFiClient_IP !== '0.0.0.0' && stats.WiFiClient_IP !== '(IP unset)' ? "enabled" : "disabled") + " (status: " + stats.WiFiClient_STATUS + ")");
+    $('#WiFiClientChannel').text(stats.WiFiClient_CHANNEL);
+    $('#WiFiClientRSSI').text(stats.WiFiClient_RSSI);
     var statsContainer = $('#stats-pins');
     var tmpl = $('#template-pin');
     if (stats.pins) {

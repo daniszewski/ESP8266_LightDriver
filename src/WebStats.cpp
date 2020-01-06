@@ -51,6 +51,12 @@ void sendStats(ESP8266WebServer *server) {
     server->sendContent(WiFi.SSID());
     server->sendContent(F("\",\n\"WiFiClient_IP\": \""));
     server->sendContent(WiFi.localIP().toString());
+    server->sendContent(F("\",\n\"WiFiClient_STATUS\": \""));
+    server->sendContent(String(WiFi.status()));
+    server->sendContent(F("\",\n\"WiFiClient_CHANNEL\": \""));
+    server->sendContent(String(WiFi.channel()));
+    server->sendContent(F("\",\n\"WiFiClient_RSSI\": \""));
+    server->sendContent(String(WiFi.RSSI()));
     server->sendContent(F("\",\n\"WiFiAP_SSID\": \""));
     server->sendContent(WiFi.softAPSSID());
     server->sendContent(F("\",\n\"WiFiAP_IP\": \""));
