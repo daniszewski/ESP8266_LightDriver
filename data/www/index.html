@@ -72,6 +72,7 @@
                 <br />
                 <div class="form-item">SSID: <input type="text" id="wifiSSID" /></div>
                 <div class="form-item">Password: <input type="password" id="wifiPwd" /></div>
+                <div class="form-item">Channel: <input type="number" id="wifiChn" /></div>
                 <div class="buttons">
                     <input type="button" id="btnWiFiConnect" value="Connect" />
                     <input type="button" id="btnWiFiDisconnect" value="Disconnect" />
@@ -158,8 +159,8 @@
 - DISABLE {pin name} - disable previously setup pin
 - PWD {password} - set admin password at a boot time
 - BOOTADMIN - admin commands are available without login
-- WIFI {ssid} {password} - connect to WIFI (not needed on boot time)
-- WIFITEST {ssid} {password} - same a above but the setting will be restored after restart
+- WIFI {ssid} {password} {channel} - connect to WIFI (not needed on boot time)
+- WIFITEST {ssid} {password} {channel} - same a above but the setting will be restored after restart
 - WIFIAP {1 or 0} - enable or disable the AccessPoint mode
 - WIFIAPTEST {1 or 0} - same a above but the setting will be restored after restart
 - DELETE {filename} - delete a file from internal storage

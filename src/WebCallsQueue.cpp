@@ -44,9 +44,8 @@ void WebCallsQueueClass::handle() {
     String url = nextSpace < 0 ? urlsToPing : urlsToPing.substring(0, nextSpace);
     int len = url.length();
     url.trim();
-    int httpCode = 1;
     if (url.length() > 2) callUrl(url);
-    if(httpCode > 0) urlsToPing = urlsToPing.substring(len);
+    urlsToPing = urlsToPing.substring(len);
 }
 
 void WebCallsQueueClass::add(String url) {

@@ -4,6 +4,8 @@
 #include "Global.h"
 #include "PowerAnimation.h"
 
+typedef std::vector<PowerAnimation> PowerAnimationList;
+
 class PowerAnimatorClass {
   public:
     void begin(std::function<void(void)> callback);
@@ -21,7 +23,7 @@ class PowerAnimatorClass {
   
   protected:
     unsigned long lastTime;
-    DynArray<PowerAnimation> animations;
+    PowerAnimationList animations;
     PowerAnimation* ensureAnimation(int id);
 };
 

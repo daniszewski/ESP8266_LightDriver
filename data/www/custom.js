@@ -138,8 +138,10 @@ function switchAP(enabled) {
 function wifi(enabled) {
     var temp = $('#chkTemporary')[0].checked;
     var ssid = enabled ? $('#wifiSSID').val()+' ' : ' ';
-    var pwd = enabled ? $('#wifiPwd').val() : ' ';
-    rest('PUT','run', (temp ? 'WIFI ':'WIFITEST ') + ssid + pwd, null, function(x) { message(x); });
+    var pwd = enabled ? $('#wifiPwd').val()+' ' : ' ';
+    var chn = enabled ? $('#wifiChn').val() : ' ';
+    
+    rest('PUT','run', (temp ? 'WIFI ':'WIFITEST ') + ssid + pwd + chn, null, function(x) { message(x); });
 }
 
 function login() {
@@ -223,6 +225,7 @@ function message(msg, delay=2000) {
 }
 
 (function() {
+    $('textarea').prop('spellcheck',false);
     showPage('page-stats');
     setTimeout(loadStats, 100);
     initButtons();

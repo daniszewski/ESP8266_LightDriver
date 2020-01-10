@@ -188,7 +188,7 @@ void setSwitchState(uint8_t pin, bool fnState) {
 }
 
 void onSwitchHandler(uint8_t pin, bool newState) {
-    SwitchDef &s = switchDef[pin]; 
+    const SwitchDef &s = switchDef[pin]; 
     if (s.type == '1') {
         if (newState) setSwitchState(pin, !switchDef[pin].fnState);
     } else if (s.type == '2') {

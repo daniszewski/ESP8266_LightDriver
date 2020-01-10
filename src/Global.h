@@ -9,12 +9,11 @@
 int logToSerial(String msg);
 String getLastError();
 void setLastError(String error);
-int getFreeMem();
 String getVersion();
 String getScriptsPath();
-String getWord(String &line, int ix);
-unsigned int parseTime(String &time);
-void WiFiSTA(String ssid, String password, bool persistent);
+String getWord(const String &line, int ix);
+unsigned int parseTime(const String &time);
+void WiFiSTA(String ssid, String password, String channel, bool persistent);
 void WiFiAP(bool enable, bool persistent);
 void setAdminPassword(String pwd);
 bool isBoot();

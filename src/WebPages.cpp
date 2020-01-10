@@ -94,11 +94,12 @@ void WebPagesClass::handleStaticPage() {
             File f = SPIFFS.open(url, STR_R);
             if (f) {
                 String h = getContentType(url);
-                server.sendHeader(STR_CONTENT_TYPE, h);
+                server.sendHeader(String(FPSTR(STR_CONTENT_TYPE)), h);
                 server.streamFile(f, h);
                 f.close();
             } else if (url == prefix + STR_INDEXHTML) zeroConf();
-            else server.send(404, MIME_TEXTPLAIN, F("404: Not found"));
+            else 
+                server.send(404, MIME_TEXTPLAIN, F("404: Not found"));
         }
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
@@ -150,7 +151,7 @@ void WebPagesClass::handleBoot() {
             if (f) {
                 server.setContentLength(f.size());
                 String h = getContentType(STR_BOOT);
-                server.sendHeader(STR_CONTENT_TYPE, h);
+                server.sendHeader(String(FPSTR(STR_CONTENT_TYPE)), h);
                 server.streamFile(f, h);
                 f.close();
             } else server.send(500, MIME_TEXTPLAIN, F("Could not read file /boot"));
@@ -177,10 +178,10 @@ void WebPagesClass::handleRun() {
         else sendERR(getLastError());
     } else if (server.method() == HTTP_PUT) {
         String body = server.arg(STR_PLAIN)+'\n';
-        int lineStart = 0, lineEnd = 0, lineCounter = 1;
+        int lineStart = 0, lineCounter = 1;
         do {
-            lineEnd = body.indexOf('\n',lineStart);
-            if (lineEnd<0) lineEnd = body.length();
+            int lineEnd = body.indexOf('\n',lineStart);
+            if (lineEnd < 0) lineEnd = body.length();
             String line = body.substring(lineStart, lineEnd); line.trim();
             if (!execute(line)) {
                 ERR(PSTR("Unknown command in line ") + String(lineCounter));
@@ -249,13 +250,16 @@ void zeroConf() {
 <div style='text-align:right;width:250px'>\
 SSID: <input type='text' id='s' /><br />\
 PWD: <input type='password' id='p' /><br />\
+CHNL: <input type='number' id='c' /><br />\
 <input type='button' value='Connect' onclick='wifi()' />\
 <input type='button' value='Reset' onclick='reset()' />\
 </div><br /><br />\
-Client IP: <strong><span style='color:green' id='IP'></span></strong>\
+Client IP: <strong><span style='color:green' id='IP'></span></strong><br />\
+Wifi status: <strong><span style='color:green' id='ST'></span></strong><br />\
+RSSI: <strong><span style='color:green' id='RS'></span></strong>\
 <script>\
-function getStats() {rest('GET','stats',null,function() {if (this.readyState==4) { if(this.status==200) {var j=eval('x='+this.responseText);sv('IP',j.WiFiClient_IP);} setTimeout(getStats, 1000);}});}\
-function wifi() { sv('IP','connecting...'); rest('PUT','run','LOGIN esppower\\nWIFI '+gv('s')+' '+gv('p')+'\\n'); }\
+function getStats() {rest('GET','stats',null,function() {if (this.readyState==4) { if(this.status==200) {var j=eval('x='+this.responseText);sv('IP',j.WiFiClient_IP);sv('ST',j.WiFiClient_STATUS);sv('RS',j.WiFiClient_RSSI);} setTimeout(getStats, 1000);}});}\
+function wifi() { sv('IP','connecting...'); rest('PUT','run','LOGIN esppower\\nWIFI '+gv('s')+' '+gv('p')+' '+gv('c')+'\\n'); }\
 function reset() { sv('IP','restarting...'); rest('PUT','run','LOGIN esppower\\nRESTART\\n'); }\
 function rest(method,url,body,cb) { var x=new XMLHttpRequest();x.onreadystatechange=cb;x.open(method,url,true);x.send(body);}\
 function gv(id) { return document.getElementById(id).value;}\

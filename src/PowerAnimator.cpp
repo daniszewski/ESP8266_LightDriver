@@ -20,28 +20,28 @@ void PowerAnimatorClass::handle() {
 }
 
 int PowerAnimatorClass::animationCount() {
-  return animations.GetSize();
+  return animations.size();
 }
 
 int PowerAnimatorClass::getValue(int id) {
-  for(unsigned int i=0;i<animations.GetSize();i++) {
+  for(unsigned int i=0;i<animations.size();i++) {
     if (animations[i].getId() == id) return animations[i].getValue();
   }
   return 0;
 }
 
 PowerAnimation* PowerAnimatorClass::ensureAnimation(int id) {
-  for(unsigned int i=0;i<animations.GetSize();i++) {
+  for(unsigned int i=0;i<animations.size();i++) {
     if (animations[i].getId() == id) return &animations[i];
   }
   PowerAnimation result;
   result.setId(id);
-  animations.Add(result);
-  return &animations[animations.GetSize()-1];
+  animations.push_back(result);
+  return &animations[animations.size()-1];
 }
 
 void PowerAnimatorClass::animate() {
-  for(unsigned int i=0;i<animations.GetSize();i++) {
+  for(unsigned int i=0;i<animations.size();i++) {
     if (!animations[i]._isTriggeredExternaly) animations[i].animate();
   }
 }

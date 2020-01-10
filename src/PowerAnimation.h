@@ -2,7 +2,7 @@
 #define POWERANIMATION_H
 
 #include <stdint.h>
-#include "DynArray.h"
+#include <vector>
 
 struct AnimStep {
   // static values:
@@ -15,9 +15,11 @@ struct AnimStep {
   short _repeat;
 };
 
+typedef std::vector<AnimStep> AnimStepList;
+
 class PowerAnimation {
   public:
-    DynArray<AnimStep> _steps;
+    AnimStepList _steps;
     bool _isTriggeredExternaly;
 
     void animate();

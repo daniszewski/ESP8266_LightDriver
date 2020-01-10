@@ -1,7 +1,6 @@
 # CONFIG
 $path = "data\www\"
 $src = "src"
-$firmware = ".pio\build\nodemcuv2\firmware.bin"
 $timeout = 5
 $configFile = "updates\update-config.json"
 $defaultPwd = "esppower"
@@ -116,7 +115,6 @@ $uriRangeText = $uriRangeText.Replace("..", "-")
 $uriRange = $uriRangeText.Split("-")[0]..$uriRangeText.Split("-")[1]
 $uris = $uriRange | ForEach-Object { [String]::Format($uriPattern, $_) }
 $sourcesCrc = Get-FolderHash $src
-$firmware = (Get-ChildItem $firmware).FullName
 
 Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
     $hostUri = $_.Uri
@@ -167,9 +165,24 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
 
     # Firmware update
     # This should be the last step because the node will be restarted after firmware upgrade
+    $compiled = @{}
     if (($config.$hostUri.SourcesCrc -ne "SKIP") -and ($config.$hostUri.SourcesCrc -ne $sourcesCrc)) {
         if (-not $loggedIn) { $loggedIn = "OK" -eq (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("LOGIN " + $password)) }
         if ($loggedIn) {
+            # get environment
+            if ($null -eq $config.$hostUri.Config.Env) {
+                $environment = "nodemcuv2"
+            } else {
+                $environment = $config.$hostUri.Config.Env
+            }
+            # compile if needed
+            if ($null -eq $compiled.$environment) {
+                pio.exe run -e $environment --disable-auto-clean
+                $compiled.$environment = 1
+            }
+            # get full path to firmware.bin
+            $firmware = (Get-ChildItem ".pio/build/$environment/firmware.bin").FullName
+
             $count++
             Write-Host(("Updating firmware in " + $hostUri))
             if(Submit-File ($hostUri+"update") $firmware) {

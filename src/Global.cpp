@@ -1,6 +1,7 @@
 #include "Global.h"
 #include "Commands.h"
 #include "_Config.h"
+#include "DebugWiFi.h"
 
 extern "C" {
     #include "user_interface.h"
@@ -27,10 +28,6 @@ String getLastError() {
     return lastError;
 }
 
-int getFreeMem() {
-    return system_get_free_heap_size();
-}
-
 String getVersion() {
     return version;
 }
@@ -39,7 +36,7 @@ String getScriptsPath() {
     return scriptsPath;
 }
 
-String getWord(String &line, int ix) {
+String getWord(const String &line, int ix) {
     int p1 = 0;
     while (ix-- && p1 >= 0) p1 = line.indexOf(' ', p1+1);
     if (p1<0) return String();
@@ -52,7 +49,7 @@ String getWord(String &line, int ix) {
 }
 
 
-unsigned int parseTime(String &time) {
+unsigned int parseTime(const String &time) {
     unsigned int result = 0;
     unsigned short part = 0;
     unsigned short len = time.length();
@@ -82,6 +79,9 @@ unsigned int parseTime(String &time) {
 }
 
 void bootStart() {
+    DebugWifi;
+    WiFi.setAutoConnect(true);
+    WiFi.setAutoReconnect(true);   
     Serial.begin(74880); //115200
 }
 
@@ -91,17 +91,21 @@ void firstBoot() {
 
 void bootComplete() {
     _boot = false;
-    INFO(PSTR("WiFi mode: ") + String(WiFi.getMode()));
+    DEBUG_WIFI(PSTR("WiFi mode: ") + String(WiFi.getMode()));
 }
 
-void WiFiSTA(String ssid, String password, bool persistent) {
+void WiFiSTA(String ssid, String password, String channel, bool persistent) {
     if (ssid.length()>0) {
         WiFi.persistent(persistent);
         char _ssid[32];
         char _password[32]; 
         ssid.toCharArray(_ssid, 32); 
         password.toCharArray(_password, 32);
-        WiFi.begin(_ssid, _password);
+        if(!channel.length()) {
+            WiFi.begin(_ssid, _password);
+        } else {
+            WiFi.begin(_ssid, _password, channel.toInt());
+        }
     } else {
         WiFi.enableSTA(false);
     }

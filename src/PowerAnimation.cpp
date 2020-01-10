@@ -1,7 +1,7 @@
 #include "PowerAnimation.h"
 
 void PowerAnimation::animate() {
-  if(!_enabled || _stepIndex>=_steps.GetSize()) return;
+  if(!_enabled || _stepIndex>=_steps.size()) return;
 
   AnimStep *s = &_steps[_stepIndex];
 
@@ -50,7 +50,7 @@ void PowerAnimation::clear() {
   _enabled = false;
   _stepIndex = 0;
   _stepTime = 0;
-  _steps.Clear();
+  _steps.clear();
 }
 
 void PowerAnimation::enable() {
@@ -69,7 +69,7 @@ void PowerAnimation::addStep(unsigned int stepTime, short targetValue, short nex
   s.repeat = repeat;
   s._repeat = repeat;
 
-  _steps.Add(s);
+  _steps.push_back(s);
 }
 
 
