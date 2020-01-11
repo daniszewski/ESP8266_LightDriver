@@ -37,12 +37,17 @@ namespace ESP8266DriverEmu.Controllers
                     } else {
                         d.Add("value", ppow.anim?.getValue());
                     }
+                    d.Add("seqstep", 1);
+                    d.Add("timeleft", 100000);
                 }
                 pins.Add(d);
             }
             result.Add("pins", pins);
             result.Add("WiFiClient_SSID", DriverEmu.Instance.WiFiSSID);
             result.Add("WiFiClient_IP", DriverEmu.Instance.WiFiIP);
+            result.Add("WiFiClient_STATUS", DriverEmu.Instance.WiFiStatus);
+            result.Add("WiFiClient_CHANNEL", DriverEmu.Instance.WiFiChannel);
+            result.Add("WiFiClient_RSSI", DriverEmu.Instance.WiFiRSSI);
             result.Add("WiFiAP_SSID", DriverEmu.Instance.WiFiAPSSID);
             result.Add("WiFiAP_IP", DriverEmu.Instance.WiFiAPIP);
             result.Add("version", "UI DEMO");

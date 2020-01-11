@@ -32,6 +32,9 @@ namespace ESP8266DriverEmu.Driver
 
         public string WiFiSSID = "EMU";
         public string WiFiIP = "127.0.0.1";
+        public string WiFiStatus= "3";
+        public string WiFiChannel= "10";
+        public string WiFiRSSI= "-50";
         public string WiFiAPSSID = "";
         public string WiFiAPIP = "0.0.0.0";
 
@@ -153,8 +156,8 @@ namespace ESP8266DriverEmu.Driver
             else if (adm && cmd == "DISABLE") PinDriver.disablePin(getWord(line, 1)); // Syntax: DISABLE <pin name>
             else if (adm && cmd == "PWD") setAdminPassword(getWord(line, 1)); // Syntax: PWD <password>
             else if (adm && cmd == "BOOTADMIN") setAdmin(); // Syntax: BOOTADMIN
-            else if (adm && cmd == "WIFI") WiFiSTA(getWord(line, 1), getWord(line, 2), true); // Syntax: WIFI <ssid> <password>
-            else if (adm && cmd == "WIFITEST") WiFiSTA(getWord(line, 1), getWord(line, 2), false); // Syntax: WIFITEST <ssid> <password>
+            else if (adm && cmd == "WIFI") WiFiSTA(getWord(line, 1), getWord(line, 2), getWord(line, 3), true); // Syntax: WIFI <ssid> <password> <channel>
+            else if (adm && cmd == "WIFITEST") WiFiSTA(getWord(line, 1), getWord(line, 2), getWord(line, 3), false); // Syntax: WIFITEST <ssid> <password> <channel>
             else if (adm && cmd == "WIFIAP") WiFiAP(getWord(line, 1) == "1", true); // Syntax: WIFIAP <0 or 1>
             else if (adm && cmd == "WIFIAPTEST") WiFiAP(getWord(line, 1) == "1", false); // Syntax: WIFIAPTEST <0 or 1>
             else if (adm && cmd == "RESTART") restart(); // Syntax: RESTART
@@ -184,9 +187,10 @@ namespace ESP8266DriverEmu.Driver
             WiFiAPSSID = enabled ? "EMU_AP" : "";
         }
 
-        public void WiFiSTA(string ssid, string pwd, bool persist)
+        public void WiFiSTA(string ssid, string pwd, string channel, bool persist)
         {
             WiFiSSID = ssid;
+            WiFiChannel = channel;
             WiFiIP = ssid.Length==0 ? "0.0.0.0" : "127.0.0.1";
         }
 
