@@ -9,6 +9,8 @@ $defaultUriRange = "200-210" # change it in update-config.json if needed
 
 # IMPLEMENTATION
 
+$ProgressPreference = "SilentlyContinue"
+
 Add-Type -AssemblyName 'System.Net.Http'
 Add-Type -AssemblyName 'System.Web.Extensions'
 

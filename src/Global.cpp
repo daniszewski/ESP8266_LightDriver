@@ -95,8 +95,8 @@ void bootComplete() {
 }
 
 void WiFiSTA(String ssid, String password, String channel, bool persistent) {
+    WiFi.persistent(persistent);
     if (ssid.length()>0) {
-        WiFi.persistent(persistent);
         char _ssid[32];
         char _password[32]; 
         ssid.toCharArray(_ssid, 32); 
@@ -109,6 +109,10 @@ void WiFiSTA(String ssid, String password, String channel, bool persistent) {
     } else {
         WiFi.enableSTA(false);
     }
+}
+
+void WiFiAdd(String ssid, String password) {
+    WiFiAutoSwitch.add(ssid.c_str(), password.c_str());
 }
 
 void WiFiAP(bool enable, bool persistent) {
@@ -175,7 +179,7 @@ bool executeFile(String filename) {
         int line = 1;
         while (f.available()) {
             if (!execute(f.readStringUntil('\n'))) {
-                ERR(filename+PSTR(": unknown command in line ")+String(line));
+                ERR(filename + PSTR(": unknown command in line ") + String(line));
                 f.close();
             }
             line++;
@@ -189,4 +193,9 @@ bool executeFile(String filename) {
 
 void deleteFile(String filename) {
     if (isAdmin()) SPIFFS.remove(filename);
+}
+
+void crash() {
+    int* nullPointer = NULL;
+    Serial.print(*nullPointer);
 }

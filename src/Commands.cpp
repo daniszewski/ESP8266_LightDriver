@@ -5,7 +5,8 @@
 #include "WebCallsQueue.h"
 
 bool execute(String line) {
-    //Serial.println(line);
+    INFO(line);
+    
     line.trim();
     String cmd = getWord(line, 0);
     bool adm = isAdmin();
@@ -21,10 +22,12 @@ bool execute(String line) {
     else if (adm && cmd == "BOOTADMIN") setAdmin(); // Syntax: BOOTADMIN
     else if (adm && cmd == "WIFI") WiFiSTA(getWord(line, 1), getWord(line, 2), getWord(line, 3), true); // Syntax: WIFI <ssid> <password> <channel>
     else if (adm && cmd == "WIFITEST") WiFiSTA(getWord(line, 1), getWord(line, 2), getWord(line, 3), false); // Syntax: WIFITEST <ssid> <password> <channel>
+    else if (adm && cmd == "AUTOWIFI") WiFiAdd(getWord(line, 1), getWord(line, 2)); // Syntax: AUTOWIFI <ssid> <password>
     else if (adm && cmd == "WIFIAP") WiFiAP(getWord(line, 1)=="1", true); // Syntax: WIFIAP <0 or 1>
     else if (adm && cmd == "WIFIAPTEST") WiFiAP(getWord(line, 1)=="1", false); // Syntax: WIFIAPTEST <0 or 1>
     else if (adm && cmd == "DELETE") deleteFile(getWord(line, 1)); // Syntax: DELETE <full_filepath>
     else if (adm && cmd == "RESTART") ESP.restart(); // Syntax: RESTART
+    else if (adm && cmd == "CRASH") crash();
     
     else if (cmd == "LOGIN") login(getWord(line, 1)); // Syntax: LOGIN <password>
     else if (cmd == "LOGOFF") logout(); // Syntax: LOGOFF
@@ -45,5 +48,3 @@ bool execute(String line) {
     else if (cmd != "" && cmd.charAt(0) != '#') return false;
     return true;
 }
-
-// TODO: add main power pin (to disable additional power supply when not used for longer time)

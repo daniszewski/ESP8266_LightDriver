@@ -5,6 +5,7 @@
 #include <Stream.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
+#include "WiFiAutoSwitch.h"
 
 int logToSerial(String msg);
 String getLastError();
@@ -14,6 +15,7 @@ String getScriptsPath();
 String getWord(const String &line, int ix);
 unsigned int parseTime(const String &time);
 void WiFiSTA(String ssid, String password, String channel, bool persistent);
+void WiFiAdd(String ssid, String password);
 void WiFiAP(bool enable, bool persistent);
 void setAdminPassword(String pwd);
 bool isBoot();
@@ -28,6 +30,7 @@ void bootStart();
 void firstBoot();
 void bootComplete();
 void deleteFile(String filename);
+void crash();
 
 #ifndef NDEBUG
     #define ERR(...) { logToSerial(F("ERROR: ")); logToSerial( __VA_ARGS__ ); logToSerial(F("\n")); setLastError(__VA_ARGS__); }

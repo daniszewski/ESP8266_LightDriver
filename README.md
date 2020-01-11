@@ -18,6 +18,7 @@ All ESP8266-based hardware with at least 2048kB of flash memory and USB controll
 - internal scripting language
 - live stats (current switch states, power levels)
 - virtual switches managed remotely
+- automatic WiFi switch based on signal strength
 
 ## Build instruction
 

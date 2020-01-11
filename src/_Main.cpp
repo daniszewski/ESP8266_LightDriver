@@ -5,6 +5,7 @@
 #include "PinDriver.h"
 #include "BootTries.h"
 #include "WebCallsQueue.h"
+#include "CrashToSpiffs.h"
 
 void setup() {
     bootStart();
@@ -14,6 +15,7 @@ void setup() {
     PinDriver.begin();
     WebPages.begin();
     WebCallsQueue.begin();
+    WiFiAutoSwitch.begin();
     bootComplete();
 }
 
@@ -23,5 +25,6 @@ void loop() {
     PowerAnimator.handle();
     PinDriver.handle();
     BootTries.handle();
+    WiFiAutoSwitch.handle();
     delay(2);
 }

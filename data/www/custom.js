@@ -150,7 +150,7 @@ function login() {
 }
 
 function logoff() {
-    rest('PUT','run', 'LOGOFF', null, function(x) { message(x); });
+    rest('PUT','run', 'LOGOFF', null, function(x) { message(x); $('textarea').val(''); });
 }
 
 function restart() {
