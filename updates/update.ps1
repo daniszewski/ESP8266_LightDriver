@@ -186,7 +186,7 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
             $firmware = (Get-ChildItem ".pio/build/$environment/firmware.bin").FullName
 
             $count++
-            Write-Host(("Updating firmware in " + $hostUri))
+            Write-Host(("Updating firmware in " + $hostUri + " from " + $firmware))
             if(Submit-File ($hostUri+"update") $firmware) {
                 $config.$hostUri.SourcesCrc = $sourcesCrc
                 $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile

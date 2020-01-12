@@ -16,7 +16,7 @@ int getBootTries() {
                 f.printf("%i", ++bootTries);
                 f.flush(); f.close();
             }
-            INFO(PSTR("New boot script try #") + String(bootTries));
+            INFO("New boot script try #%d\n", bootTries);
         }
     }
     return bootTries;
@@ -26,7 +26,7 @@ void BootTriesClass::begin() {
     if (getBootTries() <= 10) {
         executeFile("/boot");
     } else { 
-        INFO(F("Boot script disabled due to boot loop"));
+        INFO("Boot script disabled due to boot loop\n");
         bootTries = -1;
     }
 }
@@ -34,7 +34,7 @@ void BootTriesClass::begin() {
 void BootTriesClass::handle() {
     if (bootTries>=0 && millis()>10000) {
         SPIFFS.remove(BOOT_TRIES);
-        INFO(F("Commiting the boot script"));
+        INFO("Commiting the boot script\n");
         bootTries = -1;
     }
 }

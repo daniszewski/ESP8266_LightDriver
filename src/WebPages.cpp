@@ -25,9 +25,9 @@ static const char STR_CONTENT_TYPE[] PROGMEM = "Content-Type";
 String prefix = STR_WWW;
 
 void sendOK() { server.send(200, MIME_TEXTPLAIN, STR_OK); }
-void sendERR(String msg) { server.send(500, MIME_TEXTPLAIN, msg); }
+void sendERR(String msg) { INFO("%s\n", msg.c_str()); server.send(500, MIME_TEXTPLAIN, msg); }
 void sendRedirect(String url) { server.sendHeader(F("Location"), url, true); server.send(302, MIME_TEXTPLAIN, ""); }
-void sendNoAdmin() { server.send(500, MIME_TEXTPLAIN, F("Not admin")); }
+void sendNoAdmin() { sendERR(F("Not admin")); }
 
 void zeroConf();
 
@@ -154,7 +154,7 @@ void WebPagesClass::handleBoot() {
                 server.sendHeader(String(FPSTR(STR_CONTENT_TYPE)), h);
                 server.streamFile(f, h);
                 f.close();
-            } else server.send(500, MIME_TEXTPLAIN, F("Could not read file /boot"));
+            } else sendERR(F("Could not read file /boot"));
         } else if (server.method() == HTTP_PUT) {
             File f = SPIFFS.open(STR_BOOT, STR_W);
             if (f) { 
@@ -165,7 +165,7 @@ void WebPagesClass::handleBoot() {
                 f = SPIFFS.open(STR_BOOT_TRIES, STR_W);
                 f.print(F("0"));
                 f.flush(); f.close();
-            } else server.send(500, MIME_TEXTPLAIN, F("Could not write file /boot"));
+            } else sendERR(F("Could not write file /boot"));
         }
     } sendNoAdmin();
 }
@@ -174,8 +174,10 @@ void WebPagesClass::handleRun() {
     if (server.method() == HTTP_GET) {
         String file = getScriptsPath() + server.arg(0);
         file.toLowerCase();
-        if (executeFile(file)) sendOK();
-        else sendERR(getLastError());
+        int result = executeFile(file);
+        if (result==0) sendOK();
+        else if (result==-1) sendERR(F("File not found"));
+        else sendERR(formatString(PSTR("Error in line %d\n"), result));
     } else if (server.method() == HTTP_PUT) {
         String body = server.arg(STR_PLAIN)+'\n';
         int lineStart = 0, lineCounter = 1;
@@ -184,8 +186,7 @@ void WebPagesClass::handleRun() {
             if (lineEnd < 0) lineEnd = body.length();
             String line = body.substring(lineStart, lineEnd); line.trim();
             if (!execute(line)) {
-                ERR(PSTR("Unknown command in line ") + String(lineCounter));
-                sendERR(getLastError());
+                sendERR(formatString(PSTR("Unknown command in line %d"), lineCounter));
                 return;
             }
             lineStart = lineEnd + 1; lineCounter++;
@@ -200,7 +201,7 @@ void WebPagesClass::handleFileUpload(const String& filename) {
 
     HTTPUpload& upload = server.upload();
     if (upload.status == UPLOAD_FILE_START){
-        INFO(PSTR("Uploading file ") + filename);
+        INFO("Uploading file %s\n", filename.c_str());
         fsUploadFile = SPIFFS.open(filename, STR_W);
     } else if (upload.status == UPLOAD_FILE_WRITE){
         if (fsUploadFile) {
@@ -222,7 +223,7 @@ void WebPagesClass::handleFirmwareUpdate() {
     if (upload.status == UPLOAD_FILE_START) {
         Serial.setDebugOutput(true);
         WiFiUDP::stopAll();
-        Serial.printf(PSTR("Update: %s\n"), upload.filename.c_str());
+        INFO("Update: %s\n", upload.filename.c_str());
         uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
         if (!Update.begin(maxSketchSpace)) { //start with max available size
             Update.printError(Serial);
@@ -233,7 +234,7 @@ void WebPagesClass::handleFirmwareUpdate() {
         }
     } else if (upload.status == UPLOAD_FILE_END) {
         if (Update.end(true)) { //true to set the size to the current progress
-            Serial.printf(PSTR("Update Success: %u\nRebooting...\n"), upload.totalSize);
+            INFO("Update Success: %u\nRebooting...\n", upload.totalSize);
         } else {
             Update.printError(Serial);
         }

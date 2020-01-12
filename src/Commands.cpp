@@ -5,7 +5,7 @@
 #include "WebCallsQueue.h"
 
 bool execute(String line) {
-    INFO(line);
+    INFO("%s\n", line.c_str());
     
     line.trim();
     String cmd = getWord(line, 0);
@@ -38,7 +38,7 @@ bool execute(String line) {
     {
         uint8_t pin = PinDriver.parsePin(getWord(line, 1)); 
         char type = PinDriver.getPinType(pin);
-        PinDriver.setPinAnim(pin, PowerAnimator.configStart(pin, type=='Z' ? HIGH : LOW));
+        PowerAnimator.configStart(pin, type=='Z' ? HIGH : LOW);
     }
     else if (cmd == "VALUE") PowerAnimator.configAddStep(getWord(line, 1), ""); // Syntax: VALUE <target value: 0-1023, ON, OFF, LOW, HIGH>
     else if (cmd == "DELAY") PowerAnimator.configAddStep("-1", getWord(line, 1)); // Syntax: DELAY <time of delay>

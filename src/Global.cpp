@@ -7,7 +7,6 @@ extern "C" {
     #include "user_interface.h"
 }
 
-String lastError;
 String driverName;
 bool _admin = false;
 bool _boot = true;
@@ -20,12 +19,23 @@ int logToSerial(String msg) {
     return 0; 
 }
 
-void setLastError(String error) {
-    lastError = error;
-}
-
-String getLastError() {
-    return lastError;
+String formatString(PGM_P format, ...) {
+    va_list arg;
+    va_start(arg, format);
+    char temp[64];
+    char* buffer = temp;
+    size_t len = vsnprintf_P(temp, sizeof(temp), format, arg);
+    va_end(arg);
+    if (len > sizeof(temp) - 1) {
+        buffer = new char[len + 1];
+        if (!buffer) return String();
+        va_start(arg, format);
+        vsnprintf_P(buffer, len + 1, format, arg);
+        va_end(arg);
+    }
+    String result = String(buffer);
+    if (buffer != temp) delete[] buffer;
+    return result;
 }
 
 String getVersion() {
@@ -91,7 +101,7 @@ void firstBoot() {
 
 void bootComplete() {
     _boot = false;
-    DEBUG_WIFI(PSTR("WiFi mode: ") + String(WiFi.getMode()));
+    INFO("WiFi mode: %d\n", WiFi.getMode());
 }
 
 void WiFiSTA(String ssid, String password, String channel, bool persistent) {
@@ -120,16 +130,15 @@ void WiFiAP(bool enable, bool persistent) {
     if (enable) {
         const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
         if (WiFi.softAP(mac, wifiappwd, 6, false, 4)) { 
-            INFO(F("AP started"));
+            INFO("AP started\n");
             delay(100);
             IPAddress localIp(192,168,4,1);
             IPAddress gateway(192,168,4,1);
             IPAddress subnet(255,255,255,0);
             if (WiFi.softAPConfig(localIp, gateway, subnet)) {
-                INFO(F("Soft-AP with IP: "));
-                Serial.println(WiFi.softAPIP());
-            } else { ERR(F("AP config error")); }
-        } else { ERR(F("AP start error")); }
+                INFO("Soft-AP with IP: %s\n", WiFi.softAPIP().toString().c_str());
+            } else { INFO("AP config error\n"); }
+        } else { INFO("AP start error\n"); }
     } else {
         WiFi.enableAP(false);
     }
@@ -154,10 +163,10 @@ void setAdmin() {
 bool login(String password) {
     if (adminpwd == password) {
         _admin = true;
-        INFO(F("Logged in"));
+        INFO("Logged in\n");
         return true;
     }
-    ERR(F("Wrong password"));
+    INFO("Wrong password\n");
     return false;
 }
 
@@ -173,22 +182,23 @@ String getDriverName() {
     return driverName;
 }
 
-bool executeFile(String filename) {
+int executeFile(String filename) {
     File f = SPIFFS.open(filename, "r");
     if (f) { 
         int line = 1;
         while (f.available()) {
             if (!execute(f.readStringUntil('\n'))) {
-                ERR(filename + PSTR(": unknown command in line ") + String(line));
+                INFO("%s: unknown command in line %d\n", filename.c_str(), line);
                 f.close();
+                return line;
             }
             line++;
         }
         f.close(); 
-        return true; 
+        return 0; 
     }
-    ERR(filename+PSTR(": file doesn't exist."));
-    return false;
+    INFO("%s: file doesn't exist.\n", filename.c_str());
+    return -1;
 }
 
 void deleteFile(String filename) {

@@ -21,9 +21,9 @@ String getWordExt(const String &line, int ix, char separator, bool isFinal) {
 void callUrl(const String& url) {
     String host = getWordExt(url, 2, '/', false);
     String path = getWordExt(url, 3, '/', true);
-    INFO("GET http://" + host + "/" + path);
+    INFO("GET http://%s/%s\n", host.c_str(), path.c_str());
     if (!client.connect(host, 80) ) {
-        INFO("Could not connect to " +host);
+        INFO("Could not connect to %s\n", host.c_str());
         return;
     }
 

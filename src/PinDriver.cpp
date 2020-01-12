@@ -6,7 +6,6 @@ struct PhasePlanStep { int wait; byte pin; byte state; };
 
 const uint8_t pins[PINCOUNTALL] = { D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 };
 char pinType[32] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
-PowerAnimation *pinAnim[32];
 SwitchDef switchDef[32];
 
 unsigned short pulseLength = 2;
@@ -65,12 +64,8 @@ char PinDriverClass::getPinType(uint8_t pin) {
     return pinType[pin];
 }
 
-void PinDriverClass::setPinAnim(uint8_t pin, PowerAnimation* anim) {
-    pinAnim[pin] = anim;
-}
-
 PowerAnimation* PinDriverClass::getPinAnim(uint8_t pin) {
-    return pinAnim[pin];
+    return PowerAnimator.ensureAnimation(pin);
 }
 
 int sortPlanComp(const void *cmp1, const void *cmp2)
@@ -91,8 +86,9 @@ void phaseStart() {
     for (int i=0;i<PINCOUNT;i++) {
         uint8_t p = pins[i];
         if (pinType[p]=='Z') { //ZERO only
-            pinAnim[p]->animate();
-            int value = pinAnim[p]->getValue();
+            auto anim = PowerAnimator.ensureAnimation(p); //pinAnim[p]
+            anim->animate();
+            int value = anim->getValue();
             int wait = phaseEndTime - ((getPowerNonLinear(value) * (phaseEndTime - phaseStartTime)) >> 10);
             _planSteps[_phasePlanLength++] = { wait, p, (byte)(value > 0 ? HIGH : LOW) };
             _planSteps[_phasePlanLength++] = { wait + pulseLength, p, (byte)(value == 1023 ? HIGH : LOW) };
@@ -140,9 +136,9 @@ void PinDriverClass::updatePinsPwm() {
     for (int i=0;i<PINCOUNT;i++) {
         uint8_t p = pins[i];
         if (pinType[p]=='P') { //PWM only, no D0 - && pins[p]!=20
-            analogWrite(p, getPowerNonLinear(pinAnim[p]->getValue()));
+            analogWrite(p, getPowerNonLinear(PowerAnimator.ensureAnimation(p)->getValue()));
         } else if (pinType[p]=='O') { //ON/OFF
-            digitalWrite(p, pinAnim[p]->getValue() < 512 ? LOW : HIGH);
+            digitalWrite(p, PowerAnimator.ensureAnimation(p)->getValue() < 512 ? LOW : HIGH);
         }
     }
 }
@@ -154,7 +150,7 @@ void PinDriverClass::initPin(String pinName, String modeWord) { // mode: PWM, ZE
     if (pin < FIRTSVIRTUALPIN) {
         pinMode(pin, OUTPUT);
     }
-    setPinAnim(pin, PowerAnimator.configStart(pin, mode=='Z' ? HIGH : LOW));
+    PowerAnimator.configStart(pin, mode=='Z' ? HIGH : LOW);
     PowerAnimator.configAddStep("0", "");
     PowerAnimator.configEnd();
 }

@@ -19,30 +19,26 @@ void PowerAnimatorClass::handle() {
   }
 }
 
-int PowerAnimatorClass::animationCount() {
-  return animations.size();
-}
-
 int PowerAnimatorClass::getValue(int id) {
-  for(unsigned int i=0;i<animations.size();i++) {
-    if (animations[i].getId() == id) return animations[i].getValue();
+  for(auto &a: animations) {
+    if (a.getId() == id) return a.getValue();
   }
   return 0;
 }
 
 PowerAnimation* PowerAnimatorClass::ensureAnimation(int id) {
-  for(unsigned int i=0;i<animations.size();i++) {
-    if (animations[i].getId() == id) return &animations[i];
+  for(auto &a: animations) {
+    if (a.getId() == id) return &a;
   }
-  PowerAnimation result;
-  result.setId(id);
-  animations.push_back(result);
-  return &animations[animations.size()-1];
+  animations.push_back(PowerAnimation());
+  PowerAnimation * result = &animations.back();
+  result->setId(id);
+  return result;
 }
 
 void PowerAnimatorClass::animate() {
-  for(unsigned int i=0;i<animations.size();i++) {
-    if (!animations[i]._isTriggeredExternaly) animations[i].animate();
+  for(auto &a: animations) {
+    if (!a._isTriggeredExternaly) a.animate();
   }
 }
 
@@ -50,6 +46,7 @@ PowerAnimation* PowerAnimatorClass::configStart(int id, bool isTriggeredExternal
 	currentConfigAnimation = ensureAnimation(id);
   currentConfigAnimation->_isTriggeredExternaly = isTriggeredExternaly;
   currentConfigAnimation->clear();
+  INFO("[ANIM] configStart id=%d, stepindex=%d, address=%08x\n", currentConfigAnimation->getId(), currentConfigAnimation->getStepIndex(), currentConfigAnimation);
   return currentConfigAnimation;
 }
 

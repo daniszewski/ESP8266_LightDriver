@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <vector>
+//#include "DynArray.h"
 
 struct AnimStep {
   // static values:
@@ -16,6 +17,7 @@ struct AnimStep {
 };
 
 typedef std::vector<AnimStep> AnimStepList;
+//typedef DynArray<AnimStep> AnimStepList;
 
 class PowerAnimation {
   public:

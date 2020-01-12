@@ -7,9 +7,8 @@
 #include <ESP8266WiFi.h>
 #include "WiFiAutoSwitch.h"
 
+String formatString(PGM_P format, ...);
 int logToSerial(String msg);
-String getLastError();
-void setLastError(String error);
 String getVersion();
 String getScriptsPath();
 String getWord(const String &line, int ix);
@@ -25,18 +24,16 @@ bool login(String password);
 void logout();
 void setDriverName(String error);
 String getDriverName();
-bool executeFile(String filename);
+int executeFile(String filename);
 void bootStart();
 void firstBoot();
 void bootComplete();
 void deleteFile(String filename);
 void crash();
 
-#ifndef NDEBUG
-    #define ERR(...) { logToSerial(F("ERROR: ")); logToSerial( __VA_ARGS__ ); logToSerial(F("\n")); setLastError(__VA_ARGS__); }
-    #define INFO(...) { logToSerial(F("INFO: ")); logToSerial( __VA_ARGS__ ); logToSerial(F("\n")); }
+#ifdef PROJECT_DEBUG
+    #define INFO(fmt, ...) { Serial.println(fmt); Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ ); }
 #else
-    #define ERR(...) { setLastError(__VA_ARGS__); }
     #define INFO(...)
 #endif
 

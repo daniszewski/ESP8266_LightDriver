@@ -9,7 +9,7 @@ void WiFiAutoSwitchClass::begin() {
 void WiFiAutoSwitchClass::handle() {
     unsigned long currTime = millis();
     if (currTime - lastTime >= WIFI_CHECK_EVERY && _wifilist.size() > 0) {
-        DEBUG_WIFI_MULTI("[MULTIWIFI] check\n");
+        //DEBUG_WIFI_MULTI("[MULTIWIFI] check\n");
         if (WiFi.status() != WL_CONNECTED || WiFi.RSSI() < WIFI_MIN_RSSI) {
             DEBUG_WIFI_MULTI("[MULTIWIFI] bad signal (status: %d, rssi: %d, counter: %d)\n", WiFi.status(), WiFi.RSSI(), _badreads);
             if (++_badreads > WIFI_BAD_READS_TRIGGER) {
