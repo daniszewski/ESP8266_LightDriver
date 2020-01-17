@@ -6,6 +6,7 @@
 #include "BootTries.h"
 #include "WebCallsQueue.h"
 #include "CrashToSpiffs.h"
+#include "MQTTMessages.h"
 
 void setup() {
     bootStart();
@@ -16,6 +17,7 @@ void setup() {
     WebPages.begin();
     WebCallsQueue.begin();
     WiFiAutoSwitch.begin();
+    MQTTMessages.begin();
     bootComplete();
 }
 
@@ -26,5 +28,6 @@ void loop() {
     PinDriver.handle();
     BootTries.handle();
     WiFiAutoSwitch.handle();
+    MQTTMessages.handle();
     delay(2);
 }

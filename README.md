@@ -19,6 +19,7 @@ All ESP8266-based hardware with at least 2048kB of flash memory and USB controll
 - live stats (current switch states, power levels)
 - virtual switches managed remotely
 - automatic WiFi switch based on signal strength
+- MQTT protocol handling
 
 ## Build instruction
 

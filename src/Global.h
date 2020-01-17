@@ -30,9 +30,15 @@ void firstBoot();
 void bootComplete();
 void deleteFile(String filename);
 void crash();
+void mqttInit(String server, String port, String user, String passwd);
+const String mqttGetPrefix();
+void mqttSetPrefix(String prefix);
+void mqttSubscribe(String topic);
+void mqttMessage(String topic, String message);
+
 
 #ifdef PROJECT_DEBUG
-    #define INFO(fmt, ...) { Serial.println(fmt); Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ ); }
+    #define INFO(fmt, ...) Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ )
 #else
     #define INFO(...)
 #endif

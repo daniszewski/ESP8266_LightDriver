@@ -26,6 +26,9 @@ bool execute(String line) {
     else if (adm && cmd == "WIFIAP") WiFiAP(getWord(line, 1)=="1", true); // Syntax: WIFIAP <0 or 1>
     else if (adm && cmd == "WIFIAPTEST") WiFiAP(getWord(line, 1)=="1", false); // Syntax: WIFIAPTEST <0 or 1>
     else if (adm && cmd == "DELETE") deleteFile(getWord(line, 1)); // Syntax: DELETE <full_filepath>
+    else if (adm && cmd == "MQTTINIT") mqttInit(getWord(line, 1), getWord(line, 2), getWord(line, 3), getWord(line, 4)); // Syntax: MQTTINIT <server> <port> <user> <passwd>
+    else if (adm && cmd == "MQTTPREFIX") mqttSetPrefix(getWord(line, 1)); // Syntax: MQTTPREFIX <prefix>
+    else if (adm && cmd == "MQTTSUB") mqttSubscribe(getWord(line, 1)); // Syntax: MQTTSUB <topic>
     else if (adm && cmd == "RESTART") ESP.restart(); // Syntax: RESTART
     else if (adm && cmd == "CRASH") crash();
     
@@ -34,6 +37,7 @@ bool execute(String line) {
     else if (cmd == "URL") WebCallsQueue.add(getWord(line, 1)); // Syntax: URL <url to call>
     else if (cmd == "TURN") PinDriver.turnSwitch(getWord(line, 1), getWord(line, 2)); // Syntax: TURN <pin name> <new state: 1 0 *>
     else if (cmd == "SCRIPT") executeFile(getScriptsPath() + getWord(line, 1)); // Syntax: SCRIPT <script file>
+    else if (cmd == "MQTT") mqttMessage(getWord(line, 1), getWord(line, 2)); // Syntax: MQTT [<topic>] <value>
     else if (cmd == "SEQ") // Syntax: SEQ <pin name>
     {
         uint8_t pin = PinDriver.parsePin(getWord(line, 1)); 
@@ -47,4 +51,8 @@ bool execute(String line) {
     else if (cmd == "END") PowerAnimator.configEnd(); // Syntax: END
     else if (cmd != "" && cmd.charAt(0) != '#') return false;
     return true;
+}
+
+bool executeScript(String name) {
+    return executeFile(name) == -1;
 }

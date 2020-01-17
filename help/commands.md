@@ -38,6 +38,10 @@
     - WIFIAPTEST {1 or 0} - same a above but the setting will be restored after restart
     - DELETE {filename} - delete a file from internal storage
     - RESTART - reset the module
+    - MQTTINIT {server} {port} {user} {pwd} - start the MQTT connection to the broker server (no ssl)
+    - MQTTSUB {topic} - subscribe to a topic
+    - MQTTPREFIX {prefix} - set the prefix for MQTT commands
+    - MQTT {topic} {message} - send the MQTT message
 
 ## Remarks
 

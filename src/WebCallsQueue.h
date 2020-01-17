@@ -9,7 +9,8 @@ class WebCallsQueueClass {
         void handle();
         void add(String url);
 
-    protected:
+    private:
+        int queueSize;
 };
 
 extern WebCallsQueueClass WebCallsQueue;

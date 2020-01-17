@@ -1,9 +1,13 @@
 #include "WebCallsQueue.h"
+#include <queue>
 
-String urlsToPing = "";
+#define MAX_QUEUE_SIZE 100
+
+std::queue<String> urlsToPing;
 WiFiClient client;
 
 void WebCallsQueueClass::begin() {
+    queueSize = 0;
 }
 
 String getWordExt(const String &line, int ix, char separator, bool isFinal) {
@@ -38,18 +42,18 @@ void WebCallsQueueClass::handle() {
     while (client.available()) client.read();
 
     if (!WiFi.isConnected()) return;
-    if (!urlsToPing.length()) return;
-
-    int nextSpace = urlsToPing.indexOf(' ', 1);
-    String url = nextSpace < 0 ? urlsToPing : urlsToPing.substring(0, nextSpace);
-    int len = url.length();
-    url.trim();
-    if (url.length() > 2) callUrl(url);
-    urlsToPing = urlsToPing.substring(len);
+    if (urlsToPing.empty()) return;
+    callUrl(urlsToPing.front());
+    queueSize--;
 }
 
-void WebCallsQueueClass::add(String url) {
-    urlsToPing += " " + url;
+void WebCallsQueueClass::add(const String url) {
+    if (queueSize < MAX_QUEUE_SIZE) {
+        urlsToPing.push(url);
+        queueSize++;
+    } else {
+        INFO("Queue is full\n");
+    }
 }
 
 WebCallsQueueClass WebCallsQueue;

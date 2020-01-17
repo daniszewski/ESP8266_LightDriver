@@ -2,6 +2,7 @@
 #include "Commands.h"
 #include "_Config.h"
 #include "DebugWiFi.h"
+#include "MQTTMessages.h"
 
 extern "C" {
     #include "user_interface.h"
@@ -10,6 +11,7 @@ extern "C" {
 String driverName;
 bool _admin = false;
 bool _boot = true;
+String mqttPrefix;
 
 const char CHR_0 = '0';
 const char CHR_9 = '9';
@@ -208,4 +210,28 @@ void deleteFile(String filename) {
 void crash() {
     int* nullPointer = NULL;
     Serial.print(*nullPointer);
+}
+
+void mqttInit(String server, String port, String user, String passwd) {
+    MQTTMessages.setServer(server.c_str(), port.toInt(), user.c_str(), passwd.c_str());
+}
+
+void mqttSetPrefix(String prefix) {
+    mqttPrefix = prefix;
+}
+
+const String mqttGetPrefix() {
+    return mqttPrefix;
+}
+
+void mqttSubscribe(String topic) {
+    MQTTMessages.subscribe(mqttPrefix + "/" + topic);
+}
+
+void mqttMessage(String topic, String message) {
+    if (message.length() == 0) {
+        MQTTMessages.sendMessage(mqttPrefix, topic);
+    } else {
+        MQTTMessages.sendMessage(mqttPrefix + "/" + topic, message);
+    }
 }
