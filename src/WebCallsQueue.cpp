@@ -44,6 +44,7 @@ void WebCallsQueueClass::handle() {
     if (!WiFi.isConnected()) return;
     if (urlsToPing.empty()) return;
     callUrl(urlsToPing.front());
+    urlsToPing.pop();
     queueSize--;
 }
 

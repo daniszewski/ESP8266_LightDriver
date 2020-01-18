@@ -93,11 +93,13 @@ void MQTTMessagesClass::handle() {
         } else {
             connectTry = 0;
             while (queueSize) {
-                auto topic = topics.front();
-                auto message = messages.front();
+                auto topic = topics.front(); topics.pop();
+                auto message = messages.front(); messages.pop();
                 if (topic.equals(topic_internal_subscribe)) {
+                    DEBUGMQTT("[MQTT] subscribing to %s\n", message.c_str());
                     subclient.subscribe(message.c_str());
                 } else {
+                    DEBUGMQTT("[MQTT] publishing message %s: %s\n", topic.c_str(), message.c_str());
                     subclient.publish(topic.c_str(), message.c_str());
                 }
                 queueSize--;
@@ -109,7 +111,7 @@ void MQTTMessagesClass::handle() {
 void MQTTMessagesClass::sendMessage(const String topic, const String message) {
     if (mqtt_enabled) {
         if (queueSize < MAX_QUEUE_SIZE) {
-            DEBUGMQTT("[MQTT] sending message %s: %s\n", topic.c_str(), message.c_str());
+            DEBUGMQTT("[MQTT] adding message %s: %s\n", topic.c_str(), message.c_str());
             topics.push(topic);
             messages.push(message);
             queueSize++;
