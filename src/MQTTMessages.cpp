@@ -9,9 +9,10 @@
 
 bool mqtt_enabled = false;
 char *mqtt_server = nullptr;
-uint16_t mqtt_server_port = 1883;
+uint16_t mqtt_server_port;
 char *mqtt_user = nullptr;
 char *mqtt_pwd = nullptr;
+const char topic_internal_subscribe[] = "_S";
 
 WiFiClient wifi;
 PubSubClient subclient(wifi);
@@ -51,8 +52,9 @@ void MQTTMessagesClass::setServer(const char *server, int port, const char *user
 }
 
 void MQTTMessagesClass::subscribe(const String topic) {
-    DEBUGMQTT("[MQTT] subscribe: %s\n", topic.c_str());
-    subclient.subscribe(topic.c_str());
+    DEBUGMQTT("[MQTT] queue subscribe: %s\n", topic.c_str());
+    // enqueue the command until the connection is established
+    sendMessage(topic_internal_subscribe, topic);
 }
 
 void MQTTMessagesClass::messageReceived(char *topic, unsigned char *payload, unsigned int len) {
@@ -62,7 +64,7 @@ void MQTTMessagesClass::messageReceived(char *topic, unsigned char *payload, uns
     DEBUGMQTT("[MQTT] message received: %s: [%d chars] %s\n", topic, len, message);
     if (String(topic).endsWith("/cmd")) {
         execute(String(message));
-    } else if (String(topic).endsWith("/script")) {
+    } else if (String(topic).endsWith("/run")) {
         executeScript(String(message));
     }
 }
@@ -91,7 +93,13 @@ void MQTTMessagesClass::handle() {
         } else {
             connectTry = 0;
             while (queueSize) {
-                subclient.publish(topics.front().c_str(), messages.front().c_str());
+                auto topic = topics.front();
+                auto message = messages.front();
+                if (topic.equals(topic_internal_subscribe)) {
+                    subclient.subscribe(message.c_str());
+                } else {
+                    subclient.publish(topic.c_str(), message.c_str());
+                }
                 queueSize--;
             }
         }
@@ -108,6 +116,8 @@ void MQTTMessagesClass::sendMessage(const String topic, const String message) {
         } else {
             DEBUGMQTT("[MQTT] queue full\n");
         }
+    } else {
+        DEBUGMQTT("[MQTT] sendMessage impossible\n");
     }
 }
 
