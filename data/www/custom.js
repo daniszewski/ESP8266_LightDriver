@@ -18,7 +18,12 @@ function loadStatsAdhoc(loopfunc) {
 
 function formatTimeDate(seconds) {
     var dt = new Date(seconds*1000);
-    return dt.toISOString().replace('T',' ').replace('.000Z','');
+    try {
+        if (dt.getFullYear()<1980) return "";
+        return dt.toISOString().replace('T',' ').replace('.000Z','');
+    } catch { 
+        return ""; 
+    }
 }
 
 function formatTimeShort(time) {
