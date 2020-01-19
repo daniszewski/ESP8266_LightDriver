@@ -33,11 +33,12 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
 	public:
 		String str="";
 		StringPrinter2(){};
-		virtual size_t write(const uint8_t character){str+=character;};
+		virtual size_t write(const uint8_t character){str+=character;return 1;};
 		virtual size_t write(const uint8_t *buffer, size_t size){
 			String str2=String((const char *)buffer);
 			str2.remove(size);
 			str+=str2;
+			return size;
 		};
 	} strprinter2;
 	savetoSpiffs(rst_info, stack, stack_end,strprinter2);
@@ -48,10 +49,9 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
 	File f = SPIFFS.open(fn, "a");
 	if(!f) f= SPIFFS.open(fn, "w");
 	if(f) {
-		unsigned int w=f.write((uint8_t*)strprinter2.str.c_str(), strprinter2.str.length());
+		f.write((uint8_t*)strprinter2.str.c_str(), strprinter2.str.length());
 		f.close();
 	}
-	Serial.println(String()+PSTR("Trace saved to file : ")+fn+"\n");
 }
 
 CrashToSpiffsClass::CrashToSpiffsClass(char *otherfilename) {
