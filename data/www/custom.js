@@ -1,4 +1,4 @@
-var stats = { "name": "", "freemem": -1, "admin": 0, "WiFiClient_SSID": "", "WiFiClient_IP": "0.0.0.0", "WiFiAP_SSID": "", "WiFiAP_IP": "0.0.0.0", "version": "0.0", "connection": 0};
+var stats = { "name": "", "freemem": -1, "admin": 0, "WiFiClient_SSID": "", "WiFiClient_IP": "0.0.0.0", "WiFiAP_SSID": "", "WiFiAP_IP": "0.0.0.0", "version": "0.0", "connection": 0, "MQTT_STATUS": "-1"};
 
 function rest(type, url, body, oncomplete, onsuccess, onerror) {
     $.ajax({type: type, url: url, data: body, complete: function() { if(oncomplete) oncomplete(); if(url!=="stats") loadStatsAdhoc(); }, success: onsuccess, error: onerror, contentType: 'text/plain'});
@@ -14,6 +14,11 @@ function loadStatsAdhoc(loopfunc) {
         function(result) {stats = $.extend(stats, result, { "connection": 1 });},
         function(x,a,t) {stats.connection = 0; stats.admin = 0;message(t,800);}
     );
+}
+
+function formatTimeDate(seconds) {
+    var dt = new Date(seconds*1000);
+    return dt.toISOString().replace('T',' ').replace('.000Z','');
 }
 
 function formatTimeShort(time) {
@@ -42,8 +47,9 @@ function updateStatsView() {
     $('#name').text(stats.name);
     $('#version').text(stats.version);
     $('#freemem').text(stats.freemem);
-    $('#adminmode').text(stats.admin === 1 ? "yes" : "no");
-    $('#connection').text(stats.connection === 0 ? "disconnected" : "connected");
+    $('#adminmode').text(stats.admin === 1 ? "Yes" : "No");
+    $('#connected').html(stats.connection === 0 ? "<span style='color:red'>No</span>" : "<span style='color:lightgreen'>OK</span>");
+    $('#mqtt').html(stats.MQTT_STATUS == "-1" ? "<span style='color:cyan'>N/A</span>" : stats.MQTT_STATUS == "0" ? "<span style='color:orange'>Connecting</span>" : "<span style='color:lightgreen'>OK</span>");
     $('#WiFiAPSSID').text(stats.WiFiAP_SSID);
     $('#WiFiAPIP').text(stats.WiFiAP_IP);
     $('#WiFiAPState').text(stats.WiFiAP_IP !== '0.0.0.0' && stats.WiFiAP_IP !== '(IP unset)' ? "enabled" : "disabled");
@@ -52,6 +58,7 @@ function updateStatsView() {
     $('#WiFiClientState').text((stats.WiFiClient_IP !== '0.0.0.0' && stats.WiFiClient_IP !== '(IP unset)' ? "enabled" : "disabled") + " (status: " + stats.WiFiClient_STATUS + ")");
     $('#WiFiClientChannel').text(stats.WiFiClient_CHANNEL);
     $('#WiFiClientRSSI').text(stats.WiFiClient_RSSI);
+    $('#time').text(formatTimeDate(stats.time));
     var statsContainer = $('#stats-pins');
     var tmpl = $('#template-pin');
     if (stats.pins) {
@@ -78,7 +85,7 @@ function updateStatsView() {
             if (pin.type==='ON/OFF') current.click(clickONOFF);
         }
     }
-    $('#page-wifi input').attr('disabled', stats.admin !== 1);
+    $('#page-connect input').attr('disabled', stats.admin !== 1);
     $('#page-boot input').attr('disabled', stats.admin !== 1);
     $(stats.admin===0 ? '#pnlLogin' : '#pnlLogoff').show();
     $(stats.admin===1 ? '#pnlLogin' : '#pnlLogoff').hide();

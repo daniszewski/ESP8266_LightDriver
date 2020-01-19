@@ -3,6 +3,7 @@
 #include "PinDriver.h"
 #include "PowerAnimator.h"
 #include "WebCallsQueue.h"
+#include "time.h"
 
 bool execute(String line) {
     INFO("%s\n", line.c_str());
@@ -38,6 +39,7 @@ bool execute(String line) {
     else if (cmd == "TURN") PinDriver.turnSwitch(getWord(line, 1), getWord(line, 2)); // Syntax: TURN <pin name> <new state: 1 0 *>
     else if (cmd == "SCRIPT") executeFile(getScriptsPath() + getWord(line, 1)); // Syntax: SCRIPT <script file>
     else if (cmd == "MQTT") mqttMessage(getWord(line, 1), getWord(line, 2)); // Syntax: MQTT [<topic>] <value>
+    else if (cmd == "TIME") setTime(getWord(line, 1)); // Syntax: TIME <seconds_since_1970>
     else if (cmd == "SEQ") // Syntax: SEQ <pin name>
     {
         uint8_t pin = PinDriver.parsePin(getWord(line, 1)); 

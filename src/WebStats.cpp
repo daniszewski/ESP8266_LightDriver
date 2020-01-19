@@ -1,5 +1,7 @@
 #include "WebStats.h"
 #include "PinDriver.h"
+#include "MQTTMessages.h"
+#include "time.h"
 
 void sendStats(ESP8266WebServer *server) {
     server->sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
@@ -61,6 +63,10 @@ void sendStats(ESP8266WebServer *server) {
     server->sendContent(WiFi.softAPSSID());
     server->sendContent(F("\",\n\"WiFiAP_IP\": \""));
     server->sendContent(WiFi.softAPIP().toString());
+    server->sendContent(F("\",\n\"MQTT_STATUS\": \""));
+    server->sendContent(String(MQTTMessages.getStatus()));
+    server->sendContent(F("\",\n\"time\": \""));
+    server->sendContent(String(time(nullptr))); // seconds from 1st Jan 1970
     server->sendContent(F("\",\n\"version\": \""));
     server->sendContent(getVersion());
     server->sendContent(F("\"\n}\n"));

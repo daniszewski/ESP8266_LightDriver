@@ -37,6 +37,12 @@ bool MQTTMessagesClass::isEnabled() {
 }
 
 void MQTTMessagesClass::setServer(const char *server, int port, const char *user, const char *pwd) {
+    if (subclient.connected()) {
+        DEBUGMQTT("[MQTT] reconnecting\n");
+        subclient.disconnect();
+        wifi.stopAll();
+    }
+
     if (mqtt_server) free(mqtt_server);
     if (mqtt_user) free(mqtt_user);
     if (mqtt_pwd) free(mqtt_pwd);
@@ -49,6 +55,12 @@ void MQTTMessagesClass::setServer(const char *server, int port, const char *user
 
     DEBUGMQTT("[MQTT] service enabled: %s:%d\n", mqtt_server, mqtt_server_port);
     enable();
+}
+
+int8 MQTTMessagesClass::getStatus() {
+    if (!mqtt_enabled) return -1;
+    if (subclient.connected()) return 1;
+    return 0;
 }
 
 void MQTTMessagesClass::subscribe(const String topic) {

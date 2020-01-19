@@ -42,6 +42,7 @@
     - MQTTSUB {topic} - subscribe to a topic
     - MQTTPREFIX {prefix} - set the prefix for MQTT commands
     - MQTT {topic} {message} - send the MQTT message
+    - TIME {seconds_since_1970} - set the current time
 
 ## Remarks
 

@@ -35,7 +35,7 @@ const String mqttGetPrefix();
 void mqttSetPrefix(String prefix);
 void mqttSubscribe(String topic);
 void mqttMessage(String topic, String message);
-
+void setTime(String secsSince1970);
 
 #ifdef PROJECT_DEBUG
     #define INFO(fmt, ...) Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ )

@@ -50,6 +50,8 @@ namespace ESP8266DriverEmu.Controllers
             result.Add("WiFiClient_RSSI", DriverEmu.Instance.WiFiRSSI);
             result.Add("WiFiAP_SSID", DriverEmu.Instance.WiFiAPSSID);
             result.Add("WiFiAP_IP", DriverEmu.Instance.WiFiAPIP);
+            result.Add("MQTT_STATUS", 0);
+            result.Add("time", "127361273");
             result.Add("version", "UI DEMO");
 
             return result;

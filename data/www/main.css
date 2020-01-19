@@ -54,6 +54,7 @@ body, #header, #content, #footer {
     height: 100%;
     bottom: 0px;
     background-color: #e5f0f5;
+    position: relative;
 }
 
 #body {
@@ -92,7 +93,7 @@ h1 {
 
 #footer .form-item {
     display: inline-block;
-    width: 170px;
+    width: 141px;
     color: lightgray;
     font-size: 12px;
     padding-top:3px;
@@ -108,6 +109,14 @@ h1 {
     float: right;
     margin-top: 0px;
     margin-bottom: -6px;
+}
+
+#time {
+    position: absolute;
+    bottom: 0px;
+    width:100%;
+    color: black;
+    text-align: center;
 }
 
 #body .form-item {

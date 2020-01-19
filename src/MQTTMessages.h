@@ -14,6 +14,7 @@ public:
     void setServer(const char *server, int port, const char *user, const char *passwd);
     void subscribe(const String topic);
     void sendMessage(const String topic, const String message);
+    int8 getStatus();
 private:
     void messageReceived(char *topic, unsigned char *payload, unsigned int len);
     int connectTry;

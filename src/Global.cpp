@@ -235,3 +235,9 @@ void mqttMessage(String topic, String message) {
         MQTTMessages.sendMessage(mqttPrefix + "/" + topic, message);
     }
 }
+
+void setTime(String secsSince1970) {
+    struct timeval tv = { .tv_sec = secsSince1970.toInt() };
+    struct timezone tz = { .tz_minuteswest = 0, .tz_dsttime = 0 };
+    settimeofday(&tv, &tz); // Syntax: TIME <seconds_since_1970>
+}

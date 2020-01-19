@@ -30,6 +30,7 @@
                 <li><a page="page-wwwroot">Static files</a></li>
                 <li><a page="page-help"><strong>Help</strong></a></li>
             </ul>
+            <div id="time"></div>
         </div>
         <div id="body">
             <div id="page-loading">LOADING...</div>
@@ -170,6 +171,7 @@
 - MQTTSUB {topic} - subscribe to a topic
 - MQTTPREFIX {prefix} - set the prefix for MQTT commands
 - MQTT {topic} {message} - send the MQTT message
+- TIME {seconds_since_1970} - set the current time
 
 # Remarks
 
@@ -177,13 +179,13 @@ The {pin name} can be D0, D1, ..., D9 and in case of switches additionaly V0, V1
 switches available by WIFI
 </pre>
             </div>
-
         </div>
     </div>
     <div id="footer">
-        <div class="form-item">Connection: <span id="connection"></span></div>
+        <div class="form-item">Connected: <span id="connected"></span></div>
+        <div class="form-item">MQTT: <span id="mqtt"></span></div>
         <div class="form-item">Admin mode: <span id="adminmode"></span></div>
-        <div class="form-item">Free memory: <span id="freemem"></span></div>
+        <div class="form-item">Free RAM: <span id="freemem"></span></div>
         <div class="form-item">Version: <span id="version"></span></div>
         <div class="form-item">Auto refresh: <input type="checkbox" id="autorefresh" checked="checked" /></div>
     </div>
