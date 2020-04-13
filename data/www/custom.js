@@ -17,7 +17,8 @@ function loadStatsAdhoc(loopfunc) {
 }
 
 function formatTimeDate(seconds) {
-    var dt = new Date(seconds*1000);
+    var now = new Date(); 
+    var dt = new Date(seconds*1000 - now.getTimezoneOffset()*60000);
     try {
         if (dt.getFullYear()<1980) return "";
         return dt.toISOString().replace('T',' ').replace('.000Z','');
