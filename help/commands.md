@@ -32,10 +32,10 @@
     - PWD {password} - set admin password at a boot time
     - BOOTADMIN - admin commands are available without login
     - WIFI {ssid} {password} - connect to WIFI (not needed on boot time)
-    - WIFITEST {ssid} {password} - same a above but the setting will be restored after restart
+    - WIFITEST {ssid} {password} - same as above but the setting will be restored after restart
     - AUTOWIFI {ssid} {password} - add network to automatic Wifi switcher
     - WIFIAP {1 or 0} - enable or disable the AccessPoint mode
-    - WIFIAPTEST {1 or 0} - same a above but the setting will be restored after restart
+    - WIFIAPTEST {1 or 0} - same as above but the setting will be restored after restart
     - DELETE {filename} - delete a file from internal storage
     - RESTART - reset the module
     - MQTTINIT {server} {port} {user} {pwd} - start the MQTT connection to the broker server (no ssl)
