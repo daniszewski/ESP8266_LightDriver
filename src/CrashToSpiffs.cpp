@@ -4,8 +4,7 @@
 char *staticfn=0;
 
 void savetoSpiffs(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end,Print& outputDev ){
-	uint32_t crashTime = millis();
-	outputDev.printf(PSTR("Crash # at %ld ms\n"),crashTime);
+	outputDev.printf(PSTR("Crash # at %ld ms, UTC %ld \n"), millis(), time(nullptr));
 	outputDev.printf(PSTR("Reason of restart: %d\n"), rst_info->reason);
 	outputDev.printf(PSTR("Exception cause: %d\n"), rst_info->exccause);
 	outputDev.printf(PSTR("epc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n"), rst_info->epc1, rst_info->epc2, rst_info->epc3, rst_info->excvaddr, rst_info->depc);
