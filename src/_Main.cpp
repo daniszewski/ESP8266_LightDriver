@@ -7,6 +7,7 @@
 #include "WebCallsQueue.h"
 #include "CrashToSpiffs.h"
 #include "MQTTMessages.h"
+#include "I2C.h"
 
 void setup() {
     bootStart();
@@ -18,6 +19,7 @@ void setup() {
     WebCallsQueue.begin();
     WiFiAutoSwitch.begin();
     MQTTMessages.begin();
+    I2C.begin();
     bootComplete();
 }
 
@@ -29,5 +31,6 @@ void loop() {
     BootTries.handle();
     WiFiAutoSwitch.handle();
     MQTTMessages.handle();
+    I2C.handle();
     delay(2);
 }

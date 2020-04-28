@@ -28,34 +28,40 @@ String formatString(PGM_P format, ...) {
     char* buffer = temp;
     size_t len = vsnprintf_P(temp, sizeof(temp), format, arg);
     va_end(arg);
+    String result;
     if (len > sizeof(temp) - 1) {
         buffer = new char[len + 1];
-        if (!buffer) return String();
+        if (!buffer) return result;
         va_start(arg, format);
         vsnprintf_P(buffer, len + 1, format, arg);
         va_end(arg);
     }
-    String result = String(buffer);
+    result = String(buffer);
     if (buffer != temp) delete[] buffer;
     return result;
 }
 
-String getVersion() {
+String& getVersion() {
     return version;
 }
 
-String getScriptsPath() {
+String& getScriptsPath() {
     return scriptsPath;
 }
 
 String getWord(const String &line, int ix) {
+    return getWord(line, ix, false);
+}
+
+String getWord(const String &line, int ix, bool toEnd) {
     int p1 = 0;
     while (ix-- && p1 >= 0) p1 = line.indexOf(' ', p1+1);
-    if (p1<0) return String();
+    String r;
+    if (p1<0) return r;
     if (p1>0) p1++;
-    int p2 = line.indexOf(' ', p1);
+    int p2 = toEnd ? -1 : line.indexOf(' ', p1);
     if (p2<0) p2 = line.length();
-    String r = line.substring(p1,p2);
+    r = line.substring(p1,p2);
     r.trim();
     return r;
 }
@@ -180,7 +186,7 @@ void setDriverName(String name) {
     driverName = name;
 }
 
-String getDriverName() {
+String& getDriverName() {
     return driverName;
 }
 
@@ -220,7 +226,7 @@ void mqttSetPrefix(String prefix) {
     mqttPrefix = prefix;
 }
 
-const String mqttGetPrefix() {
+String& mqttGetPrefix() {
     return mqttPrefix;
 }
 
