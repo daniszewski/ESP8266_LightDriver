@@ -71,4 +71,10 @@ void I2CClass::HD44780_bigchar(uint8_t address, uint8_t c, String seq) {
     instance->setBigChar(c, seq.c_str());
 }
 
+void I2CClass::HD44780_clear(uint8_t address) {
+    auto instance = getI2C(address);
+    if (!instance) return;
+    instance->clear();
+}
+
 I2CClass I2C;

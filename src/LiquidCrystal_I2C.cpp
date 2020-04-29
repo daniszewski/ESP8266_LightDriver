@@ -362,6 +362,7 @@ void LiquidCrystal_I2C::printBig(const char *chars) {
 				if(bc>='0' && bc<='7') print((char)(bc-'0'));
 				else if (bc=='X') print((char)(255));
 				else if (bc=='_') print((char)(254));
+				else print(bc);
 				_curcol++;
 				width++;
 			}

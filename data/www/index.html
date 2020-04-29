@@ -138,6 +138,16 @@
     (also virtual pins: V0, V1, ..., V9)
 - SCRIPT {script file} - run script (from local storage)
 - SEQ {pin name} - start an output sequence definition under specified pin
+- HD44780_FONT {I2C addr} {location 0-7} {row1} {row2} {row3} {row4} {row5} {row6} {row7} {row8} 
+    - define custom characted
+- HD44780_CURSOR {I2C addr} {x} {y} - move cursor to provided location
+- HD44780_PRINT {I2C addr} {string} - print text in current location
+- HD44780_PRINTBIG {I2C addr} {string} - print large text in current location
+- HD44780_PRINTCUSTOM {I2C addr} {string} - print custom characters (0-7)
+- HD44780_BACKLIGHT {I2C addr} {0 or 1} - enable or disable the backlight
+- HD44780_BIGCHAR {I2C addr} {char} {sequence: X(block), _(space), 0-7(custom), /(up), \(down), 
+    &gt;(right), &lt;(left)} - define big char sequence
+- HD44780_CLEAR {I2C addr} - clear the panel
 
 2. Sequence commands (available after starting a sequence)
 - VALUE {target value} - instantly assign a value to the output (0-1023, ON, OFF, LOW, HIGH)
@@ -172,6 +182,7 @@
 - MQTTPREFIX {prefix} - set the prefix for MQTT commands
 - MQTT {topic} {message} - send the MQTT message
 - TIME {seconds_since_1970} - set the current time
+- HD44780_INIT {I2C addr} {width} {height} - set up the LCD output on specified I2C adress
 
 # Remarks
 

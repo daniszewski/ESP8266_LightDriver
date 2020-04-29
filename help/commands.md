@@ -6,10 +6,18 @@
 
     - LOGIN {password} - admin login
     - LOGOFF - logoff admin
-    - URL {url to call} - call web url, <http://{ip}/run?file={script}> to run remote script
+    - URL {url to call} - call web url, {http://{ip}/run?file={script}} to run remote script
     - TURN {pin name} {new state: 1 0 *} - change state of switch registered under specified pin (also virtual pins: V0, V1, ..., V9)
     - SCRIPT {script file} - run script (from local storage)
     - SEQ {pin name} - start an output sequence definition under specified pin
+    - HD44780_FONT {address} {location 0-7} {row1} {row2} {row3} {row4} {row5} {row6} {row7} {row8} - define custom characted
+    - HD44780_CURSOR {address} {x} {y} - move cursor to provided location
+    - HD44780_PRINT {address} {string} - print text in current location
+    - HD44780_PRINTBIG {address} {string} - print large text in current location
+    - HD44780_PRINTCUSTOM {address} {string} - print custom characters (0-7)
+    - HD44780_BACKLIGHT {address} {0 or 1} - enable or disable the backlight
+    - HD44780_BIGCHAR {address} {char} {sequence: X(block), _(space), 0-7(custom), /(up), \(down), >(right), <(left)} - define big char sequence
+    - HD44780_CLEAR {address} - clear the panel
 
 2. Sequence commands (available after starting a sequence)
 
@@ -43,6 +51,8 @@
     - MQTTPREFIX {prefix} - set the prefix for MQTT commands
     - MQTT {topic} {message} - send the MQTT message
     - TIME {seconds_since_1970} - set the current time
+    - HD44780_INIT {address} {width} {height} - set up the LCD output on specified I2C adress
+
 
 ## Remarks
 

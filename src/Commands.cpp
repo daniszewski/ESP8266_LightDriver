@@ -40,12 +40,13 @@ bool execute(String line) {
     else if (adm && cmd == "HD44780_INIT") I2C.HD44780_add(WI(1), WI(2), WI(3)); // Syntax: HD44780_INIT <address> <width> <height>
     
     else if (cmd == "HD44780_FONT") I2C.HD44780_font(WI(1), WI(2), WI(3), WI(4), WI(5), WI(6), WI(7), WI(8), WI(9), WI(10)); // Syntax: HD44780_FONT <address> <location> <row1> <row2> <row3> <row4> <row5> <row6> <row7> <row8>
-    else if (cmd == "HD44780_CURSOR") I2C.HD44780_cursor(WI(1), WI(2), WI(3)); // Syntax: HD44780_CURSOR <address> <x> <y> <string>
+    else if (cmd == "HD44780_CURSOR") I2C.HD44780_cursor(WI(1), WI(2), WI(3)); // Syntax: HD44780_CURSOR <address> <x> <y>
     else if (cmd == "HD44780_PRINT") I2C.HD44780_print(WI(1), WM(2)); // Syntax: HD44780_PRINT <address> <string>
     else if (cmd == "HD44780_PRINTBIG") I2C.HD44780_printbig(WI(1), WM(2)); // Syntax: HD44780_PRINTBIG <address> <string>
     else if (cmd == "HD44780_PRINTFONT") I2C.HD44780_printCustom(WI(1), WM(2)); // Syntax: HD44780_PRINTCUSTOM <address> <string>
     else if (cmd == "HD44780_BACKLIGHT") I2C.HD44780_backlight(WI(1), WI(2)); // Syntax: HD44780_BACKLIGHT <address> <0 or 1>
-    else if (cmd == "HD44780_BIGCHAR") I2C.HD44780_bigchar(WI(1), WI(2), WM(3)); // Syntax: HD44780_BIGCHAR <address> <char> <sequence: X(block), _(space), 0-7(custom) or /(up), \(down)>
+    else if (cmd == "HD44780_BIGCHAR") I2C.HD44780_bigchar(WI(1), WI(2), WM(3)); // Syntax: HD44780_BIGCHAR <address> <char> <sequence: X(block), _(space), 0-7(custom), /(up), \(down)>
+    else if (cmd == "HD44780_CLEAR") I2C.HD44780_clear(WI(1)); // Syntax: HD44780_CLEAR <address>
     else if (cmd == "LOGIN") login(WS(1)); // Syntax: LOGIN <password>
     else if (cmd == "LOGOFF") logout(); // Syntax: LOGOFF
     else if (cmd == "URL") WebCallsQueue.add(WS(1)); // Syntax: URL <url to call>

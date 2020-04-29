@@ -20,6 +20,7 @@ All ESP8266-based hardware with at least 2048kB of flash memory and USB controll
 - virtual switches managed remotely
 - automatic WiFi switch based on signal strength
 - MQTT protocol handling
+- HD44780 over I2C
 
 ## Build instruction
 

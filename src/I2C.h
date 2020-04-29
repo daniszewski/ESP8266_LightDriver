@@ -15,6 +15,7 @@ public:
     void HD44780_backlight(uint8_t address, uint8_t isOn);
     void HD44780_printbig(uint8_t address, String text);
     void HD44780_bigchar(uint8_t address, uint8_t c, String seq);
+    void HD44780_clear(uint8_t address);
 private:
 
 };
