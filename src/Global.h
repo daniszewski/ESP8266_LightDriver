@@ -25,7 +25,7 @@ bool login(String password);
 void logout();
 void setDriverName(String name);
 String& getDriverName();
-int executeFile(String filename);
+String executeFile(String filename);
 void bootStart();
 void firstBoot();
 void bootComplete();

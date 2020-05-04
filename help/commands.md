@@ -18,6 +18,7 @@
     - HD44780_BACKLIGHT {address} {0 or 1} - enable or disable the backlight
     - HD44780_BIGCHAR {address} {char} {sequence: X(block), _(space), 0-7(custom), /(up), \(down), >(right), <(left)} - define big char sequence
     - HD44780_CLEAR {address} - clear the panel
+    - RETURN {value} - exit the script and return {value} (including REST calls)
 
 2. Sequence commands (available after starting a sequence)
 

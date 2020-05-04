@@ -190,23 +190,24 @@ String& getDriverName() {
     return driverName;
 }
 
-int executeFile(String filename) {
+String executeFile(String filename) {
     File f = SPIFFS.open(filename, "r");
+    String result;
     if (f) { 
         int line = 1;
         while (f.available()) {
-            if (!execute(f.readStringUntil('\n'))) {
-                INFO("%s: unknown command in line %d\n", filename.c_str(), line);
+            if ((result = execute(f.readStringUntil('\n'))).length()>0) {
+                INFO("Script %s returned %s from line %d\n", filename.c_str(), result.c_str(), line);
                 f.close();
-                return line;
+                return result;
             }
             line++;
         }
         f.close(); 
-        return 0; 
+        return "OK"; 
     }
-    INFO("%s: file doesn't exist.\n", filename.c_str());
-    return -1;
+    INFO("No script file: %s\n", filename.c_str());
+    return "No file: " + filename;
 }
 
 void deleteFile(String filename) {

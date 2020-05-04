@@ -38,3 +38,11 @@ PUT http://192.168.0.202/script/anim01_h HTTP/1.1
 content-type: text/plain
 
 URL http://192.168.0.201/run?file=anim01_h
+
+
+###
+PUT http://192.168.0.202/run HTTP/1.1
+content-type: text/plain
+
+HD44780_CLEAR 39
+HD44780_PRINT 39 119  11

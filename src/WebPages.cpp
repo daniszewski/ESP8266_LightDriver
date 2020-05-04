@@ -25,6 +25,7 @@ static const char STR_CONTENT_TYPE[] PROGMEM = "Content-Type";
 String prefix = STR_WWW;
 
 void sendOK() { server.send(200, MIME_TEXTPLAIN, STR_OK); }
+void sendOK(String msg) { server.send(200, MIME_TEXTPLAIN, msg); }
 void sendERR(String msg) { INFO("%s\n", msg.c_str()); server.send(500, MIME_TEXTPLAIN, msg); }
 void sendRedirect(String url) { server.sendHeader(F("Location"), url, true); server.send(302, MIME_TEXTPLAIN, ""); }
 void sendNoAdmin() { sendERR(F("Not admin")); }
@@ -174,10 +175,7 @@ void WebPagesClass::handleRun() {
     if (server.method() == HTTP_GET) {
         String file = getScriptsPath() + server.arg(0);
         file.toLowerCase();
-        int result = executeFile(file);
-        if (result==0) sendOK();
-        else if (result==-1) sendERR(F("File not found"));
-        else sendERR(formatString(PSTR("Error in line %d\n"), result));
+        sendOK(executeFile(file));
     } else if (server.method() == HTTP_PUT) {
         String body = server.arg(STR_PLAIN)+'\n';
         int lineStart = 0, lineCounter = 1;
@@ -185,10 +183,8 @@ void WebPagesClass::handleRun() {
             int lineEnd = body.indexOf('\n',lineStart);
             if (lineEnd < 0) lineEnd = body.length();
             String line = body.substring(lineStart, lineEnd); line.trim();
-            if (!execute(line)) {
-                sendERR(formatString(PSTR("Unknown command in line %d"), lineCounter));
-                return;
-            }
+            String result = execute(line);
+            if (result.length()>0) { sendOK(result); return; }
             lineStart = lineEnd + 1; lineCounter++;
         } while ((unsigned int)lineStart<body.length());
         sendOK();

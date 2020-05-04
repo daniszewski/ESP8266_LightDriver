@@ -10,7 +10,7 @@
 #define WS(X) getWord(line, X)
 #define WM(X) getWord(line, X, true)
 
-bool execute(String line) {
+String execute(String line) {
     INFO("%s\n", line.c_str());
     
     line.trim();
@@ -54,6 +54,7 @@ bool execute(String line) {
     else if (cmd == "SCRIPT") executeFile(getScriptsPath() + WS(1)); // Syntax: SCRIPT <script file>
     else if (cmd == "MQTT") mqttMessage(WS(1), WS(2)); // Syntax: MQTT [<topic>] <value>
     else if (cmd == "TIME") setTime(WS(1)); // Syntax: TIME <seconds_since_1970>
+    else if (cmd == "RETURN") return WM(1); // Syntax: RETURN <value>
     else if (cmd == "SEQ") // Syntax: SEQ <pin name>
     {
         uint8_t pin = PinDriver.parsePin(WS(1)); 
@@ -65,10 +66,10 @@ bool execute(String line) {
     else if (cmd == "SLIDE") PowerAnimator.configAddStep(WS(2), WS(1)); // Syntax: SLIDE <time of activity> <target value: 0-1023, ON, OFF, LOW, HIGH>
     else if (cmd == "REPEAT") PowerAnimator.configAddRepeat(WI(1), WI(2)); // Syntax: REPEAT <no of commands> <no of repeats>
     else if (cmd == "END") PowerAnimator.configEnd(); // Syntax: END
-    else if (cmd != "" && cmd.charAt(0) != '#') return false;
-    return true;
+    else if (cmd != "" && cmd.charAt(0) != '#') return "Unknown command: " + cmd;
+    return "";
 }
 
-bool executeScript(String name) {
-    return executeFile(name) == -1;
+String executeScript(String name) {
+    return executeFile(name);
 }

@@ -1,7 +1,7 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-bool execute(String line);
-bool executeScript(String name);
+String execute(String line);
+String executeScript(String name);
 
 #endif
