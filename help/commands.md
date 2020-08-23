@@ -30,10 +30,11 @@
 
 3. Admin commands (available after providing proper password to LOGIN command)
 
-    - NAME {name of the node} - Sets name of this module
-    - ZERO {pin name} - Initialize zero cross phase detector on specified pin
-    - PHASESTART {phase start: 0-10000} - sets the time offset of half-phase starting point in microseconds
-    - PHASEEND {phase end: 0-10000} - sets the time offset of half-phase ending point in microseconds
+    - NAME {name of the node} - Set full name of this module for www usage
+    - HOSTNAME {name of the node} - set name for network
+    - ZERO {pin name} - initialize zero cross phase detector on specified pin
+    - PHASESTART {phase start: 0-10000} - set the time offset of half-phase starting point in microseconds
+    - PHASEEND {phase end: 0-10000} - set the time offset of half-phase ending point in microseconds
     - PULSE {pulse length} - zero cross phase triac steering pulse length in microseconds
     - OUTPUT {pin name} {mode: PWM, ZERO, ONOFF} - setup an output of type "mode" on specified pin
     - SWITCH {pin name} {switch type: 1 2 X} {on close} {on open} - setup an action button (1-single state, 2-states, X-stair switch)

@@ -17,6 +17,7 @@ String execute(String line) {
     String cmd = WS(0);
     bool adm = isAdmin();
     if      (adm && cmd == "NAME") setDriverName(WM(1)); // Syntax: NAME <name of the node>
+    else if (adm && cmd == "HOSTNAME") WiFi.hostname(WM(1)); // Syntax: HOSTNAME <hostname>
     else if (adm && cmd == "ZERO") PinDriver.initZero(WS(1)); // Syntax: ZERO <pin name>
     else if (adm && cmd == "PHASESTART") PinDriver.setPhaseStartTime(WI(1)); // Syntax: PHASESTART <phase start: 0-10000>
     else if (adm && cmd == "PHASEEND") PinDriver.setPhaseEndTime(WI(1)); // Syntax: PHASEEND <phase end: 0-10000>
