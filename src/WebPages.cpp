@@ -33,42 +33,7 @@ void sendNoAdmin() { sendERR(F("Not admin")); }
 
 void zeroConf();
 
-#define BUFFER_SIZE 15
-#define AVERAGE_SIZE 7
-
-
-unsigned int ReadDistance(uint8_t triggerPin, uint8_t echoPin) {
-    digitalWrite(triggerPin, LOW); delayMicroseconds(2);
-    digitalWrite(triggerPin, HIGH); delayMicroseconds(10);
-    digitalWrite(triggerPin, LOW);
-    return pulseIn(echoPin, HIGH) * 10 / 58;
-}
-
-int SortFunc(const void *cmp1, const void *cmp2)
-{
-  return *((unsigned int *)cmp2) - *((unsigned int *)cmp1);
-}
-
-void handleProximitySensor() {
-    if (server.method() == HTTP_GET) {
-        int trigPin = PinDriver.parsePin(server.arg(0));
-        int echoPin = PinDriver.parsePin(server.arg(1));
-        unsigned int buffer[BUFFER_SIZE];
-        pinMode(trigPin, OUTPUT);
-        pinMode(echoPin, INPUT);
-
-        for (int i=0; i<BUFFER_SIZE; i++) {
-            buffer[i] = ReadDistance(trigPin, echoPin);
-            delay(50);
-        }
-        qsort(buffer, BUFFER_SIZE, sizeof(unsigned int), SortFunc);
-        sendOK(String(buffer[BUFFER_SIZE >> 1]));
-    }
-}
-
-
 void WebPagesClass::begin() {
-    server.on(F("/proximity"), [this](){ handleProximitySensor(); });
     server.on(F("/stats"), HTTP_GET, [this](){ sendStats(&server); });
     server.on(STR_BOOT, [this](){ handleBoot(); });
     server.on(F("/run"), [this](){ handleRun(); });

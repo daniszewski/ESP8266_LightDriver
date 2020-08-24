@@ -56,6 +56,8 @@ String execute(String line) {
     else if (cmd == "MQTT") mqttMessage(WS(1), WS(2)); // Syntax: MQTT [<topic>] <value>
     else if (cmd == "TIME") setTime(WS(1)); // Syntax: TIME <seconds_since_1970>
     else if (cmd == "RETURN") return WM(1); // Syntax: RETURN <value>
+    else if (cmd == "PROXIMITY") return String(PinDriver.getProximity(WS(1), WS(2), WI(3), WI(4))); // Syntax: PROXIMITY <trigger_pin> <echo_pin> <num_of_reads> <avg_of_middle>
+
     else if (cmd == "SEQ") // Syntax: SEQ <pin name>
     {
         uint8_t pin = PinDriver.parsePin(WS(1)); 

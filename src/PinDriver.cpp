@@ -239,6 +239,36 @@ float PinDriverClass::getZeroFreq() {
     return zeroFreq;
 }
 
+int proximitySortFunc(const void *cmp1, const void *cmp2)
+{
+    return *((unsigned int *)cmp2) - *((unsigned int *)cmp1);
+}
+
+unsigned int PinDriverClass::getProximity(String triggerPin, String echoPin, int reads, int avgrange) {
+    uint8_t pin1 = parsePin(triggerPin);
+    uint8_t pin2 = parsePin(echoPin);
+    if (!reads) reads = 15;
+    if (!avgrange) avgrange = 5;
+    unsigned int *buffer = (unsigned int *) malloc(reads*sizeof(unsigned int));
+    pinMode(pin1, OUTPUT);
+    pinMode(pin2, INPUT);
+
+    for (int i=0; i<reads; i++) {
+        if(i) delay(50);
+        digitalWrite(pin1, LOW); delayMicroseconds(2);
+        digitalWrite(pin1, HIGH); delayMicroseconds(10);
+        digitalWrite(pin1, LOW);
+        buffer[i] = pulseIn(pin2, HIGH) * 10 / 58;
+    }
+    qsort(buffer, reads, sizeof(unsigned int), proximitySortFunc);
+    unsigned int sum = 0;
+    for (int i=0; i<avgrange; i++) {
+        sum += buffer[((reads-avgrange)>>1)+i];
+    }
+    free(buffer);
+    return sum / avgrange;
+}
+
 void PinDriverClass::begin() {
     setupTimer();
 }

@@ -34,6 +34,7 @@ class PinDriverClass {
         void turnSwitch(String pinName, String state);
         void updatePinsPwm();
         float getZeroFreq();
+        unsigned int getProximity(String trigger, String echo, int reads, int avgrange);
     protected:
         void handleSwitches();
         void handleZeroCounter();
