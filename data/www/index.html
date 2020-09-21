@@ -165,6 +165,7 @@
 - PHASEEND {phase end: 0-10000} - sets the time offset of half-phase ending point in microseconds
 - PULSE {pulse length} - zero cross phase triac steering pulse length in microseconds
 - OUTPUT {pin name} {mode: PWM, ZERO, ONOFF} - setup an output of type "mode" on specified pin
+    In case of ONOFF the default state is HIGH. To control it just replace ONOFF with O0 or O1.
 - SWITCH {pin name} {switch type: 1 2 X} {on close} {on open} - setup an action button 
     (1-single state, 2-states, X-stair switch)
 - DISABLE {pin name} - disable previously setup pin

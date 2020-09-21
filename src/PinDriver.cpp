@@ -147,11 +147,19 @@ void PinDriverClass::initPin(String pinName, String modeWord) { // mode: PWM, ZE
     uint8_t pin = parsePin(pinName);
     char mode = modeWord.charAt(0);
     pinType[pin] = mode;
+    String output = "0";
     if (pin < FIRTSVIRTUALPIN) {
+        if (modeWord.charAt(1)=='1') {
+            digitalWrite(pin, LOW);
+            output = "HIGH";
+        } else if (modeWord.charAt(1)=='0') {
+            digitalWrite(pin, HIGH);
+            output = "LOW";
+        }
         pinMode(pin, OUTPUT);
     }
     PowerAnimator.configStart(pin, mode=='Z' ? HIGH : LOW);
-    PowerAnimator.configAddStep("0", "");
+    PowerAnimator.configAddStep(output, "");
     PowerAnimator.configEnd();
 }
 
