@@ -1,5 +1,5 @@
 #include "CrashToSpiffs.h"
-#include <FS.H>
+#include <FS.h>
 
 char *staticfn=0;
 
