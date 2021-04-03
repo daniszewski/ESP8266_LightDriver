@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LCD</title>
+    <script type="application/javascript">
+		function rest(type, url, body) {
+			var http = new XMLHttpRequest();
+			http.open(type, url, true);
+			http.setRequestHeader('Content-type', 'text/plain');
+			http.onreadystatechange = function() {
+				if(http.readyState == 4 && http.status == 200) {
+					//alert(http.responseText);
+				}
+			}
+			http.send(body);
+		}
+
+		function save() {
+			var txt=document.getElementById('txt').value;
+			var arr=(txt+"\n").split("\n");
+			var cmd='HD44780_CLEAR 39\nHD44780_PRINT 39 '+arr[0]+'\nHD44780_CURSOR 39 0 1\nHD44780_PRINT 39 '+arr[1]+'\n';
+			rest('PUT','run',cmd);
+		}
+	</script>
+</head>
+<body style="zoom:400%;background-color:darkgray">
+	<textarea id="txt" cols="16" rows="3"></textarea><br>
+	<input type="button" value="OK" onclick="save()" />
+</body>
+</html>

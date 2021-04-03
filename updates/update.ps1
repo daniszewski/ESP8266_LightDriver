@@ -4,8 +4,8 @@ $src = "src"
 $timeout = 5
 $configFile = "updates\update-config.json"
 $defaultPwd = "esppower"
-$defaultUriPattern = "http://192.168.0.{0}/" # change it in update-config.json if needed
-$defaultUriRange = "200-210" # change it in update-config.json if needed
+$defaultUriPattern = "http://10.0.0.{0}/" # change it in update-config.json if needed
+$defaultUriRange = "202-202" # change it in update-config.json if needed
 
 # IMPLEMENTATION
 
@@ -13,6 +13,7 @@ $ProgressPreference = "SilentlyContinue"
 
 Add-Type -AssemblyName 'System.Net.Http'
 Add-Type -AssemblyName 'System.Web.Extensions'
+Add-Type -AssemblyName 'System.Web'
 
 Function Submit-File {
     param( [String]$Url, [String]$FilePath )
