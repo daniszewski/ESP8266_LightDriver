@@ -75,7 +75,7 @@ unsigned int parseTime(const String &time) {
     for (unsigned short i=0; i < len; i++)
     {
         char c = time[i];
-        if (c >= CHR_0 && c <= CHR_9) part = (ushort)(part * 10 + (c - CHR_0));
+        if (c >= CHR_0 && c <= CHR_9) part = (unsigned short)(part * 10 + (c - CHR_0));
         else if (c == ':')
         {
             result = (result + part) * 60;
@@ -86,8 +86,8 @@ unsigned int parseTime(const String &time) {
             result = result + part;
             dot = true;
             part = 0;
-            if (len - i == 2) part = (ushort)((time[++i] - CHR_0) * 10);
-            else if (len - i == 3) part = (ushort)((time[i + 1] - CHR_0) * 10 + (time[i + 2] - CHR_0));
+            if (len - i == 2) part = (unsigned short)((time[++i] - CHR_0) * 10);
+            else if (len - i == 3) part = (unsigned short)((time[i + 1] - CHR_0) * 10 + (time[i + 2] - CHR_0));
             break;
         }
     }
@@ -97,10 +97,11 @@ unsigned int parseTime(const String &time) {
 }
 
 void bootStart() {
+    Serial.begin(74880); //115200
+    INFO("Booting\n");
     DebugWifi;
     WiFi.setAutoConnect(true);
     WiFi.setAutoReconnect(true);   
-    Serial.begin(74880); //115200
 }
 
 void firstBoot() {
@@ -191,7 +192,7 @@ String& getDriverName() {
 }
 
 String executeFile(String filename) {
-    File f = SPIFFS.open(filename, "r");
+    File f = LittleFS.open(filename, "r");
     String result;
     if (f) { 
         int line = 1;
@@ -211,7 +212,7 @@ String executeFile(String filename) {
 }
 
 void deleteFile(String filename) {
-    if (isAdmin()) SPIFFS.remove(filename);
+    if (isAdmin()) LittleFS.remove(filename);
 }
 
 void crash() {

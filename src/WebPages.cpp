@@ -43,8 +43,8 @@ void WebPagesClass::begin() {
     });
     server.on(STR_UPLOAD, HTTP_POST, [](){ 
         if (isAdmin()) {
-            SPIFFS.remove(prefix + "/" + server.arg(0));
-            SPIFFS.rename(STR_TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
+            LittleFS.remove(prefix + "/" + server.arg(0));
+            LittleFS.rename(STR_TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
             server.send(200); 
         } else sendNoAdmin();
     }, [this](){ handleFileUpload(STR_TEMPORARY_FILE); });
@@ -93,7 +93,7 @@ void WebPagesClass::handleStaticPage() {
             handleDir(url);
         } else {
             if (!isAdmin() || !url.startsWith(getScriptsPath())) url = prefix + url;
-            File f = SPIFFS.open(url, STR_R);
+            File f = LittleFS.open(url, STR_R);
             if (f) {
                 String h = getContentType(url);
                 server.sendHeader(String(FPSTR(STR_CONTENT_TYPE)), h);
@@ -106,7 +106,7 @@ void WebPagesClass::handleStaticPage() {
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
             if (!url.startsWith(getScriptsPath())) url = prefix + url;
-            File f = SPIFFS.open(url, STR_W);
+            File f = LittleFS.open(url, STR_W);
             if (f) { 
                 f.print(server.arg(STR_PLAIN));
                 f.print("\n");
@@ -117,7 +117,7 @@ void WebPagesClass::handleStaticPage() {
     } else if (server.method() == HTTP_DELETE) {
         if (isAdmin()) {
             if (!url.startsWith(getScriptsPath())) url = prefix + url;
-            SPIFFS.remove(url);
+            LittleFS.remove(url);
             sendOK();
         } else sendNoAdmin();
     }
@@ -132,7 +132,7 @@ void WebPagesClass::handleJson(const String& msg) {
 
 void WebPagesClass::handleDir(String root) {
     if (root=="") root = STR_WWW;
-    Dir dir = SPIFFS.openDir(root);
+    Dir dir = LittleFS.openDir(root);
     String list = "{ ";
     bool first = true;
     while (dir.next()) {
@@ -149,7 +149,7 @@ void WebPagesClass::handleDir(String root) {
 void WebPagesClass::handleBoot() {
     if (isAdmin()) {
         if (server.method() == HTTP_GET) {
-            File f = SPIFFS.open(STR_BOOT, STR_R);
+            File f = LittleFS.open(STR_BOOT, STR_R);
             if (f) {
                 server.setContentLength(f.size());
                 String h = getContentType(STR_BOOT);
@@ -158,18 +158,18 @@ void WebPagesClass::handleBoot() {
                 f.close();
             } else sendERR(F("Could not read file /boot"));
         } else if (server.method() == HTTP_PUT) {
-            File f = SPIFFS.open(STR_BOOT, STR_W);
+            File f = LittleFS.open(STR_BOOT, STR_W);
             if (f) { 
                 f.print(server.arg(STR_PLAIN));
                 f.print("\n");
                 f.flush(); f.close();
                 sendOK();
-                f = SPIFFS.open(STR_BOOT_TRIES, STR_W);
+                f = LittleFS.open(STR_BOOT_TRIES, STR_W);
                 f.print(F("0"));
                 f.flush(); f.close();
             } else sendERR(F("Could not write file /boot"));
         }
-    } sendNoAdmin();
+    } else sendNoAdmin();
 }
 
 void WebPagesClass::handleRun() {
@@ -199,7 +199,7 @@ void WebPagesClass::handleFileUpload(const String& filename) {
     HTTPUpload& upload = server.upload();
     if (upload.status == UPLOAD_FILE_START){
         INFO("Uploading file %s\n", filename.c_str());
-        fsUploadFile = SPIFFS.open(filename, STR_W);
+        fsUploadFile = LittleFS.open(filename, STR_W);
     } else if (upload.status == UPLOAD_FILE_WRITE){
         if (fsUploadFile) {
             fsUploadFile.write(upload.buf, upload.currentSize);

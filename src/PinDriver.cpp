@@ -108,7 +108,7 @@ void execAction() {
     if(++_phasePlanPosition < _phasePlanLength) startTimer(_planSteps[_phasePlanPosition].wait);
 }
 
-void ICACHE_RAM_ATTR onTimerISR(){ execAction(); }
+void IRAM_ATTR onTimerISR(){ execAction(); }
 
 void startTimer(long microsecs) {
     if (microsecs > 0) {

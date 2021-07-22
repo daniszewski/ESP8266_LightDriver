@@ -5,22 +5,22 @@
 #define FORMAT_INDICATOR2 F("/www/index.html")
 
 void LocalStorageClass::begin() {
-    SPIFFS.begin();
+    LittleFS.begin();
 
     // file system format if required
-    if (!SPIFFS.exists(FORMAT_INDICATOR)) {
-        bool format = !SPIFFS.exists(FORMAT_INDICATOR2);
-        if (format) Serial.println(F("SPIFFS: formatting"));
-        if (!format || SPIFFS.format()) {
-            File f = SPIFFS.open(FORMAT_INDICATOR, "w");
+    if (!LittleFS.exists(FORMAT_INDICATOR)) {
+        bool format = !LittleFS.exists(FORMAT_INDICATOR2);
+        if (format) Serial.println(F("FS: formatting"));
+        if (!format || LittleFS.format()) {
+            File f = LittleFS.open(FORMAT_INDICATOR, "w");
             if (f) {
-                Serial.println(F("SPIFFS: formatting done"));
+                Serial.println(F("FS: formatting done"));
                 f.println(PSTR("NAME ") + WiFi.macAddress());
                 f.close();
                 firstBoot();
             }
-            else Serial.println(F("SPIFFS: formatting error (creating indicator file)"));
-        } else Serial.println(F("SPIFFS: formatting error"));
+            else Serial.println(F("FS: formatting error (creating indicator file)"));
+        } else Serial.println(F("FS: formatting error"));
     }
 }
 

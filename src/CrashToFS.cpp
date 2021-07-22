@@ -1,9 +1,9 @@
-#include "CrashToSpiffs.h"
-#include <FS.h>
+#include "CrashToFS.h"
+#include <LittleFS.h>
 
 char *staticfn=0;
 
-void savetoSpiffs(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end,Print& outputDev ){
+void savetoFS(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end,Print& outputDev ){
 	outputDev.printf(PSTR("Crash # at %ld ms, UTC %ld \n"), millis(), time(nullptr));
 	outputDev.printf(PSTR("Reason of restart: %d\n"), rst_info->reason);
 	outputDev.printf(PSTR("Exception cause: %d\n"), rst_info->exccause);
@@ -40,29 +40,29 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
 			return size;
 		};
 	} strprinter2;
-	savetoSpiffs(rst_info, stack, stack_end,strprinter2);
+	savetoFS(rst_info, stack, stack_end,strprinter2);
 
 	String fn;
 	if(staticfn) fn=String(staticfn);
 	else fn=String(F(CRASHFILEPATH));
-	File f = SPIFFS.open(fn, "a");
-	if(!f) f= SPIFFS.open(fn, "w");
+	File f = LittleFS.open(fn, "a");
+	if(!f) f= LittleFS.open(fn, "w");
 	if(f) {
 		f.write((uint8_t*)strprinter2.str.c_str(), strprinter2.str.length());
 		f.close();
 	}
 }
 
-CrashToSpiffsClass::CrashToSpiffsClass(char *otherfilename) {
+CrashToFSClass::CrashToFSClass(char *otherfilename) {
 	staticfn=otherfilename;
 }
 
-void CrashToSpiffsClass::clearFile(void)
+void CrashToFSClass::clearFile(void)
 {
 	String fn;
 	if(staticfn) fn=String(staticfn);
 	else fn=String(F(CRASHFILEPATH));
-	SPIFFS.remove(fn);
+	LittleFS.remove(fn);
 }
 
-CrashToSpiffsClass CrashToSpiffs;
+CrashToFSClass CrashToFS;

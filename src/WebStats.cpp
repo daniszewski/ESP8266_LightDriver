@@ -60,7 +60,7 @@ void sendStats(ESP8266WebServer *server) {
     server->sendContent(F("\",\n\"WiFiClient_RSSI\": \""));
     server->sendContent(String(WiFi.RSSI()));
     server->sendContent(F("\",\n\"WiFiAP_SSID\": \""));
-    server->sendContent(WiFi.softAPSSID());
+    if(WiFi.softAPSSID().length()>1) server->sendContent(WiFi.softAPSSID());
     server->sendContent(F("\",\n\"WiFiAP_IP\": \""));
     server->sendContent(WiFi.softAPIP().toString());
     server->sendContent(F("\",\n\"MQTT_STATUS\": \""));
