@@ -5,7 +5,7 @@ $timeout = 5
 $configFile = "updates\update-config.json"
 $defaultPwd = "esppower"
 $defaultUriPattern = "http://10.0.0.{0}/" # change it in update-config.json if needed
-$defaultUriRange = "202-202" # change it in update-config.json if needed
+$defaultUriRange = "126-126" # change it in update-config.json if needed
 
 # IMPLEMENTATION
 
@@ -173,11 +173,8 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
         if (-not $loggedIn) { $loggedIn = "OK" -eq (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("LOGIN " + $password)) }
         if ($loggedIn) {
             # get environment
-            if ($null -eq $config.$hostUri.Config.Env) {
-                $environment = "nodemcuv2"
-            } else {
-                $environment = $config.$hostUri.Config.Env
-            }
+            $environment = (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("BOARD")).Replace("PLATFORMIO_","").ToLower()
+            Write-Host(("Detected environment: " + $environment))
             # compile if needed
             if ($null -eq $compiled.$environment) {
                 pio.exe run -e $environment --disable-auto-clean

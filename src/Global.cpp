@@ -140,18 +140,14 @@ void WiFiAdd(String ssid, String password) {
 void WiFiAP(bool enable) {
     WiFi.persistent(false);
     if (enable) {
-        WiFi.mode(WIFI_STA);
-        WiFi.disconnect();
-        delay(100);
-  
-        //const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
+        const char * ssid = "ESPAP";//(AP_prefix + WiFi.softAPmacAddress()).c_str();
         IPAddress localIp(192,168,4,1);
         IPAddress gateway(192,168,4,1);
         IPAddress subnet(255,255,255,0);
         if (WiFi.softAPConfig(localIp, gateway, subnet)) {
             INFO("Soft-AP with IP: %s\n", WiFi.softAPIP().toString().c_str());
         } else { INFO("AP config error\n"); }
-        if (WiFi.softAP("ESP", wifiappwd, 6)) { 
+        if (WiFi.softAP(ssid, wifiappwd, AP_port)) { 
             INFO("AP started\n");
         } else { INFO("AP start error\n"); }
     } else {
