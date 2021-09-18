@@ -3,9 +3,9 @@
 
 #include <Arduino.h>
 #include <Stream.h>
-#include <LittleFS.h>
 #include <ESP8266WiFi.h>
 #include "WiFiAutoSwitch.h"
+#include "LocalStorage.h"
 
 String formatString(PGM_P format, ...);
 int logToSerial(String msg);
@@ -14,9 +14,9 @@ String& getScriptsPath();
 String getWord(const String &line, int ix);
 String getWord(const String &line, int ix, bool toEnd);
 unsigned int parseTime(const String &time);
-void WiFiSTA(String ssid, String password, String channel, bool persistent);
+void WiFiSTA(String ssid, String password, String channel);
 void WiFiAdd(String ssid, String password);
-void WiFiAP(bool enable, bool persistent);
+void WiFiAP(bool enable);
 void setAdminPassword(String pwd);
 bool isBoot();
 bool isAdmin();
@@ -38,7 +38,7 @@ void mqttSubscribe(String topic);
 void mqttMessage(String topic, String message);
 void setTime(String secsSince1970);
 
-#ifdef PROJECT_DEBUG
+#ifndef NDEBUG
     #define INFO(fmt, ...) Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ )
 #else
     #define INFO(...)

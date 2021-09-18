@@ -1,5 +1,6 @@
+#include <FS.h>
 #include "CrashToFS.h"
-#include <LittleFS.h>
+#include "LocalStorage.h"
 
 char *staticfn=0;
 
@@ -45,8 +46,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
 	String fn;
 	if(staticfn) fn=String(staticfn);
 	else fn=String(F(CRASHFILEPATH));
-	File f = LittleFS.open(fn, "a");
-	if(!f) f= LittleFS.open(fn, "w");
+	File f = LocalStorage.open(fn, "a");
+	if(!f) f = LocalStorage.open(fn, "w");
 	if(f) {
 		f.write((uint8_t*)strprinter2.str.c_str(), strprinter2.str.length());
 		f.close();
@@ -62,7 +63,7 @@ void CrashToFSClass::clearFile(void)
 	String fn;
 	if(staticfn) fn=String(staticfn);
 	else fn=String(F(CRASHFILEPATH));
-	LittleFS.remove(fn);
+	LocalStorage.remove(fn);
 }
 
 CrashToFSClass CrashToFS;

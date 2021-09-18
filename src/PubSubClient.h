@@ -13,7 +13,7 @@ http://knolleary.net
 #include "Stream.h"
 
 
-#ifdef PROJECT_MQTT_DEBUG
+#ifndef PROJECT_MQTT_DEBUG
    #define DEBUGMQTT(fmt, ...) Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ )
 #else
    #define DEBUGMQTT(...)

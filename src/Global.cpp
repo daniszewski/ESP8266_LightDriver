@@ -3,6 +3,7 @@
 #include "_Config.h"
 #include "DebugWiFi.h"
 #include "MQTTMessages.h"
+#include <time.h>
 
 extern "C" {
     #include "user_interface.h"
@@ -100,21 +101,22 @@ void bootStart() {
     Serial.begin(74880); //115200
     INFO("Booting\n");
     DebugWifi;
-    WiFi.setAutoConnect(true);
-    WiFi.setAutoReconnect(true);   
 }
 
 void firstBoot() {
-    WiFiAP(true, true);
+    WiFiAP(true);
 }
 
 void bootComplete() {
     _boot = false;
     INFO("WiFi mode: %d\n", WiFi.getMode());
+    if (WiFi.getMode() == 0) {
+        WiFiAP(true);
+    }
 }
 
-void WiFiSTA(String ssid, String password, String channel, bool persistent) {
-    WiFi.persistent(persistent);
+void WiFiSTA(String ssid, String password, String channel) {
+    WiFi.persistent(false);
     if (ssid.length()>0) {
         char _ssid[32];
         char _password[32]; 
@@ -128,25 +130,29 @@ void WiFiSTA(String ssid, String password, String channel, bool persistent) {
     } else {
         WiFi.enableSTA(false);
     }
+    WiFi.setAutoReconnect(true);
 }
 
 void WiFiAdd(String ssid, String password) {
     WiFiAutoSwitch.add(ssid.c_str(), password.c_str());
 }
 
-void WiFiAP(bool enable, bool persistent) {
-    WiFi.persistent(persistent);
+void WiFiAP(bool enable) {
+    WiFi.persistent(false);
     if (enable) {
-        const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
-        if (WiFi.softAP(mac, wifiappwd, 6, false, 4)) { 
+        WiFi.mode(WIFI_STA);
+        WiFi.disconnect();
+        delay(100);
+  
+        //const char * mac = (AP_prefix + WiFi.macAddress()).c_str();
+        IPAddress localIp(192,168,4,1);
+        IPAddress gateway(192,168,4,1);
+        IPAddress subnet(255,255,255,0);
+        if (WiFi.softAPConfig(localIp, gateway, subnet)) {
+            INFO("Soft-AP with IP: %s\n", WiFi.softAPIP().toString().c_str());
+        } else { INFO("AP config error\n"); }
+        if (WiFi.softAP("ESP", wifiappwd, 6)) { 
             INFO("AP started\n");
-            delay(100);
-            IPAddress localIp(192,168,4,1);
-            IPAddress gateway(192,168,4,1);
-            IPAddress subnet(255,255,255,0);
-            if (WiFi.softAPConfig(localIp, gateway, subnet)) {
-                INFO("Soft-AP with IP: %s\n", WiFi.softAPIP().toString().c_str());
-            } else { INFO("AP config error\n"); }
         } else { INFO("AP start error\n"); }
     } else {
         WiFi.enableAP(false);
@@ -192,7 +198,7 @@ String& getDriverName() {
 }
 
 String executeFile(String filename) {
-    File f = LittleFS.open(filename, "r");
+    File f = LocalStorage.open(filename, "r");
     String result;
     if (f) { 
         int line = 1;
@@ -212,7 +218,7 @@ String executeFile(String filename) {
 }
 
 void deleteFile(String filename) {
-    if (isAdmin()) LittleFS.remove(filename);
+    if (isAdmin()) LocalStorage.remove(filename);
 }
 
 void crash() {

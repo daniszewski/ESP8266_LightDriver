@@ -43,8 +43,8 @@ void WebPagesClass::begin() {
     });
     server.on(STR_UPLOAD, HTTP_POST, [](){ 
         if (isAdmin()) {
-            LittleFS.remove(prefix + "/" + server.arg(0));
-            LittleFS.rename(STR_TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
+            LocalStorage.remove(prefix + "/" + server.arg(0));
+            LocalStorage.rename(STR_TEMPORARY_FILE, prefix + "/" + server.arg(0)); 
             server.send(200); 
         } else sendNoAdmin();
     }, [this](){ handleFileUpload(STR_TEMPORARY_FILE); });
@@ -83,7 +83,10 @@ String WebPagesClass::getContentType(const String& path) {
 }
 
 void WebPagesClass::handleStaticPage() {
-    String url = server.uri(); url.toLowerCase();
+    String url = server.uri();
+    if (url.isEmpty() || url.charAt(0) != '/') return;
+    url.toLowerCase();
+    INFO("[WWW] GET %s\n", url);
     if (url == "/" && server.method() == HTTP_GET) url = STR_INDEXHTML;
 
     if (server.method() == HTTP_GET) {
@@ -93,7 +96,7 @@ void WebPagesClass::handleStaticPage() {
             handleDir(url);
         } else {
             if (!isAdmin() || !url.startsWith(getScriptsPath())) url = prefix + url;
-            File f = LittleFS.open(url, STR_R);
+            File f = LocalStorage.open(url, STR_R);
             if (f) {
                 String h = getContentType(url);
                 server.sendHeader(String(FPSTR(STR_CONTENT_TYPE)), h);
@@ -106,7 +109,7 @@ void WebPagesClass::handleStaticPage() {
     } else if (server.method() == HTTP_PUT) {
         if (isAdmin()) {
             if (!url.startsWith(getScriptsPath())) url = prefix + url;
-            File f = LittleFS.open(url, STR_W);
+            File f = LocalStorage.open(url, STR_W);
             if (f) { 
                 f.print(server.arg(STR_PLAIN));
                 f.print("\n");
@@ -117,7 +120,7 @@ void WebPagesClass::handleStaticPage() {
     } else if (server.method() == HTTP_DELETE) {
         if (isAdmin()) {
             if (!url.startsWith(getScriptsPath())) url = prefix + url;
-            LittleFS.remove(url);
+            LocalStorage.remove(url);
             sendOK();
         } else sendNoAdmin();
     }
@@ -132,14 +135,14 @@ void WebPagesClass::handleJson(const String& msg) {
 
 void WebPagesClass::handleDir(String root) {
     if (root=="") root = STR_WWW;
-    Dir dir = LittleFS.openDir(root);
+    Dir dir = LocalStorage.openDir(root);
     String list = "{ ";
     bool first = true;
     while (dir.next()) {
         File f = dir.openFile(STR_R);
         if (first) first = false;
         else list += F(", ");
-        list += "\""+dir.fileName().substring(root.length() + 1) + "\": " + String(f.size());
+        list += "\""+dir.fileName() + "\": " + String(f.size());
         f.close();
     }
     list+=F(" }");
@@ -149,7 +152,7 @@ void WebPagesClass::handleDir(String root) {
 void WebPagesClass::handleBoot() {
     if (isAdmin()) {
         if (server.method() == HTTP_GET) {
-            File f = LittleFS.open(STR_BOOT, STR_R);
+            File f = LocalStorage.open(STR_BOOT, STR_R);
             if (f) {
                 server.setContentLength(f.size());
                 String h = getContentType(STR_BOOT);
@@ -158,13 +161,13 @@ void WebPagesClass::handleBoot() {
                 f.close();
             } else sendERR(F("Could not read file /boot"));
         } else if (server.method() == HTTP_PUT) {
-            File f = LittleFS.open(STR_BOOT, STR_W);
+            File f = LocalStorage.open(STR_BOOT, STR_W);
             if (f) { 
                 f.print(server.arg(STR_PLAIN));
                 f.print("\n");
                 f.flush(); f.close();
                 sendOK();
-                f = LittleFS.open(STR_BOOT_TRIES, STR_W);
+                f = LocalStorage.open(STR_BOOT_TRIES, STR_W);
                 f.print(F("0"));
                 f.flush(); f.close();
             } else sendERR(F("Could not write file /boot"));
@@ -199,7 +202,7 @@ void WebPagesClass::handleFileUpload(const String& filename) {
     HTTPUpload& upload = server.upload();
     if (upload.status == UPLOAD_FILE_START){
         INFO("Uploading file %s\n", filename.c_str());
-        fsUploadFile = LittleFS.open(filename, STR_W);
+        fsUploadFile = LocalStorage.open(filename, STR_W);
     } else if (upload.status == UPLOAD_FILE_WRITE){
         if (fsUploadFile) {
             fsUploadFile.write(upload.buf, upload.currentSize);

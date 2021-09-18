@@ -1,12 +1,5 @@
 #include "PowerAnimation.h"
 
-#ifndef NDEBUG
-  #include "Arduino.h"
-  #define INFOARGS(fmt, ...) Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ )
-#else
-  #define INFOARGS(...)
-#endif
-
 void PowerAnimation::animate() {
   if(!_enabled || _stepIndex>=_steps.size()) return;
 
@@ -77,7 +70,6 @@ void PowerAnimation::addStep(unsigned int stepTime, short targetValue, short nex
   s._repeat = repeat;
 
   _steps.push_back(s);
-  INFOARGS("[ANIM] addStep id=%d, stepindex=%d, anim address=%08x, steps=%d, step address=%08x\n", getId(), getStepIndex(), this, _steps.size(), &_steps.back());
 }
 
 

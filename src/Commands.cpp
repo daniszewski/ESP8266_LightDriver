@@ -27,11 +27,9 @@ String execute(String line) {
     else if (adm && cmd == "DISABLE") PinDriver.disablePin(WS(1)); // Syntax: DISABLE <pin name>
     else if (adm && cmd == "PWD") setAdminPassword(WS(1)); // Syntax: PWD <password>
     else if (adm && cmd == "BOOTADMIN") setAdmin(); // Syntax: BOOTADMIN
-    else if (adm && cmd == "WIFI") WiFiSTA(WS(1), WS(2), WS(3), true); // Syntax: WIFI <ssid> <password> <channel>
-    else if (adm && cmd == "WIFITEST") WiFiSTA(WS(1), WS(2), WS(3), false); // Syntax: WIFITEST <ssid> <password> <channel>
+    else if (adm && cmd == "WIFI") WiFiSTA(WS(1), WS(2), WS(3)); // Syntax: WIFI <ssid> <password> <channel>
     else if (adm && cmd == "AUTOWIFI") WiFiAdd(WS(1), WS(2)); // Syntax: AUTOWIFI <ssid> <password>
-    else if (adm && cmd == "WIFIAP") WiFiAP(WS(1)=="1", true); // Syntax: WIFIAP <0 or 1>
-    else if (adm && cmd == "WIFIAPTEST") WiFiAP(WS(1)=="1", false); // Syntax: WIFIAPTEST <0 or 1>
+    else if (adm && cmd == "WIFIAP") WiFiAP(WS(1)=="1"); // Syntax: WIFIAP <0 or 1>
     else if (adm && cmd == "DELETE") deleteFile(WM(1)); // Syntax: DELETE <full_filepath>
     else if (adm && cmd == "MQTTINIT") mqttInit(WS(1), WS(2), WS(3), WS(4)); // Syntax: MQTTINIT <server> <port> <user> <passwd>
     else if (adm && cmd == "MQTTPREFIX") mqttSetPrefix(WS(1)); // Syntax: MQTTPREFIX <prefix>
@@ -69,7 +67,7 @@ String execute(String line) {
     else if (cmd == "SLIDE") PowerAnimator.configAddStep(WS(2), WS(1)); // Syntax: SLIDE <time of activity> <target value: 0-1023, ON, OFF, LOW, HIGH>
     else if (cmd == "REPEAT") PowerAnimator.configAddRepeat(WI(1), WI(2)); // Syntax: REPEAT <no of commands> <no of repeats>
     else if (cmd == "END") PowerAnimator.configEnd(); // Syntax: END
-    else if (cmd != "" && cmd.charAt(0) != '#') return "Unknown command: " + cmd;
+    else if (cmd.length() > 0 && cmd.charAt(0) != '#') return PSTR("Unknown command: ") + cmd;
     return "";
 }
 

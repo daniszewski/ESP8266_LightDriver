@@ -3,12 +3,6 @@
 
 #include <vector>
 
-#ifdef NDEBUG
-  #define DEBUG_WIFI_MULTI(...)
-#else
-  #define DEBUG_WIFI_MULTI(fmt, ...) Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ )
-#endif
-
 #define WIFI_MIN_RSSI -80
 #define WIFI_CHECK_EVERY 1000
 #define WIFI_BAD_READS_TRIGGER 30
@@ -31,6 +25,8 @@ class WiFiAutoSwitchClass {
     void handle();
     void add(const char* ssid, const char *passphrase);
     void findBetterAP();
+    void startScan();
+    void scanComplete(int scanResult);
 };
 
 extern WiFiAutoSwitchClass WiFiAutoSwitch;

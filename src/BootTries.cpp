@@ -6,12 +6,12 @@ static const char * BOOT_TRIES = "/boot_tries";
 
 int getBootTries() {
     bootTries = -1;
-    if (LittleFS.exists(BOOT_TRIES)) {
-        File f = LittleFS.open(BOOT_TRIES, "r");
+    if (LocalStorage.exists(BOOT_TRIES)) {
+        File f = LocalStorage.open(BOOT_TRIES, "r");
         if (f) {
             bootTries = f.readString().toInt();
             f.close();
-            f = LittleFS.open(BOOT_TRIES, "w");
+            f = LocalStorage.open(BOOT_TRIES, "w");
             if (f) {
                 f.printf("%i", ++bootTries);
                 f.flush(); f.close();
@@ -33,7 +33,7 @@ void BootTriesClass::begin() {
 
 void BootTriesClass::handle() {
     if (bootTries>=0 && millis()>10000) {
-        LittleFS.remove(BOOT_TRIES);
+        LocalStorage.remove(BOOT_TRIES);
         INFO("Commiting the boot script\n");
         bootTries = -1;
     }

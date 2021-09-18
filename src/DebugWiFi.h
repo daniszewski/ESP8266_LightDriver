@@ -1,6 +1,6 @@
 #define INFO_WIFI(fmt, ...) Serial.printf_P( (PGM_P)PSTR(fmt), ##__VA_ARGS__ )
 
-#ifdef PROJECT_WIFI_DEBUG
+#ifndef NDEBUG
 
 #include <ESP8266WiFi.h>
 
@@ -11,7 +11,7 @@ String connectionStatus ( int which )
     switch (which)
     {
         case WL_CONNECTED: return PSTR("Connected");
-        case WL_NO_SSID_AVAIL: return PSTR("Network not availible");
+        case WL_NO_SSID_AVAIL: return PSTR("Network not available");
         case WL_CONNECT_FAILED: return PSTR("Wrong password");
         case WL_IDLE_STATUS: return PSTR("Idle status");
         case WL_DISCONNECTED: return PSTR("Disconnected");
@@ -28,7 +28,7 @@ void eventWiFi(WiFiEvent_t event) {
         case WIFI_EVENT_STAMODE_DHCP_TIMEOUT: INFO_WIFI("[WiFi] %d, DHCP Timeout\n", event); break;
         case WIFI_EVENT_SOFTAPMODE_STACONNECTED: INFO_WIFI("[AP] %d, Client Connected\n", event); break;
         case WIFI_EVENT_SOFTAPMODE_STADISCONNECTED: INFO_WIFI("[AP] %d, Client Disconnected\n", event); break;
-        case WIFI_EVENT_SOFTAPMODE_PROBEREQRECVED: INFO_WIFI("[AP] %d, Probe Request Recieved\n", event); break;
+        //case WIFI_EVENT_SOFTAPMODE_PROBEREQRECVED: INFO_WIFI("[AP] %d, Probe Request Received\n", event); break;
         default: break;
     }
 }

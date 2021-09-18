@@ -144,17 +144,15 @@ function initButtons() {
 }
 
 function switchAP(enabled) {
-    var temp = $('#chkTemporary')[0].checked;
-    rest('PUT','run', (temp ? 'WIFIAPTEST ':'WIFIAP ') + (enabled ? "1" : "0"), null, function(x) { message(x); });
+    rest('PUT','run', 'WIFIAP ' + (enabled ? "1" : "0"), null, function(x) { message(x); });
 }
 
 function wifi(enabled) {
-    var temp = $('#chkTemporary')[0].checked;
     var ssid = enabled ? $('#wifiSSID').val()+' ' : ' ';
     var pwd = enabled ? $('#wifiPwd').val()+' ' : ' ';
     var chn = enabled ? $('#wifiChn').val() : ' ';
     
-    rest('PUT','run', (temp ? 'WIFITEST ':'WIFI ') + ssid + pwd + chn, null, function(x) { message(x); });
+    rest('PUT','run', 'WIFI ' + ssid + pwd + chn, null, function(x) { message(x); });
 }
 
 function login() {

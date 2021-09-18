@@ -50,7 +50,7 @@ void sendStats(ESP8266WebServer *server) {
         server->sendContent(F(" }"));
     }
     server->sendContent(F("\n],\n\"WiFiClient_SSID\": \""));
-    server->sendContent(WiFi.SSID());
+    if(WiFi.SSID().length()>1) server->sendContent(WiFi.SSID());
     server->sendContent(F("\",\n\"WiFiClient_IP\": \""));
     server->sendContent(WiFi.localIP().toString());
     server->sendContent(F("\",\n\"WiFiClient_STATUS\": \""));
