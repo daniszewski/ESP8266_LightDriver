@@ -3,6 +3,7 @@
 #include "Commands.h"
 #include "detail/mimetable.h"
 #include "PinDriver.h"
+#include "Hardware.h"
 
 #define MIME_TEXTPLAIN mimeTable[3].mimeType
 

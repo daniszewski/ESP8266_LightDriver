@@ -5,8 +5,6 @@ http://knolleary.net
 */
 
 #include "PubSubClient.h"
-#include "Arduino.h"
-
 
 PubSubClient::PubSubClient() {
     this->_state = MQTT_DISCONNECTED;

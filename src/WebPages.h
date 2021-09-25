@@ -1,11 +1,7 @@
 #ifndef WEBPAGES_H
 #define WEBPAGES_H
 
-#include "Global.h"
-#include <ESP8266WiFi.h>
-#include <WiFiClient.h>
-#include <ESP8266mDNS.h>
-#include <ESP8266WebServer.h>
+#include "Stream.h"
 
 class WebPagesClass {
   public:

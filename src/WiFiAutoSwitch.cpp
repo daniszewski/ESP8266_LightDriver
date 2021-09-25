@@ -1,5 +1,5 @@
 #include "WiFiAutoSwitch.h"
-#include "Global.h"
+#include "Hardware.h"
 #include <stdlib.h>
 
 void WiFiAutoSwitchClass::begin() {

@@ -3,7 +3,7 @@
 #include "MQTTMessages.h"
 #include "time.h"
 
-void sendStats(ESP8266WebServer *server) {
+void sendStats(WebServer *server) {
     server->sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
     server->sendHeader(F("Pragma"), F("no-cache"));
     server->sendHeader(F("Expires"), F("-1"));

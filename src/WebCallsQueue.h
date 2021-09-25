@@ -1,7 +1,7 @@
 #ifndef WEBCALLSQUEUE_H
 #define WEBCALLSQUEUE_H
 
-#include "Global.h"
+#include <Stream.h>
 
 class WebCallsQueueClass {
     public:

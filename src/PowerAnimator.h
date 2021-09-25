@@ -1,11 +1,11 @@
 #ifndef POWERANIMATOR_H
 #define POWERANIMATOR_H
 
-#include "Global.h"
+#include <functional>
+#include <Stream.h>
 #include "PowerAnimation.h"
 
 typedef std::vector<PowerAnimation> PowerAnimationList;
-//typedef DynArray<PowerAnimation> PowerAnimationList;
 
 class PowerAnimatorClass {
   public:
@@ -25,6 +25,9 @@ class PowerAnimatorClass {
   protected:
     unsigned long lastTime;
     PowerAnimationList animations;
+  
+  private:
+    unsigned int parseTime(const String &time);
 };
 
 extern PowerAnimatorClass PowerAnimator;

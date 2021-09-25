@@ -46,7 +46,6 @@ PowerAnimation* PowerAnimatorClass::configStart(int id, bool isTriggeredExternal
 	currentConfigAnimation = ensureAnimation(id);
   currentConfigAnimation->_isTriggeredExternaly = isTriggeredExternaly;
   currentConfigAnimation->clear();
-  INFO("[ANIM] configStart id=%d, stepindex=%d, address=%08x\n", currentConfigAnimation->getId(), currentConfigAnimation->getStepIndex(), currentConfigAnimation);
   return currentConfigAnimation;
 }
 
@@ -66,6 +65,35 @@ void PowerAnimatorClass::configAddRepeat(short commands, short count) {
 void PowerAnimatorClass::configEnd() {
   currentConfigAnimation->addStep(UINT32_MAX, -1, 0, -1); // every minute jump to itself
   currentConfigAnimation->enable();
+}
+
+unsigned int PowerAnimatorClass::parseTime(const String &time) {
+    unsigned int result = 0;
+    unsigned short part = 0;
+    unsigned short len = time.length();
+    bool dot = false;
+    for (unsigned short i=0; i < len; i++)
+    {
+        char c = time[i];
+        if (c >= '0' && c <= '9') part = (unsigned short)(part * 10 + (c - '0'));
+        else if (c == ':')
+        {
+            result = (result + part) * 60;
+            part = 0;
+        }
+        else if (c == '.')
+        {
+            result = result + part;
+            dot = true;
+            part = 0;
+            if (len - i == 2) part = (unsigned short)((time[++i] - '0') * 10);
+            else if (len - i == 3) part = (unsigned short)((time[i + 1] - '0') * 10 + (time[i + 2] - '0'));
+            break;
+        }
+    }
+    if (!dot) result = (result + part) * 100;
+    else result = result * 100 + part;
+    return result;
 }
 
 PowerAnimatorClass PowerAnimator;

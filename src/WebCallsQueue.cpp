@@ -1,5 +1,6 @@
 #include "WebCallsQueue.h"
 #include <queue>
+#include "Hardware.h"
 
 #define MAX_QUEUE_SIZE 100
 

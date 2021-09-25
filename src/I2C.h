@@ -1,7 +1,8 @@
 #ifndef I2C_H
 #define I2C_H
 
-#include "Global.h"
+#include <stdint.h>
+#include <Stream.h>
 
 class I2CClass {
 public:
