@@ -174,22 +174,26 @@ Invoke-URLRequest -uris $uris -timeout $timeout | Foreach-Object {
         if ($loggedIn) {
             # get environment
             $environment = (Invoke-RestMethod -Uri ($hostUri+"run") -Method Put -Body ("BOARD")).Replace("PLATFORMIO_","").ToLower()
-            Write-Host(("Detected environment: " + $environment))
-            # compile if needed
-            if ($null -eq $compiled.$environment) {
-                pio.exe run -e $environment --disable-auto-clean
-                $compiled.$environment = 1
-            }
-            # get full path to firmware.bin
-            $firmware = (Get-ChildItem ".pio/build/$environment/firmware.bin").FullName
+            if ($environment -eq "Unknown command: BOARD") {
+                Write-Warning "Could not detect the board version (lack of BOARD command?)"
+            } else {
+                Write-Host(("Detected environment: " + $environment))
+                # compile if needed
+                if ($null -eq $compiled.$environment) {
+                    pio.exe run -e $environment --disable-auto-clean
+                    $compiled.$environment = 1
+                }
+                # get full path to firmware.bin
+                $firmware = (Get-ChildItem ".pio/build/$environment/firmware.bin").FullName
 
-            $count++
-            Write-Host(("Updating firmware in " + $hostUri + " from " + $firmware))
-            if(Submit-File ($hostUri+"update") $firmware) {
-                $config.$hostUri.SourcesCrc = $sourcesCrc
-                $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
+                $count++
+                Write-Host(("Updating firmware in " + $hostUri + " from " + $firmware))
+                if(Submit-File ($hostUri+"update") $firmware) {
+                    $config.$hostUri.SourcesCrc = $sourcesCrc
+                    $config | ConvertTo-Json | Format-Json | Set-Content -Path $configFile
+                }
+                Write-Host("Done - restarting")
             }
-            Write-Host("Done - restarting")
         }
     }
     if (0 -eq $count) {
