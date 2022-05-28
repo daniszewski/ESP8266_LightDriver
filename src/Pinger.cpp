@@ -1,5 +1,5 @@
 #include "Pinger.h"
-#include <queue>
+#include <vector>
 
 class PingerHostClass {
 public:
