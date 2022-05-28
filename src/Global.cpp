@@ -103,10 +103,6 @@ void WiFiSTA(String ssid, String password, String channel) {
     WiFi.setAutoReconnect(true);
 }
 
-void WiFiAdd(String ssid, String password) {
-    WiFiAutoSwitch.add(ssid.c_str(), password.c_str());
-}
-
 void WiFiAP(bool enable) {
     WiFi.persistent(false);
     if (enable) {

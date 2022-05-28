@@ -53,6 +53,7 @@
     - MQTT {topic} {message} - send the MQTT message
     - TIME {seconds_since_1970} - set the current time
     - HD44780_INIT {address} {width} {height} - set up the LCD output on specified I2C adress
+    - PING {IP} {bootwait} {checkingtime} {eventscript} - pings the specified IP and after specified time of non-responsiveness executes the script
 
 
 ## Remarks

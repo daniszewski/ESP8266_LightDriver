@@ -9,9 +9,10 @@ typedef std::vector<PowerAnimation> PowerAnimationList;
 
 class PowerAnimatorClass {
   public:
-    void begin(std::function<void(void)> callback);
+    void begin();
     void handle();
 
+    void setCallback(std::function<void(void)> callback);
     void animate();
 
     PowerAnimation* configStart(int id, bool isTriggeredExternaly);

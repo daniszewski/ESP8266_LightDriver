@@ -4,8 +4,11 @@ PowerAnimation *currentConfigAnimation;
 
 std::function<void(void)> _callback;
 
-void PowerAnimatorClass::begin(std::function<void(void)> callback) {
+void PowerAnimatorClass::begin() {
   lastTime = millis();
+}
+
+void PowerAnimatorClass::setCallback(std::function<void(void)> callback) {
   _callback = callback;
 }
 

@@ -279,6 +279,7 @@ unsigned int PinDriverClass::getProximity(String triggerPin, String echoPin, int
 
 void PinDriverClass::begin() {
     setupTimer();
+    PowerAnimator.setCallback([](){ PinDriver.updatePinsPwm(); });
 }
 
 void PinDriverClass::handle() {
