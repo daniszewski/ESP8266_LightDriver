@@ -13,13 +13,6 @@ String& getScriptsPath();
 String getWord(const String &line, int ix);
 String getWord(const String &line, int ix, bool toEnd);
 void WiFiSTA(String ssid, String password, String channel);
-
-//void WiFiAdd(String ssid, String password);
-
-// void WiFiAdd(String ssid, String password) {
-//     WiFiAutoSwitch.add(ssid.c_str(), password.c_str());
-// }
-
 void WiFiAP(bool enable);
 void setAdminPassword(String pwd);
 bool isBoot();

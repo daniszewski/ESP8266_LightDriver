@@ -12,7 +12,6 @@ public:
 private:
 };
 
-
 extern PingerClass Pinger;
 
 #endif

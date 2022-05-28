@@ -1,6 +1,6 @@
 #include "Global.h"
-#include "CrashToFS.h"
 
+#include "CrashToFS.h"
 #include "LocalStorage.h"
 #include "WebPages.h"
 #include "WebCallsQueue.h"
@@ -30,7 +30,6 @@ void setup() {
 }
 
 void loop() {
-
     LocalStorage.handle();
     WebPages.handle();
     WebCallsQueue.handle();

@@ -3,10 +3,14 @@
 
 class PingerHostClass {
 public:
+    String IP;
+    int BootDelay;
+    int CheckingTime;
+    String CallbackScript;
 private:
 };
 
-std::deque<PingerHostClass> pingerList;
+std::vector<PingerHostClass> pingerList;
 
 void PingerClass::begin() {
 }
